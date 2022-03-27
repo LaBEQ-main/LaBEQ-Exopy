@@ -1,0 +1,112 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for the PSA tasks.
+
+"""
+from textwrap import fill
+
+from enaml.core.api import Conditional
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox)
+from enaml.layout.api import factory
+
+from exopy.tasks.api import InstrView, EVALUATER_TOOLTIP
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from ..base_instr_view import InstrView
+
+# XXX unfinished
+
+enamldef PSAGetTraceView(InstrView): view:
+    """View for the PSAGetTraceTask.
+
+    """
+    Label:
+        text = 'Trace number'
+    ObjectCombo:
+        items << [1,2,3]
+        selected := task.trace
+
+
+enamldef PSASetParamView(InstrView): view:
+    """View for the PSASetParamTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Trace number'
+    ObjectCombo:
+        items = [1,2,3]
+        selected := task.trace
+
+    Label:
+        text =  'Average number'
+    QtLineCompleter:
+        hug_width = 'ignore'
+        text := task.average_nb
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label:
+        text =  'Resolution Bandwidth'
+    QtLineCompleter:
+        hug_width = 'ignore'
+        text := task.resolution_bandwidth
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label:
+        text =  'Video Bandwidth'
+    QtLineCompleter:
+        hug_width = 'ignore'
+        text := task.video_bandwidth
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label:
+        text = 'Input mode'
+    ObjectCombo: mode:
+        items = ['Start/Stop','Center/Span']
+        selected := task.mode
+
+    Conditional:
+        condition << task.mode == 'Start/Stop'
+        Label:
+            text =  'Start Frequency'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.start_freq
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+        Label:
+            text =  'End Frequency'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.end_freq
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+    Conditional:
+        condition << task.mode == 'Center/Span'
+        Label:
+            text =  'Center Frequency'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.center_freq
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+        Label:
+            text =  'Span Frequency'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.span_freq
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP

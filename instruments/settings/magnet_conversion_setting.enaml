@@ -1,0 +1,44 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Specific connection information edition widget for visa instruments with settings
+
+"""
+import os
+
+from enaml.widgets.api import Label
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import hbox
+from exopy.instruments.api import BaseSettings
+
+
+enamldef MagnetConversionSetting(BaseSettings):
+    """Field to amp conversion settings for magnet sources.
+
+    """
+    #: Reference to the workbench.
+    attr workbench
+
+    #: Current to field conversion ratio.
+    alias magnet_conversion : conversion_val.text
+
+    gather_infos => ():
+        settings = BaseSettings.gather_infos(self)
+        settings['magnet_conversion'] = magnet_conversion
+        return settings
+
+    constraints = [hbox(conversion_lab, conversion_val, units)]
+
+    Label: conversion_lab:
+        text = 'Conversion factor'
+    Label: units:
+        text = 'T/A'
+    FloatField: conversion_val:
+        enabled << not read_only
+        tool_tip = ('A conversion factor, dependant on the '
+        	        'magnet used need to be specified.')

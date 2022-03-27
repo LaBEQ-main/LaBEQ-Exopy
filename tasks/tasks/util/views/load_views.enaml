@@ -1,0 +1,243 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View of the task used to load a file in memory.
+
+"""
+import traceback
+from inspect import cleandoc
+from textwrap import fill
+
+from atom.api import (Typed, Value, List, Str, Dict, Tuple, set_default)
+from enaml.widgets.api import (GroupBox, PushButton, Container, Label, Field,
+                               FileDialog, ObjectCombo, CheckBox,
+                               ToolButton, PopupView, MultilineField)
+from enaml.workbench.core.core_plugin import CorePlugin
+from enaml.core.api import Include, d_
+from enaml.layout.api import hbox, align
+from enaml.stdlib.message_box import warning
+
+from exopy.tasks.api import (BaseTaskView, EVALUATER_TOOLTIP, FORMATTER_TOOLTIP)
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+
+class BaseLoadView(BaseTaskView):
+    """ Base class for load task views handling the interface selection.
+
+    """
+    #: List of formats for which an interface is declared.
+    file_formats = d_(List(Str()))
+
+    #: References to the currently instantiated interface views.
+    i_views = Tuple(default=())
+
+    def initialize(self):
+        """Overridden to get the known interfaces.
+
+        """
+        super(BaseLoadView, self).initialize()
+
+        interfaces = self.root.get_interfaces_for(self.task)
+
+        file_formats = []
+        f_interfaces = {}
+        # Get the file formats and map them to their interface.
+        for i_infos in interfaces.values():
+            formats = i_infos.cls.file_formats
+            file_formats.extend(formats)
+            f_interfaces.update({f: i_infos.cls for f in formats})
+        self.file_formats = file_formats
+        self._f_interfaces = f_interfaces
+
+        if self.task.interface:
+            self._insert_interface_views(self.task.interface)
+
+        self._bind_observers()
+
+    def destroy(self):
+        """ Overriden destroyer to remove observers.
+
+        """
+        self._unbind_observers()
+        super(BaseLoadView, self).destroy()
+
+    # --- Private API ---------------------------------------------------------
+
+    #: Mapping between formats and interfaces
+    _f_interfaces = Dict()
+
+    def _update_interface(self, change):
+        """Update the interface when the selected format change.
+
+        """
+        f_format = change['value']
+        interface = self._f_interfaces[f_format]
+
+        if not isinstance(self.task.interface, interface):
+            # Destroy the views associated with the ancient interface.
+            for i_v in self.i_views:
+                i_v.destroy()
+            # If no interface is used simply assign None
+            if type(None) == interface:
+                self.task.interface = None
+                return
+            # Otherwise create interface and insert its views.
+            self.task.interface = interface()
+
+            self._insert_interface_views(self.task.interface, )
+
+    def _insert_interface_views(self, interface):
+        """Insert the views associated with the selected interface.
+
+        """
+        i_views = self.root.view_for(interface)
+        if i_views:
+            # TODO handle more complex insertions.
+            if hasattr(i_views[0], 'index'):
+                self.insert_children(i_views[0].index, i_views)
+            else:
+                self.insert_children(None, i_views)
+
+            self.i_views = tuple(i_views)
+
+        else:
+            self.i_views = ()
+
+    def _bind_observers(self):
+        """ Bind the observers at widget initialisation.
+
+        """
+        self.task.observe('selected_format', self._update_interface)
+
+    def _unbind_observers(self):
+        """ Undind the observers at widget destruction.
+
+        """
+        self.task.unobserve('selected_format', self._update_interface)
+
+
+enamldef LoadArrayView(BaseLoadView): main:
+    """Actual view of the load array task.
+
+    """
+    GroupBox: folder:
+        title = 'Directory'
+        constraints = [hbox(path, explore),
+                        align('v_center', path, explore)]
+
+        QtLineCompleter: path:
+            text := task.folder
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = FORMATTER_TOOLTIP
+        PushButton: explore:
+            text = 'E'
+            hug_width = 'strong'
+            clicked ::
+                path = FileDialog(mode = 'directory',
+                                title = 'Select a default path',
+                                ).exec_()
+                if path:
+                    task.folder = path
+
+    GroupBox: file:
+        title = 'File'
+        constraints = [hbox(name, mode)]
+
+        QtLineCompleter: name:
+            text := task.filename
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = FORMATTER_TOOLTIP
+        ObjectCombo: mode:
+                items = main.file_formats
+                selected := task.selected_format
+
+    Include:
+        objects << list(i_views)
+
+
+
+enamldef _CNamesEditor(PopupView):
+    """Editor allowing to edit the fixed names of the columns.
+
+    """
+    attr interface
+
+    closed::
+        names = []
+        try:
+            c_ns = c_names.text.split(',')
+            for c_n in c_ns:
+                aux = c_n.strip()
+                if aux:
+                    names.append(aux)
+            if names:
+                interface.c_names = names
+        except Exception:
+            warning(self.parent, 'Failed to parse names',
+                    'Parsing failed:\n'+traceback.format_exc())
+
+    Container:
+        Label:
+            text = 'Column names'
+        MultilineField: c_names:
+            tool_tip = cleandoc('''The list of column should be provided as
+                                a comma separated list.''')
+            text = ', '.join(interface.c_names)
+
+
+enamldef CSVLoadInterfaceView(Container):
+    """View for the CSV interface.
+
+    """
+    #: Reference to the interface.
+    attr interface
+
+    #: Reference to the root view.
+    attr root
+
+    constraints = [hbox(del_lab, del_val, com_lab, com_val, nam, c_n)]
+
+    Label: del_lab:
+        text = 'Delimiter'
+    Field: del_val:
+        text := interface.delimiter
+
+    Label: com_lab:
+        text = 'Comment'
+    Field: com_val:
+        text := interface.comments
+
+    CheckBox: nam:
+        text = 'Names'
+        checked := interface.names
+    ToolButton: c_n:
+        text = '>'
+        tool_tip = cleandoc('''If the file cannot be found during the check,
+                            you should provide the names of the columns which
+                            will be available to allow check to run correctly.
+                            ''')
+        clicked::
+            _CNamesEditor(parent=self, interface=interface).show()
+
+
+enamldef H5PYLoadInterfaceView(Container):
+    """View for the H5PY interface.
+
+    """
+    #: Reference to the interface.
+    attr interface
+
+    #: Reference to the root view.
+    attr root
+
+    CheckBox:
+        text = 'SWMR mode'
+        checked := interface.swmr
+        tool_tip = fill(cleandoc('''Enable if you are trying to
+                                    load an HDF5 that was created
+                                    with SWMR activated.'''))

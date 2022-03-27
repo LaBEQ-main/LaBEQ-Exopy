@@ -1,0 +1,545 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""The manifest contributing the extensions to the main application.
+
+"""
+import os
+
+import enaml
+from enaml.workbench.api import PluginManifest, Extension
+from exopy.app.api import AppStartup
+from exopy.tasks.api import Tasks, Task, Interface
+from exopy.instruments.api import (Starter, Connection, Drivers, Driver,
+                                  Settings)
+
+from .instruments.starters.legacy_starter import (VisaLegacyStarter,
+                                                  DllLegacyStarter)
+
+
+enamldef HqcLegacyManifest(PluginManifest):
+    """The manifest declaring the extension points to the Exopy.
+
+    """
+    id = 'exopy_hqc_legacy'
+
+    Extension:
+        id = 'startup'
+        point = 'exopy.app.startup'
+        AppStartup:
+            id = 'exopy_hqc_legacy.instruments.directories'
+            priority = 50
+            run => (workbench, cmd_args):
+                core = workbench.get_plugin('enaml.workbench.core')
+                state = core.invoke_command('exopy.app.states.get',
+                                            {'state_id': 'exopy.app.directory'})
+
+                h_dir = os.path.join(state.app_directory, 'instruments',
+                                     'connections', 'headers')
+                # Create instruments subfolder if it does not exist.
+                if not os.path.isdir(h_dir):
+                    os.makedirs(h_dir)
+
+                l_dir = os.path.join(state.app_directory, 'instruments',
+                                     'connections', 'dll')
+                # Create instruments subfolder if it does not exist.
+                if not os.path.isdir(l_dir):
+                    os.makedirs(l_dir)
+
+    Extension:
+        id = 'instruments.starters'
+        point = 'exopy.instruments.starters'
+        Starter:
+            id = 'exopy_hqc_legacy.starter.visa'
+            description = ('Starter for legacy instrument relying on the VISA '
+                          'protocol')
+            starter = VisaLegacyStarter()
+
+        Starter:
+            id = 'exopy_hqc_legacy.starter.dll'
+            description = ('Starter for legacy instruments using a custom dll '
+                           'for communication.')
+            starter = DllLegacyStarter()
+
+    Extension:
+        id = 'instruments.connections'
+        point = 'exopy.instruments.connections'
+        Connection:
+            id = 'LegacyDLLConnection'
+            description = ('Connection for instruments communicating via a '
+                           'DLL and identified by their serial number.')
+            new => (workbench, defaults, read_only):
+                with enaml.imports():
+                    from .instruments.connections.dll_serial_number_connection\
+                        import DLLConnection
+                defaults = dict(lib_dir=defaults.get('lib_dir', ''),
+                                serial_number=defaults.get('serial_number',
+                                                           ''),
+                                header_dir=defaults.get('header_dir',''))
+                return DLLConnection(read_only=read_only, declaration=self,
+                                     workbench=workbench, **defaults)
+
+    Extension:
+        id = 'instruments.settings'
+        point = 'exopy.instruments.settings'
+        Settings:
+            id = 'MagnetConversionSetting'
+            description = ('Magnet-dependent field to current ratio that need '
+                           'to be specified for field sources.')
+            new => (workbench, defaults, read_only):
+                with enaml.imports():
+                    from .instruments.settings.magnet_conversion_setting\
+                        import MagnetConversionSetting
+                mc = defaults.get('magnet_conversion', '0.')
+                uid = defaults.get('user_id', '')
+                widget = MagnetConversionSetting(workbench=workbench,
+                                                 user_id=uid,
+                                                 magnet_conversion=mc)
+                widget.read_only = read_only
+                return widget
+
+    Extension:
+        id = 'instruments.drivers'
+        point = 'exopy.instruments.drivers'
+        Drivers:
+            path = 'exopy_hqc_legacy.instruments.drivers'
+            architecture = 'Legacy'
+            Drivers:
+                path = 'visa'
+                starter = 'exopy_hqc_legacy.starter.visa'
+                Drivers:
+                    manufacturer = 'Keysight'
+                    Driver:
+                        driver = 'agilent_multimeters:Agilent34410A'
+                        model = '34410A'
+                        kind = 'Multimeter'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = 'agilent_pna:AgilentPNA'
+                        model = 'PNA'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = 'agilent_psg_signal_generators:AgilentPSG'
+                        serie = 'PSG'
+                        model = 'E8257D'
+                        kind = 'RF source'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Yokogawa'
+                    Driver:
+                        driver = 'yokogawa:YokogawaGS200'
+                        model = 'GS200'
+                        kind = 'DC source'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR',
+                                                   'manufacturer_id': '0xB21',
+                                                   'model_code': '0x39'},
+                                       }
+                    Driver:
+                        driver = 'yokogawa:Yokogawa7651'
+                        model = '7651'
+                        kind = 'DC source'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Keithley'
+                    Driver:
+                        driver = 'keithley_multimeters:Keithley2000'
+                        model = '2000'
+                        kind = 'Multimeter'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Keithley'
+                    Driver:
+                        driver = 'keithley_multimeters:Keithley2400'
+                        model = '2400'
+                        kind = 'Multimeter'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Oxford'
+                    Driver:
+                        driver = 'oxford_ips:IPS12010'
+                        model  = 'IPS120-10'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232': {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Cryomagnetics'
+                    settings = {'MagnetConversionSetting': {}}
+                    Driver:
+                        driver = 'cryomagnetics_cs4:CS4'
+                        model  = 'CS4-10V/100'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232': {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Cryomagnetics'
+                    settings = {'MagnetConversionSetting': {}}
+                    Driver:
+                        driver = 'cryomagnetics_g4:C4G'
+                        model  = '4G-100'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232': {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Tektronix'
+                    Driver:
+                        driver = 'tektro_awg:AWG'
+                        model = 'AWG5014C'
+                        kind = 'AWG'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR',
+                                                     'lan_device_name': 'inst0'}
+                                       }
+                Drivers:
+                    manufacturer = 'Signal recovery'
+                    Driver:
+                        driver = 'lock_in_sr72_series:LockInSR7265'
+                        model = '7265'
+                        kind = 'Lock-in'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = 'lock_in_sr72_series:LockInSR7270'
+                        model = '7270'
+                        kind = 'Lock-in'
+                        connections = {'VisaTCPIP':
+                                           {'port': 50000,
+                                            'resource_class': 'SOCKET'}
+                                       }
+                Drivers:
+                    manufacturer = 'Anritsu'
+                    Driver:
+                        driver = 'anritsu_signal_source:AnritsuMG3694'
+                        model = 'MG3694'
+                        kind = 'RF source'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR',
+                                                     'lan_device_name': 'inst0'},
+                                       'VisaRaw': {}
+                                       }
+
+                Drivers:
+                    manufacturer = 'WindfreakTech'
+                    Driver:
+                        driver = 'windfreaktech_synthHD_signal_generator:SynthHD'
+                        model = 'SynthHD'
+                        kind = 'RF source'
+                        connections = {'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Bilt'
+                    Driver:
+                        driver = 'tinybuilt:TinyBilt'
+                        model = 'BN100'
+                        kind = 'DC source'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Standford instruments'
+                    Driver:
+                        driver = 'lock_in_sr830:LockInSR830'
+                        model = 'SR830'
+                        kind = 'Lock-in'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+
+                Drivers:
+                    manufacturer = 'Rohde and Schwarz'
+                    Driver:
+                        driver = 'rohde_and_schwarz_vna:ZNB20'
+                        model = 'ZNB20'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = 'rohde_and_schwarz_zva24:ZVA24'
+                        model = 'ZVA24'
+                        connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = ('rohde_and_schwarz_signal_generators:'
+                                  'RohdeSchwarzSMB100A')
+                        model = 'SMB100A'
+                        kind = 'RF source'
+                        connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
+                                        }
+                Drivers:
+                    manufacturer = 'Anapico'
+                    Driver:
+                        driver = 'anapico:Anapico'
+                        model = 'APSING20G'
+                        connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+                    Driver:
+                        driver = 'anapico:AnapicoMulti'
+                        model = 'APUASYN20'
+                        connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
+
+            Drivers:
+                path = 'dll'
+                starter = 'exopy_hqc_legacy.starter.dll'
+                connections = {'LegacyDLLConnection': {}}
+                Driver:
+                    driver = 'sp_adq14:SPADQ14'
+                    manufacturer = 'SPDevices'
+                    model = 'ADQ14'
+
+                Driver:
+                    driver = 'alazar935x:Alazar935x'
+                    manufacturer = 'AlazarTech'
+                    model = 'ATS9350'
+
+    Extension:
+        id = 'exopy_hqc_legacy.tasks'
+        point = 'exopy.tasks.declarations'
+        Tasks:
+            path = 'exopy_hqc_legacy.tasks.tasks'
+            Tasks:
+                path = 'util'
+                group = 'util'
+                Task:
+                    task = 'array_tasks:ArrayExtremaTask'
+                    view = 'views.array_views:ArrayExtremaView'
+                Task:
+                    task = 'array_tasks:ArrayFindValueTask'
+                    view = 'views.array_views:ArrayFindValueView'
+                Task:
+                    task = 'load_tasks:LoadArrayTask'
+                    view = 'views.load_views:LoadArrayView'
+                    Interface:
+                        interface = 'load_tasks:CSVLoadInterface'
+                        views = ['views.load_views:CSVLoadInterfaceView']
+                    Interface:
+                        interface = 'load_tasks:H5PYLoadInterface'
+                        views = ['views.load_views:H5PYLoadInterfaceView']
+                Task:
+                    task = 'save_tasks:SaveTask'
+                    view = 'views.save_views:SaveView'
+                Task:
+                    task = 'save_tasks:SaveFileTask'
+                    view = 'views.save_views:SaveFileView'
+                Task:
+                    task = 'save_tasks:SaveFileHDF5Task'
+                    view = 'views.save_views:SaveFileHDF5View'
+                Task:
+                    task = 'save_tasks:SaveArrayTask'
+                    view = 'views.save_views:SaveArrayView'
+
+            Tasks:
+                path = 'instr'
+                group = 'instr'
+                Task:
+                    task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
+                    view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
+                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
+                                   'exopy_hqc_legacy.Legacy.CS4',
+                                   'exopy_hqc_legacy.Legacy.C4G']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'apply_mag_field_task:ApplyMagFieldTask'
+                    view = 'views.apply_mag_field_view:ApplyMagFieldView'
+                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
+                                   'exopy_hqc_legacy.Legacy.CS4',
+                                   'exopy_hqc_legacy.Legacy.C4G']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'meas_mag_field_task:MeasMagFieldTask'
+                    view = 'views.meas_mag_field_view:MeasMagFieldView'
+                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
+                                   'exopy_hqc_legacy.Legacy.CS40',
+                                   'exopy_hqc_legacy.Legacy.C4G']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'lock_in_measure_task:LockInMeasureTask'
+                    view = 'views.lock_in_meas_view:LockInMeasView'
+                    instruments = ['exopy_hqc_legacy.Legacy.LockInSR7265',
+                                   'exopy_hqc_legacy.Legacy.LockInSR830']
+                Task:
+                    task = 'meas_dc_tasks:MeasDCVoltageTask'
+                    view = 'views.meas_dc_views:MeasDCVoltView'
+                    instruments = ['exopy_hqc_legacy.Legacy.Keithley2000',
+                                   'exopy_hqc_legacy.Legacy.Keithley2400',
+                                   'exopy_hqc_legacy.Legacy.Agilent34410A',
+                                   'exopy_hqc_legacy.Legacy.Yokogawa7651',
+                                   'exopy_hqc_legacy.Legacy.YokogawaGS200']
+                Task:
+                    task = 'rf_tasks:SetRFFrequencyTask'
+                    view = 'views.rf_views:RFFrequencyView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
+                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
+                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
+                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
+                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    metadata = {'loopable': True}
+                    Interface:
+                        interface = 'pna_tasks:PNASetRFFrequencyInterface'
+                        views = ['views.pna_task_views:IPNAChannelLabel',
+                                 'views.pna_task_views:IPNAChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
+                                       'exopy_hqc_legacy.Legacy.ZNB20',
+                                       'exopy_hqc_legacy.Legacy.ZVA24']
+                    Interface:
+                        interface = 'synthHD_tasks:SynthHDsetChannelInterface'
+                        views = ['views.synthHD_task_views:ISynthHDChannelLabel',
+                                 'views.synthHD_task_views:ISynthHDChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                    Interface:
+                        interface = 'anapico_tasks:AnapicoSetChannelInterface'
+                        views = ['views.anapico_task_views:IAnapicoChannelLabel',
+                                 'views.anapico_task_views:IAnapicoChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']
+                Task:
+                    task = 'rf_tasks:SetRFPowerTask'
+                    view = 'views.rf_views:RFPowerView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
+                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
+                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
+                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
+                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    metadata = {'loopable': True}
+                    Interface:
+                        interface = 'pna_tasks:PNASetRFPowerInterface'
+                        views = ['views.pna_task_views:IPNAChannelLabel',
+                                 'views.pna_task_views:IPNAChannelValue',
+                                 'views.pna_task_views:IPNAPortLabel',
+                                 'views.pna_task_views:IPNAPortValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
+                                       'exopy_hqc_legacy.Legacy.ZNB20',
+                                       'exopy_hqc_legacy.Legacy.ZVA24']
+                    Interface:
+                        interface = 'synthHD_tasks:SynthHDsetChannelInterface'
+                        views = ['views.synthHD_task_views:ISynthHDChannelLabel',
+                                 'views.synthHD_task_views:ISynthHDChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                    Interface:
+                        interface = 'anapico_tasks:AnapicoSetChannelInterface'
+                        views = ['views.anapico_task_views:IAnapicoChannelLabel',
+                                 'views.anapico_task_views:IAnapicoChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                        
+                Task:
+                    task = 'rf_tasks:SetRFOnOffTask'
+                    view = 'views.rf_views:RFSetOnOffView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
+                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
+                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
+                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
+                                   'exopy_hqc_legacy.Legacy.ZNB20',
+                                   'exopy_hqc_legacy.Legacy.ZVA24',
+                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    metadata = {'loopable': True}
+                    Interface:
+                        interface = 'synthHD_tasks:SynthHDsetChannelInterface'
+                        views = ['views.synthHD_task_views:ISynthHDChannelLabel',
+                                 'views.synthHD_task_views:ISynthHDChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                    Interface:
+                        interface = 'anapico_tasks:AnapicoSetChannelInterface'
+                        views = ['views.anapico_task_views:IAnapicoChannelLabel',
+                                 'views.anapico_task_views:IAnapicoChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                        
+                Task:
+                    task = 'rf_tasks:SetPulseModulationTask'
+                    view = 'views.rf_views:PulseModulationView'
+                    instruments = ['exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
+                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    Interface:
+                        interface = 'anapico_tasks:AnapicoSetChannelInterface'
+                        views = ['views.anapico_task_views:IAnapicoChannelLabel',
+                                 'views.anapico_task_views:IAnapicoChannelValue']
+                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                                   
+                Task:
+                    task = 'pna_tasks:PNASinglePointMeasureTask'
+                    view = 'views.pna_task_views:PNASinglePointView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
+                                   'exopy_hqc_legacy.Legacy.ZNB20',
+                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                Task:
+                    task = 'pna_tasks:PNASweepTask'
+                    view = 'views.pna_task_views:PNASweepMeasView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
+                                   'exopy_hqc_legacy.Legacy.ZNB20',
+                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                Task:
+                    task = 'pna_tasks:PNAGetTraces'
+                    view = 'views.pna_task_views:PNAGetTraceView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
+                                   'exopy_hqc_legacy.Legacy.ZNB20',
+                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                Task:
+                    task = 'pna_tasks:ZNBGetTraces'
+                    view = 'views.pna_task_views:ZNBGetTraceView'
+                    instruments = ['exopy_hqc_legacy.Legacy.ZNB20',
+                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                Task:
+                    task = 'dc_tasks:SetDCVoltageTask'
+                    view = 'views.dc_views:SetDcVoltageView'
+                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200',
+                                   'exopy_hqc_legacy.Legacy.Yokogawa7651']
+                    metadata = {'loopable': True}
+                    Interface:
+                        interface = ('dc_tasks:'
+                                     'MultiChannelVoltageSourceInterface')
+                        views = ['views.dc_views:'
+                                 'MultiChannelVoltageSourceILabelModule',
+								 'views.dc_views:'
+                                 'MultiChannelVoltageSourceIModule',
+                                 'views.dc_views:'
+                                 'MultiChannelVoltageSourceILabel',
+                                 'views.dc_views:'
+                                 'MultiChannelVoltageSourceIChannel']
+                        instruments = ['exopy_hqc_legacy.Legacy.TinyBilt']
+                Task:
+                    task = 'dc_tasks:SetDCCurrentTask'
+                    view = 'views.dc_views:SetDcCurrentView'
+                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'dc_tasks:SetDCFunctionTask'
+                    view = 'views.dc_views:SetDcFunctionView'
+                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'dc_tasks:SetDCOutputTask'
+                    view = 'views.dc_views:SetDcOutputView'
+                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                Task:
+                    task = 'spdev_tasks:DemodSPTask'
+                    view = 'views.spdev_views:DemodSpView'
+                    instruments = ['exopy_hqc_legacy.Legacy.SPADQ14',
+                                   'exopy_hqc_legacy.Legacy.Alazar935x']
+                Task:
+                    task = 'run_awg:RunAWGTask'
+                    view = 'views.run_awg_views:RunAWGView'
+                    instruments = ['exopy_hqc_legacy.Legacy.AWG']

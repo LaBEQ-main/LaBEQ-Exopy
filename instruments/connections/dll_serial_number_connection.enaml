@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Dynamic linking library connection information edition widget.
+
+"""
+import os
+from textwrap import fill
+
+from enaml.widgets.api import Field, Label, ToolButton, FileDialogEx
+from enaml.layout.api import hbox, vbox, grid, align
+from exopy.instruments.api import BaseConnection
+from exopy.app.icons.api import get_icon
+
+
+enamldef DLLConnection(BaseConnection):
+    """Connection for instruments communicating via a DLL and identified by
+    their serial number.
+
+    """
+    #: Reference to the application workbench.
+    attr workbench
+
+    #: Directory of the DLL used to communicate with the instrument.
+    alias lib_dir : lib_val.text
+
+    #: Directory  of the Headers file
+    alias header_dir : header_val.text
+
+    #: Serial number of the instrument with which the connection should be
+    #: established. Specified as text.
+    alias serial_number : sr_val.text
+
+    enabled << not read_only
+    title = self.declaration.id
+
+    gather_infos => ():
+        return {'lib_dir': lib_dir, 'header_dir': header_dir,
+                'serial_number': serial_number}
+
+    constraints = [grid([lib_lab, lib_val, lib_exp],
+                        [header_lab, header_val, header_exp],
+                        [sr_lab, sr_val, sr_val])]
+
+    Label: lib_lab:
+        text = 'Library directory'
+    Field: lib_val:
+        tool_tip = ('If left empty the program will look for it in the usual '
+                    'locations used by your operating system')
+        placeholder = 'automatic detection'
+
+    ToolButton: lib_exp:
+        hug_width = 'strong'
+        icon = get_icon(workbench, 'folder-open')
+        clicked ::
+            filt = ['*.dll', '*.lib', '*.so']
+            path = FileDialogEx.get_open_file_name(name_filters=filt)
+            if path:
+                lib_val.text = os.path.dirname(path)
+
+    Label: header_lab:
+        text = 'Header directory'
+    Field: header_val:
+        tool_tip = ('If left empty the program will look for it in the usual '
+                    'used by your operating system')
+    ToolButton: header_exp:
+        hug_width = 'strong'
+        icon = get_icon(workbench, 'folder-open')
+        text = 'E'
+        clicked ::
+            filt = ['*.h']
+            path = FileDialogEx.get_open_file_name(name_filters=filt)
+            if path:
+                header_val.text = os.path.dirname(path)
+
+    Label: sr_lab:
+        text = 'Instr id'
+    Field: sr_val:
+        tool_tip = fill('This is instrument dependent please refer to the '
+                        'instrument driver. This is generally the instrument '
+                        'serial number.')

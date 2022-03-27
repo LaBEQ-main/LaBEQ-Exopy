@@ -1,0 +1,66 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View mimoicking the old behavior of the instrument task view.
+
+"""
+from exopy.tasks.api import InstrTaskView
+
+
+enamldef InstrView(InstrTaskView):
+    """Automatic selection of interface and insertion of the views based on
+    index.
+
+    """
+    #: List of currently inserted interface widgets.
+    attr i_views = []
+
+    #: Interfaces infos used to instantiate the views.
+    attr _interfaces
+
+    initialized ::
+        interfaces = self.root.get_interfaces_for(self.task)
+
+        if interfaces:
+            self._interfaces = interfaces
+
+            if self.task.interface:
+                self._insert_interface_views(self.task.interface)
+
+            self.task.observe('selected_instrument', self._update_interface)
+
+    func _update_interface(change):
+        """Update the interface when the selected format change.
+
+        """
+        interface = self.task.interface
+        self.select_interface()
+        if self.task.interface is not interface:
+            # Destroy the views associated with the ancient interface.
+            for i_v in self.i_views:
+                i_v.destroy()
+
+        if self.task.interface:
+            self._insert_interface_views(self.task.interface)
+
+    func _insert_interface_views(interface):
+        """Insert the views associated with the selected interface.
+
+        """
+        i_views = self.root.view_for(interface)
+        if i_views:
+            # TODO handle more complex insertions.
+            if hasattr(i_views[0], 'index'):
+                self.insert_children(i_views[0].index, i_views)
+            else:
+                self.insert_children(None, i_views)
+
+            self.i_views = tuple(i_views)
+
+        else:
+            self.i_views = ()

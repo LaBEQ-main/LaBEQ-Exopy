@@ -1,0 +1,115 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View SP card related tasks.
+
+"""
+from inspect import cleandoc
+from textwrap import fill
+
+from enaml.core.api import Conditional, Include
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox,
+                               Container)
+from enaml.layout.api import grid, vbox, hbox, factory
+
+from exopy.tasks.api import EVALUATER_TOOLTIP
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from ...base_instr_view import InstrView
+
+
+enamldef DemodSpView(InstrView): view:
+    """View for the DemodSPTask.
+
+    """
+    constraints = [vbox(
+                    grid([instr_label, traces, after, duration, average, num_loop],
+                         [instr_selection, traces_val, after_val,
+                          duration_val, average_val, num_loop_val]),
+                    hbox(demod1,demod2)),
+                    demod1.width == demod2.width]
+
+    Label: traces:
+        text = 'Number of traces'
+    QtLineCompleter: traces_val:
+        text := task.records_number
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label: after:
+            text = 'Start time after trigger (ns)'
+    QtLineCompleter: after_val:
+        text := task.delay
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = 'Set to 0 when using Alazar \n ' + EVALUATER_TOOLTIP
+
+    Label: duration:
+        text = 'Duration (ns)'
+    QtLineCompleter: duration_val:
+        text := task.duration
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label: average:
+        text = 'Average'
+    ObjectCombo: average_val:
+        items << list(task.get_member('average').items)
+        selected := task.average
+        tool_tip = ("No avg: return raw traces and I, Q pairs\n"
+                    "Avg before demod: average raw traces, then return "
+                    "averaged trace and average I,Q \n"
+                    "Avg after demod: calculate one I,Q per trace, "
+                    "then average.\nThis allows to use a ref Iref, Qref "
+                    "and correct each I,Q pair by the ref, then average.")
+
+    Label: num_loop:
+        text = 'Number of pulse sequences in loop'
+    QtLineCompleter: num_loop_val:
+        text := task.num_loop
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = ('Number of loops in your pulse sequence \n '
+                    'e.g. if you have 10 pulses being played in your pulse \n'
+                    'sequence, and the number of averages is 1000, you need \n'
+                    'to group the acquired data in groups of 10, and average \n'
+                    '1000 times the points taken for the same pulse.\n') + EVALUATER_TOOLTIP
+
+
+    GroupBox: demod1:
+        title = 'Channel 1 demodulation settings'
+        constraints = [vbox(hbox(en1, tr1), hbox(dfreq1, dfreq1_val))]
+        CheckBox: en1:
+            text = 'Enable channel'
+            checked := task.ch1_enabled
+        CheckBox: tr1:
+            text = 'Keep trace'
+            checked := task.ch1_trace
+            enabled << task.ch1_enabled
+        Label: dfreq1:
+            text = 'Demodulation frequency (MHz)'
+        Field: dfreq1_val:
+            text := task.freq_1
+            enabled << task.ch1_enabled
+
+    GroupBox: demod2:
+        title = 'Channel 2 demodulation settings'
+        constraints = [vbox(hbox(en2, ref2, tr2), hbox(dfreq2, dfreq2_val))]
+        CheckBox: en2:
+            text = 'Enable channel'
+            checked := task.ch2_enabled
+        CheckBox: ref2:
+            text = 'Use as ref'
+            checked := task.ref2
+            enabled << (task.ch2_enabled and task.ch1_enabled)
+        CheckBox: tr2:
+            text = 'Keep trace'
+            checked := task.ch2_trace
+            enabled << task.ch2_enabled
+        Label: dfreq2:
+            text = 'Demodulation frequency (MHz)'
+        Field: dfreq2_val:
+            text := task.freq_2
+            enabled << task.ch2_enabled

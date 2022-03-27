@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2020 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Views for the Anapico multi=channel RF source interfaces.
+
+"""
+from enaml.widgets.api import Label
+from enaml.stdlib.fields import IntField
+
+enamldef IAnapicoChannelLabel(Label):
+    """Label for the channel selection.
+
+    """
+    attr interface
+    attr root
+    attr index = 2
+    text = 'Channel'
+
+
+enamldef IAnapicoChannelValue(IntField):
+    """Value for the channel selection.
+
+    """
+    attr interface
+    attr root
+    hug_width = 'strong'
+    value := interface.channel
+

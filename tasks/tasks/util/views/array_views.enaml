@@ -1,0 +1,80 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Views of the tasks operating on numpy.arrays.
+
+"""
+from enaml.layout.api import grid
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, Splitter,
+                               SplitItem, Container)
+
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from exopy.tasks.api import EVALUATER_TOOLTIP, BaseTaskView
+
+enamldef ArrayExtremaView(BaseTaskView): view:
+    """Widget for the array extrema task.
+
+    """
+
+    constraints << [grid([arr_lab, col_lab, mod_lab],
+                         [arr_val, col_val, mod_val]),
+                    arr_val.width == 2*col_val.width]
+
+    Label: arr_lab:
+        text = 'Target array'
+    QtLineCompleter: arr_val:
+        hug_width = 'ignore'
+        text := task.target_array
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+    Label: col_lab:
+        text = 'Column name'
+    Field: col_val:
+        hug_width = 'ignore'
+        text := task.column_name
+
+    Label: mod_lab:
+        text = 'Mode'
+    ObjectCombo: mod_val:
+        items = list(task.get_member('mode').items)
+        selected := task.mode
+
+
+enamldef ArrayFindValueView(BaseTaskView): view:
+    """Widget for the find value in array task.
+
+    """
+
+    Splitter:
+        SplitItem:
+            Container:
+                Label: arr_lab:
+                    text = 'Target array'
+                QtLineCompleter: arr_val:
+                    hug_width = 'ignore'
+                    text := task.target_array
+                    entries_updater << task.list_accessible_database_entries
+                    tool_tip = EVALUATER_TOOLTIP
+
+        SplitItem:
+            Container:
+                Label: col_lab:
+                    text = 'Column name'
+                Field: col_val:
+                    hug_width = 'ignore'
+                    text := task.column_name
+        SplitItem:
+            Container:
+                Label: val_lab:
+                    text = 'Value'
+                QtLineCompleter: val_val:
+                    hug_width = 'ignore'
+                    text := task.value
+                    entries_updater << task.list_accessible_database_entries
+                    tool_tip = EVALUATER_TOOLTIP

@@ -1,0 +1,351 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View of the task used to save data.
+
+"""
+from enaml.layout.api import hbox, align, spacer, vbox, grid
+from enaml.widgets.api import (PushButton, Container, Label, Field, FileDialog,
+                               GroupBox, ObjectCombo, Dialog, MultilineField,
+                               Form, CheckBox)
+from inspect import cleandoc
+from textwrap import fill
+
+from exopy.tasks.api import (EVALUATER_TOOLTIP, FORMATTER_TOOLTIP,
+                            BaseTaskView)
+from exopy.utils.widgets.dict_editor import DictEditor
+from exopy.utils.widgets.qt_completers import QtLineCompleter, QtTextCompleter
+
+
+enamldef HeaderDialog(Dialog): dial:
+    """Dialog used to edit the header to add to the saved file.
+
+    """
+    #: Reference to the task holding the header.
+    attr task
+
+    alias header : field.text
+
+    title = 'Header'
+
+    Container:
+        constraints = [vbox(field,
+                            hbox(spacer, cancel, ok))]
+
+        QtTextCompleter: field:
+            hug_height = 'weak'
+            entries_updater = task.list_accessible_database_entries
+            tool_tip = FORMATTER_TOOLTIP
+        PushButton: cancel:
+            text = 'Cancel'
+            clicked ::
+                dial.reject()
+        PushButton: ok:
+            text = 'Ok'
+            clicked ::
+                dial.accept()
+
+
+enamldef SavedValueView(Container):
+    """View to edit a key/value pair.
+
+    """
+    #: Reference to the key/value pair being edited
+    attr model
+    constraints = [hbox(k, v), 2*k.width <= v.width]
+    padding = 1
+
+    QtLineCompleter: k:
+        text := model.key
+        entries_updater = model.task.list_accessible_database_entries
+        tool_tip = (('The labels are evaluated only once when creating the '
+                     'file.') + FORMATTER_TOOLTIP)
+    QtLineCompleter: v:
+        text := model.value
+        entries_updater = model.task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP
+
+
+ARRAY_SIZE_TOOLTIP = cleandoc('''If left empty the file will be closed at the
+                              end of the measure.\n''') + EVALUATER_TOOLTIP
+
+
+enamldef SaveView(BaseTaskView):
+    """View for the SaveTask.
+
+    """
+    constraints = [vbox(
+                    grid([mode_lab, points_lab],
+                        [mode_val, points_val]),
+                    file_cont, ed)]
+
+    Label: mode_lab:
+        text = 'Save to'
+    ObjectCombo: mode_val:
+        items = list(task.get_member('saving_target').items)
+        selected := task.saving_target
+
+    Label: points_lab:
+        text = 'Points number'
+    QtLineCompleter: points_val:
+        text := task.array_size
+        entries_updater << task.list_accessible_database_entries
+        tool_tip << EVALUATER_TOOLTIP if task.saving_target != 'File'\
+                    else ARRAY_SIZE_TOOLTIP
+
+    Container: file_cont:
+
+        hug_height = 'strong'
+        enabled << bool(task.saving_target != 'Array')
+
+        GroupBox: folder:
+
+            title = 'Directory'
+            constraints = [hbox(path, explore),
+                            align('v_center', path, explore)]
+
+            QtLineCompleter: path:
+                text := task.folder
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: explore:
+                text = 'E'
+                hug_width = 'strong'
+                clicked ::
+                    path = FileDialog(mode = 'directory',
+                                      title = 'Select a default path',
+                                      ).exec_()
+                    if path:
+                        task.folder = path
+
+        GroupBox: file:
+
+            title = 'File'
+            constraints = [hbox(name, mode, header),
+                            align('v_center', name, header)]
+
+            QtLineCompleter: name:
+                text := task.filename
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            ObjectCombo: mode:
+                items = list(task.get_member('file_mode').items)
+                selected := task.file_mode
+            PushButton: header:
+                text = 'Header'
+                hug_width = 'strong'
+                clicked ::
+                    dial = HeaderDialog(header=task.header, task=task)
+                    if dial.exec_():
+                        task.header = dial.header
+
+    DictEditor(SavedValueView): ed:
+        ed.mapping := task.saved_values
+        ed.operations = ('add', 'move', 'remove')
+        ed.attributes = {'task': task}
+
+
+enamldef SaveFileView(BaseTaskView):
+    """View for the save file task.
+
+    """
+    constraints = [vbox(file_cont, ed)]
+
+    Container: file_cont:
+
+        hug_height = 'strong'
+        enabled = True
+
+        GroupBox: folder:
+
+            title = 'Directory'
+            constraints = [hbox(path, explore),
+                            align('v_center', path, explore)]
+
+            QtLineCompleter: path:
+                text := task.folder
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: explore:
+                text = 'E'
+                hug_width = 'strong'
+                clicked ::
+                    path = FileDialog(mode = 'directory',
+                                    title = 'Select a default path',
+                                    ).exec_()
+                    if path:
+                        task.folder = path
+
+        GroupBox: file:
+
+            title = 'File'
+            constraints = [hbox(name, header),
+                            align('v_center', name, header)]
+
+            QtLineCompleter: name:
+                text := task.filename
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: header:
+                text = 'Header'
+                hug_width = 'strong'
+                clicked ::
+                    dial = HeaderDialog(header=task.header, task=task)
+                    if dial.exec_():
+                        task.header = dial.header
+
+    DictEditor(SavedValueView): ed:
+        ed.mapping := task.saved_values
+        ed.operations = ('add', 'move', 'remove')
+        ed.attributes = {'task': task}
+
+
+enamldef SaveFileHDF5View(BaseTaskView):
+    """View for the SaveFileHDF5Task.
+
+    """
+    constraints = [vbox(file_cont, ed)]
+
+    Container: file_cont:
+
+        hug_height = 'strong'
+        enabled = True
+
+        GroupBox: folder:
+
+            title = 'Directory'
+            constraints = [hbox(path, explore),
+                            align('v_center', path, explore)]
+
+            QtLineCompleter: path:
+                text := task.folder
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: explore:
+                text = 'E'
+                hug_width = 'strong'
+                clicked ::
+                    path = FileDialog(mode = 'directory',
+                                    title = 'Select a default path',
+                                    ).exec_()
+                    if path:
+                        task.folder = path
+
+        GroupBox: file:
+
+            title = 'File'
+            constraints = [hbox(name, header,
+                                grid([compression_lab, dtype_lab, swmr_lab, lines_lab],
+                                     [compression_val, dtype_val, swmr_val, lines_val])),
+                            align('v_center', name, header),
+                            align('v_center', dtype_val, swmr_val)]
+
+            QtLineCompleter: name:
+                text := task.filename
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: header:
+                text = 'Header'
+                hug_width = 'strong'
+                clicked ::
+                    dial = HeaderDialog(header=task.header, task=task)
+                    if dial.exec_():
+                        task.header = dial.header
+            Label: compression_lab:
+                text = 'Compression'
+            ObjectCombo: compression_val:
+                items = list(task.get_member('compression').items)
+                selected := task.compression
+                tool_tip = fill(cleandoc('''Applies a GZIP algorithm to the data.
+                                            This is totally transparent for the user.'''))
+            Label: dtype_lab:
+                text = 'Data format'
+            ObjectCombo: dtype_val:
+                items = list(task.get_member('datatype').items)
+                selected := task.datatype
+            Label: swmr_lab:
+                text = 'SWMR mode'
+            CheckBox: swmr_val:
+                checked := task.swmr
+                tool_tip = fill(cleandoc('''Enable if you don't plan on
+                                            using an outdated version of
+                                            HDF5 to read your data.'''))
+            Label: lines_lab:
+                text = 'Approximate number of calls'
+            Field: lines_val:
+                text := task.calls_estimation
+                tool_tip = fill(cleandoc('''Estimate how many times this task will be called
+                                            during the measure. An order of magnitude estimate is
+                                            enough (one or one thousand ?). This helps h5py
+                                            to figure out an appropriate chunk size.'''))
+
+    DictEditor(SavedValueView): ed:
+        ed.mapping := task.saved_values
+        ed.operations = ('add', 'move', 'remove')
+        ed.attributes = {'task': task}
+
+
+enamldef SaveArrayView(BaseTaskView):
+    """View for the save array task.
+
+    """
+    constraints = [vbox(folder, file,
+                        grid([mode_lab, arr_lab],
+                             [mode_val, arr_val]))]
+    GroupBox: folder:
+
+        title = 'Folder'
+        hug_height = 'strong'
+        constraints = [hbox(path, explore),
+                        align('v_center', path, explore)]
+
+        QtLineCompleter: path:
+            text := task.folder
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = FORMATTER_TOOLTIP
+        PushButton: explore:
+            text = 'E'
+            hug_width = 'strong'
+            clicked ::
+                path = FileDialog(mode = 'directory',
+                                title = 'Select a default path',
+                                ).exec_()
+                if path:
+                    task.folder = path
+
+    GroupBox: file:
+
+        title = 'File'
+        hug_height = 'strong'
+        constraints = [hbox(name, header),
+                        align('v_center', name, header)]
+
+        QtLineCompleter: name:
+            text := task.filename
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = FORMATTER_TOOLTIP
+        PushButton: header:
+            text = 'Header'
+            hug_width = 'strong'
+            clicked ::
+                dial = HeaderDialog(header=task.header, task=task)
+                if dial.exec_():
+                    task.header = dial.header
+
+    Label: mode_lab:
+        text = 'Mode'
+    ObjectCombo: mode_val:
+        items = list(task.get_member('mode').items)
+        selected := task.mode
+    Label: arr_lab:
+        text = 'Target array'
+    QtLineCompleter: arr_val:
+        hug_width = 'ignore'
+        text := task.target_array
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = EVALUATER_TOOLTIP

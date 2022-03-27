@@ -1,0 +1,195 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Views for the DC sources related tasks.
+
+"""
+from textwrap import fill
+
+from enaml.core.api import Conditional
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox)
+from enaml.stdlib.fields import FloatField, IntField
+from enaml.layout.api import factory
+from exopy.tasks.api import InstrTaskView, EVALUATER_TOOLTIP
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+enamldef SetDcVoltageView(InstrView): view:
+    """View for the SetDCVoltageTask.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout),
+                   (step.width == step_val.width) | 'weak',
+                   (step_val.width == safe_val.width),
+                   (step_val.width == delta_val.width),
+                   (step_val.width == delay_val.width)]
+
+    Conditional:
+        condition = not in_loop
+        Label:
+            text = 'Voltage (V)'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_value
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+    Label: step:
+        text = 'Back step (V)'
+    FloatField: step_val:
+        resist_width = 'ignore'
+        value := task.back_step
+
+    Label: safe:
+        text = 'Safe max (V)'
+    FloatField: safe_val:
+        resist_width = 'ignore'
+        value := task.safe_max
+
+    Label: delta:
+        text = 'Safe Delta (V)'
+    FloatField: delta_val:
+        resist_width = 'ignore'
+        value := task.safe_delta
+        tool_tip = fill("Largest allowed voltage difference between the "
+                        "current output and the target output. A value of "
+                        "0 means that there is no maximum difference.")
+
+    Label: delay:
+        text = 'Delay (s)'
+    FloatField: delay_val:
+        resist_width = 'ignore'
+        value := task.delay
+
+
+enamldef MultiChannelVoltageSourceILabel(Label):
+    """Label for the multi channel interface.
+
+    """
+    attr interface
+    attr root
+    text = 'Channel'
+
+
+enamldef MultiChannelVoltageSourceIChannel(IntField):
+    """Value for the multi channel interface.
+
+    """
+    attr interface
+    attr root
+    hug_width = 'medium'
+    value << interface.channel[1]
+    value ::
+        interface.channel = (interface.channel[0], change['value'])
+	
+
+enamldef MultiChannelVoltageSourceILabelModule(Label):
+    """Label for the multi channel interface.
+
+    """
+    attr interface
+    attr root
+    attr index = 2
+    text = 'Module'
+
+
+enamldef MultiChannelVoltageSourceIModule(IntField):
+    """Value for the multi channel interface.
+
+    """
+    attr interface
+    attr root
+    hug_width = 'medium'
+    value << interface.channel[0]
+    value ::
+        interface.channel = (change['value'], interface.channel[1])
+
+
+enamldef SetDcCurrentView(InstrView): view:
+    """View for the SetDCCurrentTask.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout),
+                   (step.width == step_val.width) | 'weak',
+                   (step_val.width == safe_val.width),
+                   (step_val.width == delay_val.width)]
+
+    Conditional:
+        condition = not in_loop
+        Label:
+            text = 'Current (A)'
+        QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_value
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+    Label: step:
+        text = 'Back step (A)'
+    FloatField: step_val:
+        resist_width = 'ignore'
+        value := task.back_step
+
+    Label: safe:
+        text = 'Safe max (A)'
+    FloatField: safe_val:
+        resist_width = 'ignore'
+        value := task.safe_max
+
+    Label: delay:
+        text = 'Delay (s)'
+    FloatField: delay_val:
+        resist_width = 'ignore'
+        value := task.delay
+
+enamldef SetDcFunctionView(InstrView): view:
+    """View for the SetDCFunctionTask.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout)]
+
+    Conditional:
+        condition << not in_loop
+        Label:
+            text = 'function mode'
+        ObjectCombo:
+            items << list(['VOLT','CURR'])
+            selected := task.switch
+
+enamldef SetDcOutputView(InstrView): view:
+    """View for the SetDCOutputTask.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout)]
+
+    Conditional:
+        condition << not in_loop
+        Label:
+            text = 'output'
+        ObjectCombo:
+            items << list(['ON','OFF'])
+            selected := task.switch
