@@ -170,6 +170,16 @@ enamldef HqcLegacyManifest(PluginManifest):
                 Drivers:
                     manufacturer = 'Keithley'
                     Driver:
+                        driver = 'keithley_multimeters:Keithley2001'
+                        model = '2001'
+                        kind = 'Multimeter'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
+                Drivers:
+                    manufacturer = 'Keithley'
+                    Driver:
                         driver = 'keithley_multimeters:Keithley2400'
                         model = '2400'
                         kind = 'Multimeter'
@@ -394,6 +404,10 @@ enamldef HqcLegacyManifest(PluginManifest):
                                    'exopy_hqc_legacy.Legacy.Agilent34410A',
                                    'exopy_hqc_legacy.Legacy.Yokogawa7651',
                                    'exopy_hqc_legacy.Legacy.YokogawaGS200']
+                Task:
+                    task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
+                    view = 'views.meas_dccurrent_views:MeasDCCurrentView'
+                    instruments = ['exopy_hqc_legacy.Legacy.Keithley2001']
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'
                     view = 'views.rf_views:RFFrequencyView'
