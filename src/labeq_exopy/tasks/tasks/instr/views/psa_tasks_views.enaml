@@ -17,7 +17,7 @@ from enaml.layout.api import factory
 
 from exopy.tasks.api import InstrView, EVALUATER_TOOLTIP
 from exopy.utils.widgets.qt_completers import QtLineCompleter
-from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from labeq_exopy.utils.layouts import auto_grid_layout
 from ..base_instr_view import InstrView
 
 # XXX unfinished

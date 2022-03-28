@@ -18,7 +18,7 @@ from enaml.layout.api import factory
 from exopy.tasks.api import InstrTaskView, EVALUATER_TOOLTIP
 from exopy.utils.widgets.qt_completers import QtLineCompleter
 
-from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 
 
@@ -93,7 +93,7 @@ enamldef MultiChannelVoltageSourceIChannel(IntField):
     value << interface.channel[1]
     value ::
         interface.channel = (interface.channel[0], change['value'])
-	
+
 
 enamldef MultiChannelVoltageSourceILabelModule(Label):
     """Label for the multi channel interface.

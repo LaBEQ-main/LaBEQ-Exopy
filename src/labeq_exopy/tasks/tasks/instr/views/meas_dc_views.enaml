@@ -15,7 +15,7 @@ from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
 from enaml.stdlib.fields import FloatField
 from enaml.layout.api import factory
 
-from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 
 

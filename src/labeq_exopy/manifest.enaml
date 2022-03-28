@@ -22,17 +22,17 @@ from .instruments.starters.legacy_starter import (VisaLegacyStarter,
                                                   DllLegacyStarter)
 
 
-enamldef HqcLegacyManifest(PluginManifest):
+enamldef LaBEQManifest(PluginManifest):
     """The manifest declaring the extension points to the Exopy.
 
     """
-    id = 'exopy_hqc_legacy'
+    id = 'labeq_exopy'
 
     Extension:
         id = 'startup'
         point = 'exopy.app.startup'
         AppStartup:
-            id = 'exopy_hqc_legacy.instruments.directories'
+            id = 'labeq_exopy.instruments.directories'
             priority = 50
             run => (workbench, cmd_args):
                 core = workbench.get_plugin('enaml.workbench.core')
@@ -55,13 +55,13 @@ enamldef HqcLegacyManifest(PluginManifest):
         id = 'instruments.starters'
         point = 'exopy.instruments.starters'
         Starter:
-            id = 'exopy_hqc_legacy.starter.visa'
+            id = 'labeq_exopy.starter.visa'
             description = ('Starter for legacy instrument relying on the VISA '
                           'protocol')
             starter = VisaLegacyStarter()
 
         Starter:
-            id = 'exopy_hqc_legacy.starter.dll'
+            id = 'labeq_exopy.starter.dll'
             description = ('Starter for legacy instruments using a custom dll '
                            'for communication.')
             starter = DllLegacyStarter()
@@ -107,11 +107,11 @@ enamldef HqcLegacyManifest(PluginManifest):
         id = 'instruments.drivers'
         point = 'exopy.instruments.drivers'
         Drivers:
-            path = 'exopy_hqc_legacy.instruments.drivers'
+            path = 'labeq_exopy.instruments.drivers'
             architecture = 'Legacy'
             Drivers:
                 path = 'visa'
-                starter = 'exopy_hqc_legacy.starter.visa'
+                starter = 'labeq_exopy.starter.visa'
                 Drivers:
                     manufacturer = 'Keysight'
                     Driver:
@@ -319,7 +319,7 @@ enamldef HqcLegacyManifest(PluginManifest):
 
             Drivers:
                 path = 'dll'
-                starter = 'exopy_hqc_legacy.starter.dll'
+                starter = 'labeq_exopy.starter.dll'
                 connections = {'LegacyDLLConnection': {}}
                 Driver:
                     driver = 'sp_adq14:SPADQ14'
@@ -332,10 +332,10 @@ enamldef HqcLegacyManifest(PluginManifest):
                     model = 'ATS9350'
 
     Extension:
-        id = 'exopy_hqc_legacy.tasks'
+        id = 'labeq_exopy.tasks'
         point = 'exopy.tasks.declarations'
         Tasks:
-            path = 'exopy_hqc_legacy.tasks.tasks'
+            path = 'labeq_exopy.tasks.tasks'
             Tasks:
                 path = 'util'
                 group = 'util'
@@ -373,75 +373,75 @@ enamldef HqcLegacyManifest(PluginManifest):
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
-                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
-                                   'exopy_hqc_legacy.Legacy.CS4',
-                                   'exopy_hqc_legacy.Legacy.C4G']
+                    instruments = ['labeq_exopy.Legacy.IPS12010',
+                                   'labeq_exopy.Legacy.CS4',
+                                   'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldView'
-                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
-                                   'exopy_hqc_legacy.Legacy.CS4',
-                                   'exopy_hqc_legacy.Legacy.C4G']
+                    instruments = ['labeq_exopy.Legacy.IPS12010',
+                                   'labeq_exopy.Legacy.CS4',
+                                   'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
                     task = 'meas_mag_field_task:MeasMagFieldTask'
                     view = 'views.meas_mag_field_view:MeasMagFieldView'
-                    instruments = ['exopy_hqc_legacy.Legacy.IPS12010',
-                                   'exopy_hqc_legacy.Legacy.CS40',
-                                   'exopy_hqc_legacy.Legacy.C4G']
+                    instruments = ['labeq_exopy.Legacy.IPS12010',
+                                   'labeq_exopy.Legacy.CS40',
+                                   'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'
-                    instruments = ['exopy_hqc_legacy.Legacy.LockInSR7265',
-                                   'exopy_hqc_legacy.Legacy.LockInSR830']
+                    instruments = ['labeq_exopy.Legacy.LockInSR7265',
+                                   'labeq_exopy.Legacy.LockInSR830']
                 Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
-                    instruments = ['exopy_hqc_legacy.Legacy.Keithley2000',
-                                   'exopy_hqc_legacy.Legacy.Keithley2400',
-                                   'exopy_hqc_legacy.Legacy.Agilent34410A',
-                                   'exopy_hqc_legacy.Legacy.Yokogawa7651',
-                                   'exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    instruments = ['labeq_exopy.Legacy.Keithley2000',
+                                   'labeq_exopy.Legacy.Keithley2400',
+                                   'labeq_exopy.Legacy.Agilent34410A',
+                                   'labeq_exopy.Legacy.Yokogawa7651',
+                                   'labeq_exopy.Legacy.YokogawaGS200']
                 Task:
                     task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
                     view = 'views.meas_dccurrent_views:MeasDCCurrentView'
-                    instruments = ['exopy_hqc_legacy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'
                     view = 'views.rf_views:RFFrequencyView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
-                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
-                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
-                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
-                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    instruments = ['labeq_exopy.Legacy.AgilentPSG',
+                                   'labeq_exopy.Legacy.AnritsuMG3694',
+                                   'labeq_exopy.Legacy.LabBrickLMS103',
+                                   'labeq_exopy.Legacy.RohdeSchwarzSMB100A',
+                                   'labeq_exopy.Legacy.Anapico']
                     metadata = {'loopable': True}
                     Interface:
                         interface = 'pna_tasks:PNASetRFFrequencyInterface'
                         views = ['views.pna_task_views:IPNAChannelLabel',
                                  'views.pna_task_views:IPNAChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
-                                       'exopy_hqc_legacy.Legacy.ZNB20',
-                                       'exopy_hqc_legacy.Legacy.ZVA24']
+                        instruments = ['labeq_exopy.Legacy.AgilentPNA',
+                                       'labeq_exopy.Legacy.ZNB20',
+                                       'labeq_exopy.Legacy.ZVA24']
                     Interface:
                         interface = 'synthHD_tasks:SynthHDsetChannelInterface'
                         views = ['views.synthHD_task_views:ISynthHDChannelLabel',
                                  'views.synthHD_task_views:ISynthHDChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                        instruments = ['labeq_exopy.Legacy.SynthHD']
                     Interface:
                         interface = 'anapico_tasks:AnapicoSetChannelInterface'
                         views = ['views.anapico_task_views:IAnapicoChannelLabel',
                                  'views.anapico_task_views:IAnapicoChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']
+                        instruments = ['labeq_exopy.Legacy.AnapicoMulti']
                 Task:
                     task = 'rf_tasks:SetRFPowerTask'
                     view = 'views.rf_views:RFPowerView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
-                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
-                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
-                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
-                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    instruments = ['labeq_exopy.Legacy.AgilentPSG',
+                                   'labeq_exopy.Legacy.AnritsuMG3694',
+                                   'labeq_exopy.Legacy.LabBrickLMS103',
+                                   'labeq_exopy.Legacy.RohdeSchwarzSMB100A',
+                                   'labeq_exopy.Legacy.Anapico']
                     metadata = {'loopable': True}
                     Interface:
                         interface = 'pna_tasks:PNASetRFPowerInterface'
@@ -449,78 +449,78 @@ enamldef HqcLegacyManifest(PluginManifest):
                                  'views.pna_task_views:IPNAChannelValue',
                                  'views.pna_task_views:IPNAPortLabel',
                                  'views.pna_task_views:IPNAPortValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
-                                       'exopy_hqc_legacy.Legacy.ZNB20',
-                                       'exopy_hqc_legacy.Legacy.ZVA24']
+                        instruments = ['labeq_exopy.Legacy.AgilentPNA',
+                                       'labeq_exopy.Legacy.ZNB20',
+                                       'labeq_exopy.Legacy.ZVA24']
                     Interface:
                         interface = 'synthHD_tasks:SynthHDsetChannelInterface'
                         views = ['views.synthHD_task_views:ISynthHDChannelLabel',
                                  'views.synthHD_task_views:ISynthHDChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                        instruments = ['labeq_exopy.Legacy.SynthHD']
                     Interface:
                         interface = 'anapico_tasks:AnapicoSetChannelInterface'
                         views = ['views.anapico_task_views:IAnapicoChannelLabel',
                                  'views.anapico_task_views:IAnapicoChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                        
+                        instruments = ['labeq_exopy.Legacy.AnapicoMulti']
                 Task:
                     task = 'rf_tasks:SetRFOnOffTask'
                     view = 'views.rf_views:RFSetOnOffView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPSG',
-                                   'exopy_hqc_legacy.Legacy.AnritsuMG3694',
-                                   'exopy_hqc_legacy.Legacy.LabBrickLMS103',
-                                   'exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
-                                   'exopy_hqc_legacy.Legacy.ZNB20',
-                                   'exopy_hqc_legacy.Legacy.ZVA24',
-                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    instruments = ['labeq_exopy.Legacy.AgilentPSG',
+                                   'labeq_exopy.Legacy.AnritsuMG3694',
+                                   'labeq_exopy.Legacy.LabBrickLMS103',
+                                   'labeq_exopy.Legacy.RohdeSchwarzSMB100A',
+                                   'labeq_exopy.Legacy.ZNB20',
+                                   'labeq_exopy.Legacy.ZVA24',
+                                   'labeq_exopy.Legacy.Anapico']
                     metadata = {'loopable': True}
                     Interface:
                         interface = 'synthHD_tasks:SynthHDsetChannelInterface'
                         views = ['views.synthHD_task_views:ISynthHDChannelLabel',
                                  'views.synthHD_task_views:ISynthHDChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.SynthHD']
+                        instruments = ['labeq_exopy.Legacy.SynthHD']
                     Interface:
                         interface = 'anapico_tasks:AnapicoSetChannelInterface'
                         views = ['views.anapico_task_views:IAnapicoChannelLabel',
                                  'views.anapico_task_views:IAnapicoChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                        
+                        instruments = ['labeq_exopy.Legacy.AnapicoMulti']
                 Task:
                     task = 'rf_tasks:SetPulseModulationTask'
                     view = 'views.rf_views:PulseModulationView'
-                    instruments = ['exopy_hqc_legacy.Legacy.RohdeSchwarzSMB100A',
-                                   'exopy_hqc_legacy.Legacy.Anapico']
+                    instruments = ['labeq_exopy.Legacy.RohdeSchwarzSMB100A',
+                                   'labeq_exopy.Legacy.Anapico']
                     Interface:
                         interface = 'anapico_tasks:AnapicoSetChannelInterface'
                         views = ['views.anapico_task_views:IAnapicoChannelLabel',
                                  'views.anapico_task_views:IAnapicoChannelValue']
-                        instruments = ['exopy_hqc_legacy.Legacy.AnapicoMulti']                                   
+                        instruments = ['labeq_exopy.Legacy.AnapicoMulti']
                 Task:
                     task = 'pna_tasks:PNASinglePointMeasureTask'
                     view = 'views.pna_task_views:PNASinglePointView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
-                                   'exopy_hqc_legacy.Legacy.ZNB20',
-                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                    instruments = ['labeq_exopy.Legacy.AgilentPNA',
+                                   'labeq_exopy.Legacy.ZNB20',
+                                   'labeq_exopy.Legacy.ZVA24']
                 Task:
                     task = 'pna_tasks:PNASweepTask'
                     view = 'views.pna_task_views:PNASweepMeasView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
-                                   'exopy_hqc_legacy.Legacy.ZNB20',
-                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                    instruments = ['labeq_exopy.Legacy.AgilentPNA',
+                                   'labeq_exopy.Legacy.ZNB20',
+                                   'labeq_exopy.Legacy.ZVA24']
                 Task:
                     task = 'pna_tasks:PNAGetTraces'
                     view = 'views.pna_task_views:PNAGetTraceView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AgilentPNA',
-                                   'exopy_hqc_legacy.Legacy.ZNB20',
-                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                    instruments = ['labeq_exopy.Legacy.AgilentPNA',
+                                   'labeq_exopy.Legacy.ZNB20',
+                                   'labeq_exopy.Legacy.ZVA24']
                 Task:
                     task = 'pna_tasks:ZNBGetTraces'
                     view = 'views.pna_task_views:ZNBGetTraceView'
-                    instruments = ['exopy_hqc_legacy.Legacy.ZNB20',
-                                   'exopy_hqc_legacy.Legacy.ZVA24']
+                    instruments = ['labeq_exopy.Legacy.ZNB20',
+                                   'labeq_exopy.Legacy.ZVA24']
                 Task:
                     task = 'dc_tasks:SetDCVoltageTask'
                     view = 'views.dc_views:SetDcVoltageView'
-                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200',
-                                   'exopy_hqc_legacy.Legacy.Yokogawa7651']
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200',
+                                   'labeq_exopy.Legacy.Yokogawa7651']
                     metadata = {'loopable': True}
                     Interface:
                         interface = ('dc_tasks:'
@@ -533,27 +533,27 @@ enamldef HqcLegacyManifest(PluginManifest):
                                  'MultiChannelVoltageSourceILabel',
                                  'views.dc_views:'
                                  'MultiChannelVoltageSourceIChannel']
-                        instruments = ['exopy_hqc_legacy.Legacy.TinyBilt']
+                        instruments = ['labeq_exopy.Legacy.TinyBilt']
                 Task:
                     task = 'dc_tasks:SetDCCurrentTask'
                     view = 'views.dc_views:SetDcCurrentView'
-                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'dc_tasks:SetDCFunctionTask'
                     view = 'views.dc_views:SetDcFunctionView'
-                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'dc_tasks:SetDCOutputTask'
                     view = 'views.dc_views:SetDcOutputView'
-                    instruments = ['exopy_hqc_legacy.Legacy.YokogawaGS200']
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                 Task:
                     task = 'spdev_tasks:DemodSPTask'
                     view = 'views.spdev_views:DemodSpView'
-                    instruments = ['exopy_hqc_legacy.Legacy.SPADQ14',
-                                   'exopy_hqc_legacy.Legacy.Alazar935x']
+                    instruments = ['labeq_exopy.Legacy.SPADQ14',
+                                   'labeq_exopy.Legacy.Alazar935x']
                 Task:
                     task = 'run_awg:RunAWGTask'
                     view = 'views.run_awg_views:RunAWGView'
-                    instruments = ['exopy_hqc_legacy.Legacy.AWG']
+                    instruments = ['labeq_exopy.Legacy.AWG']

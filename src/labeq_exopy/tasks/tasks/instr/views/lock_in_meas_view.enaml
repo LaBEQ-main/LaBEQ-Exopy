@@ -6,7 +6,7 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""View for the MeasMagFieldTask.
+"""View for the LockInMeasTask.
 
 """
 from textwrap import fill
@@ -15,19 +15,27 @@ from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
 from enaml.stdlib.fields import FloatField
 from enaml.layout.api import factory
 
-from exopy_hqc_legacy.utils.layouts import auto_grid_layout
+from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 
 
-enamldef MeasMagFieldView(InstrView): view:
-    """View for the MeasMagFieldTask.
+enamldef LockInMeasView(InstrView): view:
+    """View for the LockInMeasTask
 
     """
     constraints = [factory(auto_grid_layout)]
 
     Label:
+        text = 'Mode'
+    ObjectCombo:
+        items << list(task.get_member('mode').items)
+        selected := task.mode
+
+    Label:
+        hug_width = 'ignore'
         text = 'Wait (s)'
     FloatField:
-        value := task.wait_time
-        tool_tip = fill("Time to wait before querying values from the "
-                        "field source.", 60)
+        hug_width = 'ignore'
+        value := task.waiting_time
+        tool_tip = fill('Time to wait before querying values from the lock-in',
+                        60)
