@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for the LockInMeasTask.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+enamldef LockInMeasView(InstrView): view:
+    """View for the LockInMeasTask
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Mode'
+    ObjectCombo:
+        items << list(task.get_member('mode').items)
+        selected := task.mode
+
+    Label:
+        hug_width = 'ignore'
+        text = 'Wait (s)'
+    FloatField:
+        hug_width = 'ignore'
+        value := task.waiting_time
+        tool_tip = fill('Time to wait before querying values from the lock-in',
+                        60)

@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for the ApplyMagFieldTask.
+
+"""
+from textwrap import fill
+
+from enaml.layout.api import factory
+from enaml.core.api import Conditional
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox)
+from enaml.stdlib.fields import FloatField
+
+from exopy.tasks.api import EVALUATER_TOOLTIP
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+enamldef ApplyMagFieldView(InstrView): view:
+    """View for the ApplyMagFieldTask.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout)]
+
+    Conditional:
+        condition = not in_loop
+        Label:  field_lab:
+            text = 'Target field'
+        QtLineCompleter: field_val:
+            hug_width = 'ignore'
+            text := task.field
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+    Label: rate_lab:
+        text = 'Rate (T/min)'
+    FloatField: rate_val:
+        hug_width = 'strong'
+        value := task.rate
+
+    Label: auto_lab:
+        text = 'Auto stop heater'
+    CheckBox: auto_val:
+        checked := task.auto_stop_heater
+        tool_tip = fill('Check to enable the automatic switch off '
+                        'of the switch heater after each new value',60)
+
+    Conditional:
+        condition << task.auto_stop_heater
+        Label:
+            text = 'Post heater wait'
+        FloatField:
+            hug_width = 'strong'
+            value := task.post_switch_wait
+            tool_tip = fill('Time to wait after closing the switch heater '
+                            'before bringing the field to zero',60)
+
+
+enamldef ApplyMagFieldAndDropView(InstrView): view:
+    """View for the ApplyMagFieldAndDropView.
+
+    """
+    #: Attribute set by the parent view if the task is embedded inside a
+    #: LoopTask
+    attr in_loop : bool = False
+
+    constraints = [factory(auto_grid_layout)]
+
+    Conditional:
+        condition = not in_loop
+        Label:  field_lab:
+            text = 'Target field'
+        QtLineCompleter: field_val:
+            hug_width = 'ignore'
+            text := task.field
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = EVALUATER_TOOLTIP
+
+    Label: rate_lab:
+        text = 'Rate (T/min)'
+    FloatField: rate_val:
+        hug_width = 'strong'
+        value := task.rate
