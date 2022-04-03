@@ -19,7 +19,7 @@ from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 
 
-enamldef MeasDCVoltView(InstrView): view:
+enamldef SimpleMeasVi(InstrView): view:
 
     constraints = [factory(auto_grid_layout)]
 
