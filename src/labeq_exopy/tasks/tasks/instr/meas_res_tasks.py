@@ -16,7 +16,7 @@ from atom.api import Float, set_default
 from exopy.tasks.api import InstrumentTask
 
 
-class MeasResTask(InstrumentTask):
+class MeasResistanceTask(InstrumentTask):
     """Measure a resistance.
 
     Wait for any parallel operation before execution and then wait the

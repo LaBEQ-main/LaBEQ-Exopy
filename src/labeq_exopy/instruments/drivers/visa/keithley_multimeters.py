@@ -312,7 +312,13 @@ class Keithley2001(VisaInstrument):
         if self.function != 'RES':
             self.function = 'RES'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+
+        #split string into list to get current measurement
+        value = value.split(",")[0]
+
+        #remove "NADC" string from measurement so we can cast to a float
+        value = value.replace("NOHM","")
         if value:
             return float(value)
         else:

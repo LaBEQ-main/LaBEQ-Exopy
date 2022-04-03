@@ -409,7 +409,7 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
-                    task = 'meas_res_tasks:MeasResTask'
+                    task = 'meas_res_tasks:MeasResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
