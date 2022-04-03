@@ -319,6 +319,7 @@ class Keithley2001(VisaInstrument):
 
         #remove "NADC" string from measurement so we can cast to a float
         value = value.replace("NOHM","")
+        
         if value:
             return float(value)
         else:
