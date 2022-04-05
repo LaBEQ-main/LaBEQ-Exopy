@@ -1,6 +1,9 @@
 LaBEQ-Exopy: LaBEQ extension package for Exopy
 ==============================================
 
+Purpose
+----------
+Extends Exopy to support the development of an instrument control interface for our WIP Quantum Transport Lab at Clemson University
 
 Installing
 ----------
