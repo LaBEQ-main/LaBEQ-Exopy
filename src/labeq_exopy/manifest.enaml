@@ -406,6 +406,10 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.Yokogawa7651',
                                    'labeq_exopy.Legacy.YokogawaGS200']
                 Task:
+                    task = 'meas_acvoltage_tasks:MeasACVoltageTask'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                Task:
                     task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
