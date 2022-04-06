@@ -26,7 +26,7 @@ class MeasDCVoltageTask(InstrumentTask):
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
 
-    database_entries = set_default({'voltage': 1.0})
+    database_entries = set_default({'voltageDC': 1.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 

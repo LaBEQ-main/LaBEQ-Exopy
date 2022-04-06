@@ -273,7 +273,14 @@ class Keithley2001(VisaInstrument):
         if self.function != 'VOLT:DC':
             self.function = 'VOLT:DC'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+
+        #split string into list to get voltage measurement
+        value = value.split(",")[0]
+
+        #remove "NVDC" string from measurement so we can cast to a float
+        value = value.replace("NVDC","")
+
         if value:
             return float(value)
         else:
@@ -293,6 +300,7 @@ class Keithley2001(VisaInstrument):
             self.function = 'VOLT:AC'
 
         value = self.query('FETCh?')
+        
         if value:
             return float(value)
         else:

@@ -400,6 +400,7 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
                     instruments = ['labeq_exopy.Legacy.Keithley2000',
+                                    'labeq_exopy.Legacy.Keithley2001',
                                    'labeq_exopy.Legacy.Keithley2400',
                                    'labeq_exopy.Legacy.Agilent34410A',
                                    'labeq_exopy.Legacy.Yokogawa7651',
