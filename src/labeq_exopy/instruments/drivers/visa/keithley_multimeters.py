@@ -299,9 +299,9 @@ class Keithley2001(VisaInstrument):
             raise InstrIOError('Keithley2001: AC voltage measure failed')
 
     @secure_communication()
-    def read_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+    def read_two_resistance(self, mes_range='DEF', mes_resolution='DEF'):
         """
-        Return the resistance read by the instrument.
+        Return the two wire resistance read by the instrument.
 
         Perform a direct reading without any waiting. Can return identical
         values if the instrument is read more often than its integration time.
