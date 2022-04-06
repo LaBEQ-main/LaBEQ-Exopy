@@ -407,7 +407,12 @@ class Keithley2001(VisaInstrument):
         if self.function != 'CURR:AC':
             self.function = 'CURR:AC'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+        #split string into list to get current measurement
+        value = value.split(",")[0]
+
+        #remove "NAAC" string from measurement so we can cast to a float
+        value = value.replace("NAAC","")
         if value:
             return float(value)
         else:
