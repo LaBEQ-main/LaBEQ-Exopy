@@ -331,7 +331,7 @@ class Keithley2001(VisaInstrument):
         #split string into list to get current measurement
         value = value.split(",")[0]
 
-        #remove "NADC" string from measurement so we can cast to a float
+        #remove "NOHM" string from measurement so we can cast to a float
         value = value.replace("NOHM","")
         
         if value:
@@ -358,7 +358,7 @@ class Keithley2001(VisaInstrument):
         #split string into list to get current measurement
         value = value.split(",")[0]
 
-        #remove "NADC" string from measurement so we can cast to a float
+        #remove "NOHM4W" string from measurement so we can cast to a float
         value = value.replace("NOHM4W","")
         
         if value:
@@ -408,6 +408,7 @@ class Keithley2001(VisaInstrument):
             self.function = 'CURR:AC'
 
         value = self.query('MEAS?')
+        
         #split string into list to get current measurement
         value = value.split(",")[0]
 
