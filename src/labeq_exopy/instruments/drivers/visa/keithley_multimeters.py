@@ -326,6 +326,33 @@ class Keithley2001(VisaInstrument):
             raise InstrIOError('Keithley2001: Resistance measure failed')
 
     @secure_communication()
+    def read_four_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Return the four wire resistance read by the instrument.
+
+        Perform a direct reading without any waiting. Can return identical
+        values if the instrument is read more often than its integration time.
+        The arguments are unused and here only to make this driver and the
+        agilent driver compatible.
+
+        """
+        if self.function != 'FRES':
+            self.function = 'FRES'
+
+        value = self.query('MEAS?')
+
+        #split string into list to get current measurement
+        value = value.split(",")[0]
+
+        #remove "NADC" string from measurement so we can cast to a float
+        value = value.replace("NOHM4W","")
+        
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('Keithley2001: Four Wire Resistance measure failed')
+
+    @secure_communication()
     def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
         """Return the DC current read by the instrument.
 
