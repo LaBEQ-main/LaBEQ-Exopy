@@ -413,6 +413,10 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
+                    task = 'meas_four_res_tasks:MeasFourResistanceTask'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                Task:
                     task = 'rf_tasks:SetRFFrequencyTask'
                     view = 'views.rf_views:RFFrequencyView'
                     instruments = ['labeq_exopy.Legacy.AgilentPSG',
