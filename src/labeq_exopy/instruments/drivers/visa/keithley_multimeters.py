@@ -539,9 +539,9 @@ class Keithley2400(VisaInstrument):
             raise InstrIOError('Keithley2000: AC voltage measure failed')
 
     @secure_communication()
-    def read_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+    def read_two_resistance(self, mes_range='DEF', mes_resolution='DEF'):
         """
-        Return the resistance read by the instrument.
+        Return the two wire resistance read by the instrument.
 
         Perform a direct reading without any waiting. Can return identical
         values if the instrument is read more often than its integration time.
@@ -549,14 +549,21 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        if self.function != 'RES':
-            self.function = 'RES'
+    
+        #check if 2400 is in 2 point or 4 point measurement mode
+        if self.query('SYST:RSEN?') != '0\n':
+            #if not, then set the mode to 2 wire
+            self.write('SYST:RSEN 0')
 
-        value = self.query('FETCh?')
+        value = self.query('READ?')
+        #Read returns ascii format "voltage,current,resistance,time,state"
+
+        value = value.split(",")[2]
+
         if value:
             return float(value)
         else:
-            raise InstrIOError('Keithley2000: Resistance measure failed')
+            raise InstrIOError('Keithley2400: Resistance measure failed')
 
     @secure_communication()
     def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
