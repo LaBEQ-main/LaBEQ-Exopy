@@ -273,7 +273,14 @@ class Keithley2001(VisaInstrument):
         if self.function != 'VOLT:DC':
             self.function = 'VOLT:DC'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+
+        #split string into list to get voltage measurement
+        value = value.split(",")[0]
+
+        #remove "NVDC" string from measurement so we can cast to a float
+        value = value.replace("NVDC","")
+
         if value:
             return float(value)
         else:
@@ -292,16 +299,23 @@ class Keithley2001(VisaInstrument):
         if self.function != 'VOLT:AC':
             self.function = 'VOLT:AC'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+
+        #split string into list to get voltage measurement
+        value = value.split(",")[0]
+
+        #remove "NVAC" string from measurement so we can cast to a float
+        value = value.replace("NVAC","")
+        
         if value:
             return float(value)
         else:
             raise InstrIOError('Keithley2001: AC voltage measure failed')
 
     @secure_communication()
-    def read_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+    def read_two_resistance(self, mes_range='DEF', mes_resolution='DEF'):
         """
-        Return the resistance read by the instrument.
+        Return the two wire resistance read by the instrument.
 
         Perform a direct reading without any waiting. Can return identical
         values if the instrument is read more often than its integration time.
@@ -317,13 +331,40 @@ class Keithley2001(VisaInstrument):
         #split string into list to get current measurement
         value = value.split(",")[0]
 
-        #remove "NADC" string from measurement so we can cast to a float
+        #remove "NOHM" string from measurement so we can cast to a float
         value = value.replace("NOHM","")
         
         if value:
             return float(value)
         else:
             raise InstrIOError('Keithley2001: Resistance measure failed')
+
+    @secure_communication()
+    def read_four_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Return the four wire resistance read by the instrument.
+
+        Perform a direct reading without any waiting. Can return identical
+        values if the instrument is read more often than its integration time.
+        The arguments are unused and here only to make this driver and the
+        agilent driver compatible.
+
+        """
+        if self.function != 'FRES':
+            self.function = 'FRES'
+
+        value = self.query('MEAS?')
+
+        #split string into list to get current measurement
+        value = value.split(",")[0]
+
+        #remove "NOHM4W" string from measurement so we can cast to a float
+        value = value.replace("NOHM4W","")
+        
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('Keithley2001: Four Wire Resistance measure failed')
 
     @secure_communication()
     def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
@@ -366,7 +407,13 @@ class Keithley2001(VisaInstrument):
         if self.function != 'CURR:AC':
             self.function = 'CURR:AC'
 
-        value = self.query('FETCh?')
+        value = self.query('MEAS?')
+        
+        #split string into list to get current measurement
+        value = value.split(",")[0]
+
+        #remove "NAAC" string from measurement so we can cast to a float
+        value = value.replace("NAAC","")
         if value:
             return float(value)
         else:

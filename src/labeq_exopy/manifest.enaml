@@ -400,6 +400,7 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
                     instruments = ['labeq_exopy.Legacy.Keithley2000',
+                                    'labeq_exopy.Legacy.Keithley2001',
                                    'labeq_exopy.Legacy.Keithley2400',
                                    'labeq_exopy.Legacy.Agilent34410A',
                                    'labeq_exopy.Legacy.Yokogawa7651',
@@ -409,7 +410,19 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
-                    task = 'meas_res_tasks:MeasResistanceTask'
+                    task = 'meas_two_res_tasks:MeasTwoResistanceTask'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                Task:
+                    task = 'meas_four_res_tasks:MeasFourResistanceTask'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                Task:
+                    task = 'meas_acvoltage_tasks:MeasACVoltageTask'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                Task:
+                    task = 'meas_accurrent_tasks:MeasACCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
                 Task:
