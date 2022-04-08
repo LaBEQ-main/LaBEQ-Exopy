@@ -549,12 +549,18 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-    
+        #set to resistance measurement mode. easier to just set than to check, func returns list for 2400.
+        self.write('FUNC "RES"')
+
         #check if 2400 is in 2 point or 4 point measurement mode
-        if self.query('SYST:RSEN?') != '0\n':
+        if self.query('SYST:RSEN?') != 0:
             #if not, then set the mode to 2 wire
             self.write('SYST:RSEN 0')
 
+        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
+        if self.query('OUTP?') != 1:
+            self.write('OUTP ON') 
+            
         value = self.query('READ?')
         #Read returns ascii format "voltage,current,resistance,time,state"
 
@@ -563,7 +569,40 @@ class Keithley2400(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('Keithley2400: Resistance measure failed')
+            raise InstrIOError('Keithley2400: Two wire resistance measurement failed')
+
+    @secure_communication()
+    def read_four_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Return the two wire resistance read by the instrument.
+
+        Perform a direct reading without any waiting. Can return identical
+        values if the instrument is read more often than its integration time.
+        The arguments are unused and here only to make this driver and the
+        agilent driver compatible.
+
+        """
+        #set to resistance measurement mode. easier to just set than to check, func returns list for 2400.
+        self.write('FUNC "RES"')
+
+        #check if 2400 is in 2 point or 4 point measurement mode
+        if self.query('SYST:RSEN?') != 1:
+            #if not, then set the mode to 2 wire
+            self.write('SYST:RSEN 1')
+
+        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
+        if self.query('OUTP?') != 1:
+            self.write('OUTP ON') 
+            
+        value = self.query('READ?')
+        #Read returns ascii format "voltage,current,resistance,time,state"
+
+        value = value.split(",")[2]
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('Keithley2400: Four wire resistance measurement failed')
 
     @secure_communication()
     def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
