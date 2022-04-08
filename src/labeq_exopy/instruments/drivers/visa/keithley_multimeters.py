@@ -510,33 +510,25 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        if self.function != 'VOLT:DC':
-            self.function = 'VOLT:DC'
+        self.write('FUNC "VOLT:DC"')
 
-        value = self.query('FETCh?')
+        #check if 2400 is in 2 point or 4 point measurement mode
+        if self.query('SYST:RSEN?') != 0:
+            #if not, then set the mode to 2 wire
+            self.write('SYST:RSEN 0')
+
+        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
+        if self.query('OUTP?') != 1:
+            self.write('OUTP ON') 
+        
+        value = self.query('MEAS?')
+
+        value = value.split(",")[0]
+
         if value:
             return float(value)
         else:
-            raise InstrIOError('Keithley2000: DC voltage measure failed')
-
-    @secure_communication()
-    def read_voltage_ac(self, mes_range='DEF', mes_resolution='DEF'):
-        """Return the AC voltage read by the instrument.
-
-        Perform a direct reading without any waiting. Can return identical
-        values if the instrument is read more often than its integration time.
-        The arguments are unused and here only to make this driver and the
-        agilent driver compatible.
-
-        """
-        if self.function != 'VOLT:AC':
-            self.function = 'VOLT:AC'
-
-        value = self.query('FETCh?')
-        if value:
-            return float(value)
-        else:
-            raise InstrIOError('Keithley2000: AC voltage measure failed')
+            raise InstrIOError('Keithley2400: DC voltage measurement failed')
 
     @secure_communication()
     def read_two_resistance(self, mes_range='DEF', mes_resolution='DEF'):
@@ -614,33 +606,25 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        if self.function != 'CURR:DC':
-            self.function = 'CURR:DC'
+        self.write('FUNC "CURR:DC"')
 
-        value = self.query('FETCh?')
+        #check if 2400 is in 2 point or 4 point measurement mode
+        if self.query('SYST:RSEN?') != 0:
+            #if not, then set the mode to 2 wire
+            self.write('SYST:RSEN 0')
+
+        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
+        if self.query('OUTP?') != 1:
+            self.write('OUTP ON') 
+        
+        value = self.query('MEAS?')
+
+        value = value.split(",")[1]
+
         if value:
             return float(value)
         else:
-            raise InstrIOError('Keithley2000: DC current measure failed')
-
-    @secure_communication()
-    def read_current_ac(self, mes_range='DEF', mes_resolution='DEF'):
-        """Return the AC current read by the instrument.
-
-        Perform a direct reading without any waiting. Can return identical
-        values if the instrument is read more often than its integration time.
-        The arguments are unused and here only to make this driver and the
-        agilent driver compatible.
-
-        """
-        if self.function != 'CURR:AC':
-            self.function = 'CURR:AC'
-
-        value = self.query('FETCh?')
-        if value:
-            return float(value)
-        else:
-            raise InstrIOError('Keithley2000: AC current measure failed')
+            raise InstrIOError('Keithley2400: DC current measurement failed')
 
     @secure_communication()
     def check_connection(self):

@@ -408,7 +408,8 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                   'labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'meas_two_res_tasks:MeasTwoResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
