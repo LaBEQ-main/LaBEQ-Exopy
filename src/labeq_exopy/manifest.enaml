@@ -283,6 +283,14 @@ enamldef LaBEQManifest(PluginManifest):
                                        'VisaRS232':
                                            {'resource_class': 'INSTR'}
                                        }
+                    Driver:
+                        driver = 'lock_in_sr810:LockInSR810'
+                        model = 'SR810'
+                        kind = 'Lock-in'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':
+                                           {'resource_class': 'INSTR'}
+                                       }
 
                 Drivers:
                     manufacturer = 'Rohde and Schwarz'
@@ -395,7 +403,8 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'
                     instruments = ['labeq_exopy.Legacy.LockInSR7265',
-                                   'labeq_exopy.Legacy.LockInSR830']
+                                   'labeq_exopy.Legacy.LockInSR830'
+                                   'labeq_exopy.Legacy.LockInSR810']
                 Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
