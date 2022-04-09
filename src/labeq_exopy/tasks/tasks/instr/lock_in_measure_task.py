@@ -23,7 +23,7 @@ class LockInMeasureTask(InstrumentTask):
 
     """
     #: Value to retrieve.
-    mode = Enum('X', 'Y', 'X&Y', 'Amp', 'Phase', 'Amp&Phase','Freq').tag(pref=True)
+    mode = Enum('X', 'Y', 'X&Y', 'Amp', 'Theta', 'Amp&Theta','Freq','Phase').tag(pref=True)
 
     #: Time to wait before performing the measurement.
     waiting_time = Float().tag(pref=True)
@@ -51,23 +51,26 @@ class LockInMeasureTask(InstrumentTask):
         elif self.mode == 'Amp':
             value = self.driver.read_amplitude()
             self.write_in_database('amplitude', value)
-        elif self.mode == 'Phase':
-            value = self.driver.read_phase()
-            self.write_in_database('phase', value)
-        elif self.mode == 'Amp&Phase':
-            amplitude, phase = self.driver.read_amp_and_phase()
+        elif self.mode == 'Theta':
+            value = self.driver.read_theta()
+            self.write_in_database('theta', value)
+        elif self.mode == 'Amp&Theta':
+            amplitude, theta = self.driver.read_amp_and_theta()
             self.write_in_database('amplitude', amplitude)
-            self.write_in_database('phase', phase)
+            self.write_in_database('theta', theta)
         elif self.mode == 'Freq':
             value = self.driver.read_frequency()
             self.write_in_database('frequency', value)
+        elif self.mode == 'Phase':
+            value = self.driver.read_phase()
+            self.write_in_database('phase', value)
 
     def _post_setattr_mode(self, old, new):
         """ Update the database entries acording to the mode.
 
         """
         entries = self.database_entries.copy()
-        for k in ('x', 'y', 'amplitude', 'phase','frequency'):
+        for k in ('x', 'y', 'amplitude', 'theta','frequency','phase'):
             if k in entries:
                 del entries[k]
         if new == 'X':
@@ -79,12 +82,14 @@ class LockInMeasureTask(InstrumentTask):
             entries['y'] = 1.0
         elif new == 'Amp':
             entries['amplitude'] = 1.0
-        elif new == 'Phase':
-            entries['phase'] = 1.0
-        elif new == 'Amp&Phase':
+        elif new == 'Theta':
+            entries['theta'] = 1.0
+        elif new == 'Amp&Theta':
             entries['amplitude'] = 1.0
-            entries['phase'] = 1.0
+            entries['theta'] = 1.0
         elif new == 'Freq':
             entries['frequency'] = 1.0
+        elif new == 'Phase':
+            entries['phase'] = 1.0
 
         self.database_entries = entries

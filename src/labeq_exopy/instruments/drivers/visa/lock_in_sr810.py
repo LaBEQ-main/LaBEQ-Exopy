@@ -115,9 +115,9 @@ class LockInSR810(VisaInstrument):
             return float(value)
 
     @secure_communication()
-    def read_phase(self):
+    def read_theta(self):
         """
-        Return the phase of the signal measured by the instrument
+        Return the phase difference of the signal measured by the instrument
 
         Perform a direct reading without any waiting. Can return non
         independent values if the instrument is queried too often.
@@ -130,9 +130,9 @@ class LockInSR810(VisaInstrument):
             return float(value)
 
     @secure_communication()
-    def read_amp_and_phase(self):
+    def read_amp_and_theta(self):
         """
-        Return the amplitude and phase of the signal measured by the instrument
+        Return the amplitude and phase difference of the signal measured by the instrument
 
         Perform a direct reading without any waiting. Can return non
         independent values if the instrument is queried too often.
@@ -154,6 +154,20 @@ class LockInSR810(VisaInstrument):
 
         """
         value = self.query('FREQ?')
+        if not value:
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return float(value)
+
+    def read_phase(self):
+        """
+        Return the frequency of the signal measured by the instrument
+
+        Perform a direct reading without any waiting. Can return non
+        independent values if the instrument is queried too often.
+
+        """
+        value = self.query('PHAS?')
         if not value:
             raise InstrIOError('The command did not complete correctly')
         else:
