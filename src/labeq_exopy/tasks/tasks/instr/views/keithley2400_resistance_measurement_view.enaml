@@ -1,0 +1,96 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for a simple single quantity measurement task.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, Container)
+from enaml.stdlib.fields import FloatField, Field
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+enamldef SourceModeLabel(Label):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+
+    text = "Source Mode (Auto/Manual)"
+
+enamldef SourceModeValue(Field):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+
+    text := interface.source_mode
+    tool_tip = fill(" Auto behaves like MM (auto sources) and Manual"
+                    " allows you to set compliance, source type (V or I) and source" 
+                    " amount", 60)
+
+enamldef SourceTypeLabel(Label):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+    text = "Source Type (Voltage or current)"
+
+enamldef SourceTypeValue(Field):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+
+    text := interface.source_type
+    tool_tip = fill("If using manual source mode, select voltage or current source", 60)
+
+enamldef CurrentComplianceLabel(Label):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+    text = "Compliance (A)"
+
+enamldef CurrentComplianceValue(FloatField):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+
+    value := interface.curr_comp
+    tool_tip = fill("Current compliance value in Amps", 60)
+
+enamldef VoltageComplianceLabel(Label):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+    text = "Compliance (V)"
+
+enamldef VoltageComplianceValue(FloatField):
+
+    #Reference to the RootTask view
+    attr root
+    #Reference to the interface to which this view is bound
+    attr interface
+
+    value := interface.volt_comp
+    tool_tip = fill("Voltage compliance value in Volts", 60)
+
