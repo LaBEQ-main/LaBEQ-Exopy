@@ -6,7 +6,7 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""View for a simple single quantity measurement task.
+"""View for a keithley 2400 resistance measurement task.
 
 """
 from textwrap import fill

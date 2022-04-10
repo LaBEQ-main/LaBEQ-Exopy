@@ -430,6 +430,18 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'meas_four_res_tasks:MeasFourResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    metadata = {'loopable' : True}
+                    Interface:
+                        interface = ('meas_four_res_tasks:Keithley2400MeasFourResistanceInterface')
+                        views = ['views.keithley2400_resistance_measurement_view:SourceModeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceModeValue',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeValue',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceValue',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
+                        instruments = ['labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'meas_acvoltage_tasks:MeasACVoltageTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'

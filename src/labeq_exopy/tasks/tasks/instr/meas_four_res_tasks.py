@@ -11,12 +11,12 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str
 
-from exopy.tasks.api import InstrumentTask
+from exopy.tasks.api import (InterfaceableTaskMixin, InstrumentTask, TaskInterface)
 
 
-class MeasFourResistanceTask(InstrumentTask):
+class MeasFourResistanceTask(InterfaceableTaskMixin, InstrumentTask):
     """Measure a four wire resistance.
 
     Wait for any parallel operation before execution and then wait the
@@ -30,7 +30,7 @@ class MeasFourResistanceTask(InstrumentTask):
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
-    def perform(self):
+    def i_perform(self):
         """Wait and read the resistance.
 
         """
@@ -38,3 +38,27 @@ class MeasFourResistanceTask(InstrumentTask):
 
         value = self.driver.read_four_resistance()
         self.write_in_database('four_resistance', value)
+
+class Keithley2400MeasFourResistanceInterface(TaskInterface):
+    """Measure a four wire resistance with Keithley 2400
+
+    Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the measure.
+
+    """
+
+    source_mode = Str().tag(pref=True)
+    source_type = Str().tag(pref=True)
+    curr_comp = Float().tag(pref=True)
+    volt_comp = Float().tag(pref=True)
+
+    database_entries = set_default({'four_resistance': 1.0})
+
+    def perform(self):
+        """Wait and read the two wire resistance.
+
+        """
+        
+        arg_list = [self.source_mode, self.source_type, self.curr_comp, self.volt_comp]
+        value = self.task.driver.read_four_resistance(arg_list)
+        self.task.write_in_database('four_resistance', value)

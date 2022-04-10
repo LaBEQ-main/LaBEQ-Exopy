@@ -432,7 +432,9 @@ class Keithley2001(VisaInstrument):
             return val[6]
 
 class Keithley2400(VisaInstrument):
-    """Driver for Keithley 2000 using the VISA library
+    """!!Need to update!!
+    
+    Driver for Keithley 2000 using the VISA library
 
     This driver does not give access to all the functionnality of the
     instrument but you can extend it if needed. See the documentation of the
@@ -449,7 +451,7 @@ class Keithley2400(VisaInstrument):
         'CURR:DC', 'CURR:AC', 'RES'. This instrument property is cached by
         default.
 
-    Methods
+    Methods 
     -------
     read_voltage_dc(mes_range = 'DEF', mes_resolution = 'DEF')
         Return the DC voltage read by the instrument. Can change the function
@@ -510,7 +512,8 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        self.write('FUNC "VOLT:DC"')
+        self.write('SOUR:FUNC CURR')
+        self.write('FUNC "VOLT"')
 
         #check if 2400 is in 2 point or 4 point measurement mode
         if self.query('SYST:RSEN?') != 0:
@@ -521,15 +524,44 @@ class Keithley2400(VisaInstrument):
         if self.query('OUTP?') != 1:
             self.write('OUTP ON') 
         
+        self.write('FORM:ELEM VOLT')
         value = self.query('MEAS?')
-
-        value = value.split(",")[0]
 
         if value:
             return float(value)
         else:
             raise InstrIOError('Keithley2400: DC voltage measurement failed')
 
+    @secure_communication()
+    def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
+        """Return the DC current read by the instrument.
+
+        Perform a direct reading without any waiting. Can return identical
+        values if the instrument is read more often than its integration time.
+        The arguments are unused and here only to make this driver and the
+        agilent driver compatible.
+
+        """
+        self.write('SOUR:FUNC VOLT')
+        self.write('FUNC "CURR"')
+
+        #check if 2400 is in 2 point or 4 point measurement mode
+        if self.query('SYST:RSEN?') != 0:
+            #if not, then set the mode to 2 wire
+            self.write('SYST:RSEN 0')
+
+        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
+        if self.query('OUTP?') != 1:
+            self.write('OUTP ON') 
+        
+        self.write('FORM:ELEM CURR')
+        value = self.query('READ?')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('Keithley2400: DC current measurement failed')
+    
     @secure_communication()
     def read_two_resistance(self, arg_list, mes_range='DEF', mes_resolution='DEF'):
         """
@@ -576,9 +608,10 @@ class Keithley2400(VisaInstrument):
         if self.query('OUTP?') != 1:
             self.write('OUTP ON') 
         
+        
+        self.write('FORM:ELEM RES')
         #Read returns ascii format "voltage,current,resistance,time,state"
         value = self.query('READ?')
-        value = value.split(",")[2]
 
         if value:
             return float(value)
@@ -586,9 +619,9 @@ class Keithley2400(VisaInstrument):
             raise InstrIOError('Keithley2400: Two wire resistance measurement failed')
 
     @secure_communication()
-    def read_four_resistance(self, mes_range='DEF', mes_resolution='DEF'):
+    def read_four_resistance(self, arg_list, mes_range='DEF', mes_resolution='DEF'):
         """
-        Return the two wire resistance read by the instrument.
+        Return the four wire resistance read by the instrument.
 
         Perform a direct reading without any waiting. Can return identical
         values if the instrument is read more often than its integration time.
@@ -596,57 +629,49 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
+        
+        #get list vals
+        source_mode = arg_list[0]
+        source_type = arg_list[1]
+        curr_comp = arg_list[2]
+        volt_comp = arg_list[3]
+
         #set to resistance measurement mode. easier to just set than to check, func returns list for 2400.
         self.write('FUNC "RES"')
+        self.write('RES:RANG:AUTO 1')
+
+        if source_mode == "Manual":
+            self.write('RES:MODE MAN')
+            if source_type == "Voltage":
+                self.write('SOUR:FUNC VOLT')
+                self.write('CURR:PROT ' + str(curr_comp) )
+            elif source_type == "Current":
+                self.write('SOUR:FUNC CURR')
+                self.write('VOLT:PROT ' + str(volt_comp) )
+            else:
+                raise InstrIOError('Keithley2400:read_four_resistance: source type invalid. Use "voltage" or "current."')
+        elif source_mode == "Auto":
+            self.write('RES:MODE AUTO')
+        else:
+            raise InstrIOError('Keithley2400:read_four_resistance: source mode invalid. Use "auto" or "manual."')
 
         #check if 2400 is in 2 point or 4 point measurement mode
         if self.query('SYST:RSEN?') != 1:
-            #if not, then set the mode to 2 wire
+            #if not, then set the mode to four wire
             self.write('SYST:RSEN 1')
 
         #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
         if self.query('OUTP?') != 1:
             self.write('OUTP ON') 
-            
-        value = self.query('READ?')
+        
+        self.write('FORM:ELEM RES')
         #Read returns ascii format "voltage,current,resistance,time,state"
-
-        value = value.split(",")[2]
+        value = self.query('READ?')
 
         if value:
             return float(value)
         else:
             raise InstrIOError('Keithley2400: Four wire resistance measurement failed')
-
-    @secure_communication()
-    def read_current_dc(self, mes_range='DEF', mes_resolution='DEF'):
-        """Return the DC current read by the instrument.
-
-        Perform a direct reading without any waiting. Can return identical
-        values if the instrument is read more often than its integration time.
-        The arguments are unused and here only to make this driver and the
-        agilent driver compatible.
-
-        """
-        self.write('FUNC "CURR:DC"')
-
-        #check if 2400 is in 2 point or 4 point measurement mode
-        if self.query('SYST:RSEN?') != 0:
-            #if not, then set the mode to 2 wire
-            self.write('SYST:RSEN 0')
-
-        #turn on output if not on. required for measurement. Switching rsens mode will turn off output.
-        if self.query('OUTP?') != 1:
-            self.write('OUTP ON') 
-        
-        value = self.query('MEAS?')
-
-        value = value.split(",")[1]
-
-        if value:
-            return float(value)
-        else:
-            raise InstrIOError('Keithley2400: DC current measurement failed')
 
     @secure_communication()
     def check_connection(self):
