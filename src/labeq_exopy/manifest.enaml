@@ -397,6 +397,22 @@ enamldef LaBEQManifest(PluginManifest):
                     instruments = ['labeq_exopy.Legacy.LockInSR7265',
                                    'labeq_exopy.Legacy.LockInSR830']
                 Task:
+                    task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'
+                    view = 'views.set_voltage_compliance_views:SetVoltageComplianceView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                Task:
+                    task = 'set_current_compliance_tasks:SetCurrentComplianceTask'
+                    view = 'views.set_current_compliance_views:SetCurrentComplianceView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                Task:
+                    task = 'source_dcvoltage_tasks:SourceDCVoltageTask'
+                    view = 'views.source_dcvoltage_views:SourceDCVoltView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                Task:
+                    task = 'source_dccurrent_tasks:SourceDCCurrentTask'
+                    view = 'views.source_dccurrent_views:SourceDCCurrentView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
                     instruments = ['labeq_exopy.Legacy.Keithley2000',

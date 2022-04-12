@@ -672,6 +672,44 @@ class Keithley2400(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('Keithley2400: Four wire resistance measurement failed')
+    
+    @secure_communication()
+    def set_voltage_comp(self, comp_v, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Set voltage compliance for Keithley 2400
+
+        """
+
+        self.write('VOLT:PROT '+str(comp_v))
+    
+    @secure_communication()
+    def set_current_comp(self, comp_c, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Set current compliance for Keithley 2400
+
+        """
+
+        self.write('CURR:PROT '+str(comp_c))
+
+    @secure_communication()
+    def source_voltage_dc(self, source_v, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Source voltage from Keithley 2400
+
+        """
+
+        self.write('SOUR:FUNC VOLT')
+        self.write('SOUR:VOLT '+str(source_v))
+
+    @secure_communication()
+    def source_current_dc(self, source_c, mes_range='DEF', mes_resolution='DEF'):
+        """
+        Source current from Keithley 2400
+
+        """
+
+        self.write('SOUR:FUNC CURR')
+        self.write('SOUR:CURR '+str(source_c))
 
     @secure_communication()
     def check_connection(self):
