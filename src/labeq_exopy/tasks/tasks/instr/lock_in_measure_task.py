@@ -23,8 +23,8 @@ class LockInMeasureTask(InstrumentTask):
 
     """
     #: Value to retrieve.
-    mode = Enum('X', 'Y', 'X&Y', 'Amp', 'Theta', 'Amp&Theta','Freq','Phase').tag(pref=True)
-
+    MeasMode = Enum('X', 'Y', 'X&Y', 'Amp', 'Theta', 'Amp&Theta','Freq','Phase').tag(pref=True)
+    
     #: Time to wait before performing the measurement.
     waiting_time = Float().tag(pref=True)
 
@@ -37,36 +37,36 @@ class LockInMeasureTask(InstrumentTask):
 
         """
         sleep(self.waiting_time)
-
-        if self.mode == 'X':
+        #measurement selection
+        if self.MeasMode == 'X':
             value = self.driver.read_x()
             self.write_in_database('x', value)
-        elif self.mode == 'Y':
+        elif self.MeasMode == 'Y':
             value = self.driver.read_y()
             self.write_in_database('y', value)
-        elif self.mode == 'X&Y':
+        elif self.MeasMode == 'X&Y':
             value_x, value_y = self.driver.read_xy()
             self.write_in_database('x', value_x)
             self.write_in_database('y', value_y)
-        elif self.mode == 'Amp':
+        elif self.MeasMode == 'Amp':
             value = self.driver.read_amplitude()
             self.write_in_database('amplitude', value)
-        elif self.mode == 'Theta':
+        elif self.MeasMode == 'Theta':
             value = self.driver.read_theta()
             self.write_in_database('theta', value)
-        elif self.mode == 'Amp&Theta':
+        elif self.MeasMode == 'Amp&Theta':
             amplitude, theta = self.driver.read_amp_and_theta()
             self.write_in_database('amplitude', amplitude)
             self.write_in_database('theta', theta)
-        elif self.mode == 'Freq':
+        elif self.MeasMode == 'Freq':
             value = self.driver.read_frequency()
             self.write_in_database('frequency', value)
-        elif self.mode == 'Phase':
+        elif self.MeasMode == 'Phase':
             value = self.driver.read_phase()
             self.write_in_database('phase', value)
 
-    def _post_setattr_mode(self, old, new):
-        """ Update the database entries acording to the mode.
+    def _post_setattr_MeasMode(self, old, new):
+        """ Update the database entries acording to the MeasMode.
 
         """
         entries = self.database_entries.copy()
@@ -93,3 +93,4 @@ class LockInMeasureTask(InstrumentTask):
             entries['phase'] = 1.0
 
         self.database_entries = entries
+        
