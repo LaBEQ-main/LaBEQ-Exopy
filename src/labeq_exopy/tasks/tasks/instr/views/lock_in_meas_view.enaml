@@ -26,10 +26,10 @@ enamldef LockInMeasView(InstrView): view:
     constraints = [factory(auto_grid_layout)]
 
     Label:
-        text = 'Mode'
+        text = 'MeasMode'
     ObjectCombo:
-        items << list(task.get_member('mode').items)
-        selected := task.mode
+        items << list(task.get_member('MeasMode').items)
+        selected := task.MeasMode
 
     Label:
         hug_width = 'ignore'

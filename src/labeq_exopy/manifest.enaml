@@ -406,6 +406,14 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.LockInSR830',
                                    'labeq_exopy.Legacy.LockInSR810']
                 Task:
+                    task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
+                    view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
+                    instruments = ['labeq_exopy.Legacy.LockInSR810']
+                Task:
+                    task = 'lock_in_SetInputAndRef_task:LockInSetInputAndRefTask'
+                    view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
+                    instruments = ['labeq_exopy.Legacy.LockInSR810']
+                Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
                     instruments = ['labeq_exopy.Legacy.Keithley2000',
