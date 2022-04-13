@@ -9,6 +9,8 @@
 """Drivers for Stanford instrument lock-in SR810 using VISA library.
 
 """
+#I do not know how this got there:
+#from this import d
 from ..driver_tools import (InstrIOError, secure_communication)
 from ..visa_tools import VisaInstrument
 
@@ -158,10 +160,10 @@ class LockInSR810(VisaInstrument):
             raise InstrIOError('The command did not complete correctly')
         else:
             return float(value)
-
+    @secure_communication()
     def read_phase(self):
         """
-        Return the frequency of the signal measured by the instrument
+        Return the phase of the signal measured by the instrument
 
         Perform a direct reading without any waiting. Can return non
         independent values if the instrument is queried too often.
@@ -172,5 +174,213 @@ class LockInSR810(VisaInstrument):
             raise InstrIOError('The command did not complete correctly')
         else:
             return float(value)
+    #In the following section, auto settings are selected when the function input is
+    #given a distinct value outside of the maunal funciton input range
+    #many of the settings take in user input to set to a certaint value
+
+    @secure_communication()
+    def set_phase(self,x):
+        """
+        Set the phase of the instrument
+
+        """
+        if x == 800:
+            value = self.write('APHS')
+        else:
+            str1='PHAS '
+            index = str1.find('PHAS ')
+            input = str1[index:] + str(x)
+            value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+
+    @secure_communication()
+    def set_frequency(self,f):
+        """
+        Set the frequency of the instrument
+
+        """
+        str1='FREQ '
+        index = str1.find('FREQ ')
+        input = str1[index:] + str(f)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+
+    @secure_communication()
+    def set_amplitude(self,x):
+        """
+        Set the amplitude of the internal ossilator
+
+        """
+        str1='SLVL '
+        index = str1.find('SLVL ')
+        input = str1[index:] + str(x)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_timeconst(self,i):
+        """
+        Set the time constant of the instrument
+
+        """
+        str1='OFLT '
+        index = str1.find('OFLT ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_sense(self,i):
+        """
+        Return the sensitivity of the instrument (auto or manual)
+
+        """
+        if i == 30:
+            value = self.write('AGAN')
+        else:
+            str1='SENS '
+            index = str1.find('SENS ')
+            input = str1[index:] + str(i)
+            value = self.write(input)
+            print(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_dynres(self,i):
+        """
+        Set the dynamic reserve of the instrument
+
+        """
+        if i == 3:
+            value = self.write('ARSV')
+        else:
+            str1='RMOD '
+            index = str1.find('RMOD ')
+            input = str1[index:] + str(i)
+            value = self.write(input)
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_syncfltr(self,i):
+        """
+        set the sync filter
+
+        """
+        str1='SYNC '
+        index = str1.find('SYNC ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_fltrslope(self,i):
+        """
+        set the filter slope
+
+        """
+        str1='OFSL '
+        index = str1.find('OFSL ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_linefltr(self,i):
+        """
+        set the line filter
+
+        """
+        str1='ILIN '
+        index = str1.find('ILIN ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+        
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_input(self, i):
+        """
+        Set the Signal Input
+
+        """
+        str1='ISRC '
+        index = str1.find('ISRC ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    
+    @secure_communication()
+    def set_ground(self,i):
+        """
+        set the ground
+
+        """
+        str1='IGND '
+        index = str1.find('IGND ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
+    @secure_communication()
+    def set_reference(self,i):
+        """
+        set the reference to external or internal
+
+        """
+        str1='FMOD '
+        index = str1.find('FMOD ')
+        input = str1[index:] + str(i)
+        value = self.write(input)
+        
+        check='check'
+        if type(value) == type(check):
+            raise InstrIOError('The command did not complete correctly')
+        else:
+            return 'completed'
     
 
