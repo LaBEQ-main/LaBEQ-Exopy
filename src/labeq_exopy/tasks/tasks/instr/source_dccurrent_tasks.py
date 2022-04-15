@@ -27,18 +27,18 @@ class SourceDCCurrentTask(InstrumentTask):
     wait_time = Float().tag(pref=True)
     source_c = Str().tag(pref=True)
 
-
-
     database_entries = set_default({'source_current_dc': 1.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
+
 
     def perform(self):
         """Wait and source the DC current.
 
         """
         sleep(self.wait_time)
-
+        
+        #returns float if given a float, returns database entry value type if given a database entry name
         value = self.format_and_eval_string(self.source_c)
 
         self.driver.source_current_dc(value)

@@ -11,12 +11,14 @@
 """
 from textwrap import fill
 
+from exopy.utils.widgets.qt_completers import QtLineCompleter
 from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
 from enaml.stdlib.fields import FloatField
 from enaml.layout.api import factory
 
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
+
 
 
 enamldef SourceDCVoltView(InstrView): view:
@@ -33,6 +35,8 @@ enamldef SourceDCVoltView(InstrView): view:
                         "voltmeter.", 60)
     Label:
         text = 'Voltage (V)'
-    FloatField:
-        value := task.source_v
-        tool_tip = fill("Amount of voltage in volts to source", 60)
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.source_v
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Amount of current in Amps to source", 60)

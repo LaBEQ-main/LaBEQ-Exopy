@@ -28,14 +28,18 @@ enamldef SourceModeLabel(Label):
 
     text = "Source Mode (Auto/Manual)"
 
-enamldef SourceModeValue(Field):
+enamldef SourceModeValue(ObjectCombo):
 
     #Reference to the RootTask view
     attr root
     #Reference to the interface to which this view is bound
     attr interface
 
-    text := interface.source_mode
+    #be careful when making calls to task members, must use interface.get_member, NOT task.get_member
+    items << list(interface.get_member('source_mode').items)
+    selected := interface.source_mode
+
+    #text := interface.source_mode
     tool_tip = fill(" Auto behaves like MM (auto sources) and Manual"
                     " allows you to set compliance, source type (V or I) and source" 
                     " amount", 60)

@@ -11,7 +11,7 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str
 
 from exopy.tasks.api import InstrumentTask
 
@@ -25,7 +25,7 @@ class SourceDCVoltageTask(InstrumentTask):
     """
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
-    source_v = Float().tag(pref=True)
+    source_v = Str().tag(pref=True)
 
     database_entries = set_default({'source_voltage_dc': 1.0})
 
@@ -37,5 +37,8 @@ class SourceDCVoltageTask(InstrumentTask):
         """
         sleep(self.wait_time)
 
-        value = self.driver.source_voltage_dc(self.source_v)
+        #returns float if given a float, returns database entry value type if given a database entry name
+        value = self.format_and_eval_string(self.source_v)
+
+        value = self.driver.source_voltage_dc(value)
         self.write_in_database('source_voltage_dc', value)

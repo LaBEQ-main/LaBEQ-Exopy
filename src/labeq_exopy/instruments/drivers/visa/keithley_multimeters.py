@@ -512,7 +512,6 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        self.write('SOUR:FUNC CURR')
         self.write('FUNC "VOLT"')
 
         #check if 2400 is in 2 point or 4 point measurement mode
@@ -525,7 +524,7 @@ class Keithley2400(VisaInstrument):
             self.write('OUTP ON') 
         
         self.write('FORM:ELEM VOLT')
-        value = self.query('MEAS?')
+        value = self.query('READ?')
 
         if value:
             return float(value)
@@ -542,7 +541,6 @@ class Keithley2400(VisaInstrument):
         agilent driver compatible.
 
         """
-        self.write('SOUR:FUNC VOLT')
         self.write('FUNC "CURR"')
 
         #check if 2400 is in 2 point or 4 point measurement mode
@@ -576,25 +574,15 @@ class Keithley2400(VisaInstrument):
         
         #get list vals
         source_mode = arg_list[0]
-        source_type = arg_list[1]
-        curr_comp = arg_list[2]
-        volt_comp = arg_list[3]
 
         #set to resistance measurement mode. easier to just set than to check, func returns list for 2400.
         self.write('FUNC "RES"')
-        self.write('RES:RANG:AUTO 1')
+        
 
         if source_mode == "Manual":
             self.write('RES:MODE MAN')
-            if source_type == "Voltage":
-                self.write('SOUR:FUNC VOLT')
-                self.write('CURR:PROT ' + str(curr_comp) )
-            elif source_type == "Current":
-                self.write('SOUR:FUNC CURR')
-                self.write('VOLT:PROT ' + str(volt_comp) )
-            else:
-                raise InstrIOError('Keithley2400:read_two_resistance: source type invalid. Use "voltage" or "current."')
         elif source_mode == "Auto":
+            self.write('RES:RANG:AUTO 1')
             self.write('RES:MODE AUTO')
         else:
             raise InstrIOError('Keithley2400:read_two_resistance: source mode invalid. Use "auto" or "manual."')
@@ -709,7 +697,7 @@ class Keithley2400(VisaInstrument):
         """
 
         self.write('SOUR:FUNC CURR')
-        self.write('SOUR:CURR '+str(source_c))
+        self.write('SOUR:CURR '+ str(source_c))
 
     @secure_communication()
     def check_connection(self):
