@@ -11,7 +11,7 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str
 
 from exopy.tasks.api import InstrumentTask
 
@@ -25,7 +25,9 @@ class SourceDCCurrentTask(InstrumentTask):
     """
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
-    source_c = Float().tag(pref=True)
+    source_c = Str().tag(pref=True)
+
+
 
     database_entries = set_default({'source_current_dc': 1.0})
 
@@ -37,5 +39,7 @@ class SourceDCCurrentTask(InstrumentTask):
         """
         sleep(self.wait_time)
 
-        value = self.driver.source_current_dc(self.source_c)
+        value = self.format_and_eval_string(self.source_c)
+
+        self.driver.source_current_dc(value)
         self.write_in_database('source_current_dc', value)

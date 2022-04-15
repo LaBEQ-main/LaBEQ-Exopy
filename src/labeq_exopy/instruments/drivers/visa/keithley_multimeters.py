@@ -707,6 +707,9 @@ class Keithley2400(VisaInstrument):
         Source current from Keithley 2400
 
         """
+        
+        if source_c is None:
+            source_c = self.format_and_eval_string(source_c)
 
         self.write('SOUR:FUNC CURR')
         self.write('SOUR:CURR '+str(source_c))
