@@ -10,12 +10,15 @@
 
 """
 from textwrap import fill
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
 from enaml.core.api import Conditional, Include
 from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox)
 from enaml.layout.api import grid, vbox, hbox, factory, align
 
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
+from enaml.qt import QtCore
 
 
 enamldef LockInSetInputAndRefView(InstrView): view:
@@ -24,16 +27,18 @@ enamldef LockInSetInputAndRefView(InstrView): view:
     """
     constraints = [vbox(grid([instr_label],[instr_selection]),Freq,Phase,Amp,REF,gnd,Input)]
 
+
     GroupBox: Freq:
         constraints=[hbox(fl,ff)]
         Label: fl:
             hug_width = 'ignore'
             text = 'Set Internal Reference Frequency: 000.00 Hz'
-        Field: ff:
+        QtLineCompleter: ff:
             hug_width = 'ignore'
-            placeholder= '000.00 Hz'
+            #placeholder= '000.00 Hz'
             text := task.input_frequency
-            tool_tip = fill('Frequency range: (0.001 \u2264 f \u2264 102000)')
+            tool_tip = fill('Frequency range: 000.00 Hz (0.001 \u2264 f \u2264 102000)')
+            entries_updater << task.list_accessible_database_entries
     
     GroupBox: Phase:
         constraints=[hbox(auto,lp,inp)]
@@ -43,23 +48,24 @@ enamldef LockInSetInputAndRefView(InstrView): view:
         Label: lp:
             hug_width = 'ignore'
             text = 'Set Reference Phase Shift'
-        Field: inp:
+        QtLineCompleter: inp:
             hug_width = 'ignore'
-            placeholder= '\u00B1 000.00 \u00B0'
+            #placeholder= '\u00B1 000.00 \u00B0'
             text := task.input_phase
-            tool_tip = fill('Phase range: (-360 \u2264 x \u2264 729.99)')
+            tool_tip = fill('Phase range: \u00B1 000.00 \u00B0 (-360 \u2264 x \u2264 729.99)')
             enabled << (not task.AutoPhase)
+            entries_updater << task.list_accessible_database_entries
     GroupBox: Amp:
-        constraints=[hbox(al,af)]
+        constraints=[hbox(al,af),af.top == contents_top]
         Label: al:
             hug_width = 'ignore'
-            text = 'Set Internal Reference Amplitude'
-        Field: af:
-            placeholder= '0.000 V'
+            text = 'Set Internal Reference Amplitude'  
+        QtLineCompleter: af:
             hug_width = 'ignore'
             text := task.input_amplitude
-            tool_tip = fill('Amplitude range: (0.004 V \u2264 x \u2264 5.000 V)')
-    
+            tool_tip = fill('Amplitude range: 0.000 V (0.004 V \u2264 x \u2264 5.000 V)')
+            entries_updater << task.list_accessible_database_entries
+            
     GroupBox: REF:
         constraints=[hbox(rl,ro)]
         Label: rl:
