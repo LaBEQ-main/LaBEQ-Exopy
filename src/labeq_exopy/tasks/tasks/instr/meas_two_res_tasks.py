@@ -9,14 +9,15 @@
 """Task to measure two wire resistance.
 
 """
+from statistics import mode
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str, Enum
 
-from exopy.tasks.api import InstrumentTask
+from exopy.tasks.api import (InterfaceableTaskMixin, InstrumentTask, TaskInterface)
 
 
-class MeasTwoResistanceTask(InstrumentTask):
+class MeasTwoResistanceTask(InterfaceableTaskMixin, InstrumentTask):
     """Measure a two wire resistance.
 
     Wait for any parallel operation before execution and then wait the
@@ -30,7 +31,7 @@ class MeasTwoResistanceTask(InstrumentTask):
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
-    def perform(self):
+    def i_perform(self):
         """Wait and read the two wire resistance.
 
         """
@@ -38,3 +39,28 @@ class MeasTwoResistanceTask(InstrumentTask):
 
         value = self.driver.read_two_resistance()
         self.write_in_database('two_resistance', value)
+
+class Keithley2400MeasTwoResistanceInterface(TaskInterface):
+    """Measure a two wire resistance.
+
+    Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the measure.
+
+    """
+
+    source_mode = Enum('Manual', 'Auto').tag(pref=True)
+    source_type = Str().tag(pref=True)
+    curr_comp = Float().tag(pref=True)
+    volt_comp = Float().tag(pref=True)
+
+    database_entries = set_default({'two_resistance': 1.0})
+
+    def perform(self):
+        """Wait and read the two wire resistance.
+
+        """
+        
+        arg_list = [self.source_mode, self.source_type, self.curr_comp, self.volt_comp]
+        value = self.task.driver.read_two_resistance(arg_list)
+        self.task.write_in_database('two_resistance', value)
+

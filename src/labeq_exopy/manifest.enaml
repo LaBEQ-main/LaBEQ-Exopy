@@ -414,10 +414,30 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
                     instruments = ['labeq_exopy.Legacy.LockInSR810']
                 Task:
+                    task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'
+                    view = 'views.set_voltage_compliance_views:SetVoltageComplianceView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'set_current_compliance_tasks:SetCurrentComplianceTask'
+                    view = 'views.set_current_compliance_views:SetCurrentComplianceView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'source_dcvoltage_tasks:SourceDCVoltageTask'
+                    view = 'views.source_dcvoltage_views:SourceDCVoltView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'source_dccurrent_tasks:SourceDCCurrentTask'
+                    view = 'views.source_dccurrent_views:SourceDCCurrentView'
+                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    metadata = {'loopable': True}
+                Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'
                     view = 'views.meas_dc_views:MeasDCVoltView'
                     instruments = ['labeq_exopy.Legacy.Keithley2000',
-                                    'labeq_exopy.Legacy.Keithley2001',
+                                   'labeq_exopy.Legacy.Keithley2001',
                                    'labeq_exopy.Legacy.Keithley2400',
                                    'labeq_exopy.Legacy.Agilent34410A',
                                    'labeq_exopy.Legacy.Yokogawa7651',
@@ -425,23 +445,51 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                   'labeq_exopy.Legacy.Keithley2400']
+                    metadata = {'loopable': True}
                 Task:
                     task = 'meas_two_res_tasks:MeasTwoResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    metadata = {'loopable' : True}
+                    Interface:
+                        interface = ('meas_two_res_tasks:Keithley2400MeasTwoResistanceInterface')
+                        views = ['views.keithley2400_resistance_measurement_view:SourceModeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceModeValue',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeValue',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceValue',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
+                        instruments = ['labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'meas_four_res_tasks:MeasFourResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    metadata = {'loopable' : True}
+                    Interface:
+                        interface = ('meas_four_res_tasks:Keithley2400MeasFourResistanceInterface')
+                        views = ['views.keithley2400_resistance_measurement_view:SourceModeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceModeValue',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeLabel',
+                                 'views.keithley2400_resistance_measurement_view:SourceTypeValue',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:VoltageComplianceValue',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
+                                 'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
+                        instruments = ['labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'meas_acvoltage_tasks:MeasACVoltageTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    metadata = {'loopable': True}
                 Task:
                     task = 'meas_accurrent_tasks:MeasACCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    metadata = {'loopable': True}
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'
                     view = 'views.rf_views:RFFrequencyView'

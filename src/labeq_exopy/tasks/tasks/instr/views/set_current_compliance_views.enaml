@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for the SetCurrentComplianceTask.
+
+"""
+
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+enamldef SetCurrentComplianceView(InstrView): view:
+    """View for the SourceDCCurrentTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Compliance (A)'
+    FloatField:
+        value := task.comp_c
+        tool_tip = fill("Current compliance value", 60)
