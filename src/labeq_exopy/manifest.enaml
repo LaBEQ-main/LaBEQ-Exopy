@@ -195,6 +195,13 @@ enamldef LaBEQManifest(PluginManifest):
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232': {'resource_class': 'INSTR'}
                                        }
+                    Driver:
+                        driver = 'oxford_mercuryips:MercuryiPS'
+                        model = 'MercuryiPS'
+                        connections =   {'VisaTCPIP': 
+                                            {'port': 7020,
+                                            'resource_class': 'SOCKET'}
+                                        }
                 Drivers:
                     manufacturer = 'Cryomagnetics'
                     settings = {'MagnetConversionSetting': {}}
