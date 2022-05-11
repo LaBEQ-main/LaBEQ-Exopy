@@ -402,9 +402,10 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'meas_mag_field_task:MeasMagFieldTask'
                     view = 'views.meas_mag_field_view:MeasMagFieldView'
-                    instruments = ['labeq_exopy.Legacy.IPS12010',
-                                   'labeq_exopy.Legacy.CS40',
-                                   'labeq_exopy.Legacy.C4G']
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS',
+                                    'labeq_exopy.Legacy.IPS12010',
+                                    'labeq_exopy.Legacy.CS40',
+                                    'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'

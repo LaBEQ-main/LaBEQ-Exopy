@@ -28,5 +28,5 @@ class MeasMagFieldTask(InstrumentTask):
         """
         sleep(self.wait_time)
 
-        value = self.driver.persistent_field
-        self.write_in_database('field', value)
+        value = self.driver.read_current_field()
+        self.write_in_database('B_field', value)
