@@ -11,7 +11,7 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default, Str
+from atom.api import Float, set_default, Str, Enum
 
 from exopy.tasks.api import (InterfaceableTaskMixin, InstrumentTask, TaskInterface)
 
@@ -47,7 +47,7 @@ class Keithley2400MeasFourResistanceInterface(TaskInterface):
 
     """
 
-    source_mode = Str().tag(pref=True)
+    source_mode = Enum('Manual', 'Auto').tag(pref=True)
     source_type = Str().tag(pref=True)
     curr_comp = Float().tag(pref=True)
     volt_comp = Float().tag(pref=True)
