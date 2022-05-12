@@ -7,7 +7,7 @@
 """Drivers for oxford ips magnet supply using VISA library.
 
 """
-from ..driver_tools import (InstrIOError, secure_communication)
+from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
 
 class MercuryiPS(VisaInstrument):
@@ -56,8 +56,38 @@ class MercuryiPS(VisaInstrument):
     def ramp_mag_field(self, setpoint):
         """ramp the magnetic field to the set point"""
 
-        if setpoint <= 0.1:
-            self.query('SET:DEV:GRPZ:PSU:SIG:FSET:' + str(setpoint))
-            self.query('SET:DEV:GRPZ:PSU:ACTN:RTOS')
+        # send the query and obtain the status string
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:SWHT?')
+
+        #isolate status string "OFF" or "ON"
+        value = f'{resp}'.split(':')[-1].strip()
+
+        #swh_status = value
+        swh_status = self.read_switch_status()
+        print(f'switch status: {swh_status}')
+
+        if swh_status == "OFF":
+            raise InstrIOError('MercuryiPS: Switch heater is off. Commanded current will not flow through magnet coils.')
+        elif swh_status == "ON":
+            if setpoint <= 0.1:
+                self.query('SET:DEV:GRPZ:PSU:SIG:FSET:' + str(setpoint))
+                self.query('SET:DEV:GRPZ:PSU:ACTN:RTOS')
+            else:
+                raise InstrIOError('MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')
         else:
-            raise InstrIOError('MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')
+            raise InstrIOError('MercuryiPS: Failed to read switch status')
+
+    @secure_communication()
+    def read_switch_status(self):
+        """read the switch heater status"""
+
+        # send the query and obtain the status string
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:SWHT?')
+
+        #isolate status string "OFF" or "ON"
+        value = f'{resp}'.split(':')[-1].strip()
+
+        if value == "OFF" or "ON":
+            return value 
+        else:
+            raise InstrIOError('MercuryiPS: Failed to read switch status')
