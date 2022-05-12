@@ -38,10 +38,15 @@ class MercuryiPS(VisaInstrument):
         self.read_termination = '\n'
 
     @secure_communication()
-    def read_current_field(self):
+    def read_mag_field(self):
         """ return the current field strength value"""
     
-        value = self.query('READ:DEV:GRPZ:PSU:SIG:FLD?')
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:FLD?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:FLD:0.0000T. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('T','')
+
         if value:
             return float(value)
         else:

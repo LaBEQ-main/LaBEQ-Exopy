@@ -18,7 +18,7 @@ class MeasMagFieldTask(InstrumentTask):
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
 
-    database_entries = set_default({'field': 1.0})
+    database_entries = set_default({'mag_field': 0.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
@@ -28,5 +28,5 @@ class MeasMagFieldTask(InstrumentTask):
         """
         sleep(self.wait_time)
 
-        value = self.driver.read_current_field()
-        self.write_in_database('B_field', value)
+        value = self.driver.read_mag_field()
+        self.write_in_database('mag_field', value)
