@@ -41,7 +41,7 @@ class MercuryiPS(VisaInstrument):
         self.read_termination = '\n'
 
     @secure_communication()
-    def read_field_potential(self):
+    def read_potential_field(self):
         """ return the potential field strength value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:FLD?')
@@ -53,10 +53,25 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Current field capacity reading failed')
+            raise InstrIOError('MercuryiPS: Potential field strength reading failed')
     
     @secure_communication()
-    def read_field_actual(self):
+    def read_potential_field_rate(self):
+        """ return the potential field rate value"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:RFLD?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:RFLD:0.0000T/min. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('T/min','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Potential field rate reading failed')
+    
+    @secure_communication()
+    def read_actual_field(self):
         """ return the actual field strength value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:PFLD?')
@@ -68,7 +83,67 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Current field strength reading failed')
+            raise InstrIOError('MercuryiPS: Actual field strength reading failed')
+    
+    @secure_communication()
+    def read_supply_voltage(self):
+        """ return the supply voltage reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:VOLT?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:VOLT:0.0000V. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('V','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Supply voltage reading failed')
+    
+    @secure_communication()
+    def read_supply_current(self):
+        """ return the supply current reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:CURR?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:CURR:0.0000A. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('A','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Supply current reading failed')
+
+    @secure_communication()
+    def read_supply_current_rate(self):
+        """ return the supply current rate reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:RCUR?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:RCUR:0.0000A/min. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('A/min','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Supply current rate reading failed')
+
+    @secure_communication()
+    def read_coil_current(self):
+        """ return the coil current reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:PCUR?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:PCUR:0.0000A. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('A','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Coil current reading failed')
 
     @secure_communication()
     def ramp_mag_field(self, setpoint):
