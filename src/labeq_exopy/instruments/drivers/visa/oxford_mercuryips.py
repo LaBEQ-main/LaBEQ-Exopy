@@ -51,3 +51,13 @@ class MercuryiPS(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('MercuryiPS: Current field strength reading failed')
+
+    @secure_communication()
+    def ramp_mag_field(self, setpoint):
+        """ramp the magnetic field to the set point"""
+
+        if setpoint <= 0.1:
+            self.query('SET:DEV:GRPZ:PSU:SIG:FSET:' + str(setpoint))
+            self.query('SET:DEV:GRPZ:PSU:ACTN:RTOS')
+        else:
+            raise InstrIOError('MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')

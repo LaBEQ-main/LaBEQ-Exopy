@@ -408,6 +408,11 @@ enamldef LaBEQManifest(PluginManifest):
                                     'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
+                    task = 'ramp_mag_field_task:RampMagFieldTask'
+                    view = 'views.ramp_mag_field_view:RampMagFieldView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'
                     instruments = ['labeq_exopy.Legacy.LockInSR7265',
