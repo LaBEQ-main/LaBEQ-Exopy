@@ -400,8 +400,13 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
                 Task:
-                    task = 'MercuryiPS_tasks:MeasMagFieldTask'
-                    view = 'views.MercuryiPS_views:MeasMagFieldView'
+                    task = 'MercuryiPS_tasks:ReadFieldPotentialTask'
+                    view = 'views.MercuryiPS_views:ReadFieldPotentialView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'MercuryiPS_tasks:ReadFieldActualTask'
+                    view = 'views.MercuryiPS_views:ReadFieldActualView'
                     instruments =   ['labeq_exopy.Legacy.MercuryiPS']
                     metadata = {'loopable': True}
                 Task:

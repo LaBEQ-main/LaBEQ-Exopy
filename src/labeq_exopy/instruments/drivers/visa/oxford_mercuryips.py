@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
+# Authors - Frank Duffy
+#
 # Distributed under the terms of the BSD license.
 #
-# The full license is in the file LICENSE, distributed with this software.
+# The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
+
 """Drivers for oxford ips magnet supply using VISA library.
 
 """
@@ -38,10 +41,25 @@ class MercuryiPS(VisaInstrument):
         self.read_termination = '\n'
 
     @secure_communication()
-    def read_mag_field(self):
-        """ return the current field strength value"""
+    def read_field_potential(self):
+        """ return the potential field strength value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:FLD?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:FLD:0.0000T. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('T','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Current field capacity reading failed')
+    
+    @secure_communication()
+    def read_field_actual(self):
+        """ return the actual field strength value"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:PFLD?')
 
         #query will return string STAT:DEV:GRPZ:PSU:SIG:FLD:0.0000T. We only want the last value as a float.
         value = f'{resp}'.split(':')[-1]
