@@ -41,8 +41,8 @@ class MercuryiPS(VisaInstrument):
         self.read_termination = '\n'
 
     @secure_communication()
-    def read_potential_field(self):
-        """ return the potential field strength value"""
+    def read_supply_field(self):
+        """ return the supply field strength value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:FLD?')
 
@@ -53,11 +53,11 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Potential field strength reading failed')
+            raise InstrIOError('MercuryiPS: Supply field strength reading failed')
     
     @secure_communication()
-    def read_potential_field_rate(self):
-        """ return the potential field rate value"""
+    def read_supply_field_rate(self):
+        """ return the supply field rate value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:RFLD?')
 
@@ -68,11 +68,11 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Potential field rate reading failed')
+            raise InstrIOError('MercuryiPS: Supply field rate reading failed')
     
     @secure_communication()
-    def read_actual_field(self):
-        """ return the actual field strength value"""
+    def read_magnet_field(self):
+        """ return the magnetic field strength produced by the energized coils value"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:PFLD?')
 
@@ -83,7 +83,7 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Actual field strength reading failed')
+            raise InstrIOError('MercuryiPS: Magnetic field strength reading failed')
     
     @secure_communication()
     def read_supply_voltage(self):
@@ -131,8 +131,8 @@ class MercuryiPS(VisaInstrument):
             raise InstrIOError('MercuryiPS: Supply current rate reading failed')
 
     @secure_communication()
-    def read_coil_current(self):
-        """ return the coil current reading"""
+    def read_magnet_current(self):
+        """ return the current circulating in the magnet coils"""
     
         resp = self.query('READ:DEV:GRPZ:PSU:SIG:PCUR?')
 
@@ -143,7 +143,7 @@ class MercuryiPS(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiPS: Coil current reading failed')
+            raise InstrIOError('MercuryiPS: Magnet current reading failed')
 
     @secure_communication()
     def read_target_current(self):
@@ -159,6 +159,12 @@ class MercuryiPS(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('MercuryiPS: Target current reading failed')
+    
+    @secure_communication()
+    def set_target_current(self, target):
+        """ set the target current """
+    
+        self.query('SET:DEV:GRPZ:PSU:SIG:CSET:' + str(target))
 
     @secure_communication()
     def read_target_current_rate(self):
@@ -176,6 +182,12 @@ class MercuryiPS(VisaInstrument):
             raise InstrIOError('MercuryiPS: Target current rate reading failed')
     
     @secure_communication()
+    def set_target_current_rate(self, target):
+        """ set the target current rate """
+    
+        self.query('SET:DEV:GRPZ:PSU:SIG:RCST:' + str(target))
+    
+    @secure_communication()
     def read_target_field(self):
         """ return the target field """
     
@@ -189,16 +201,49 @@ class MercuryiPS(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('MercuryiPS: Target field reading failed')
+    
+    @secure_communication()
+    def set_target_field(self, target):
+        """ set the target field """
+    
+        self.query('SET:DEV:GRPZ:PSU:SIG:FSET:' + str(target))
+    
+    @secure_communication()
+    def read_target_field_rate(self):
+        """ return the target field rate """
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:RFST?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:RFST:0.0000T/m. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('T/m','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Target field rate reading failed')
 
     @secure_communication()
-    def ramp_mag_field(self, setpoint):
-        """ramp the magnetic field to the set point"""
+    def set_target_field_rate(self, target):
+        """ set the target field rate """
+    
+        self.query('SET:DEV:GRPZ:PSU:SIG:RFST:' + str(target))
 
-        # send the query and obtain the status string
-        resp = self.query('READ:DEV:GRPZ:PSU:SIG:SWHT?')
+    @secure_communication()
+    def ramp_to_target(self):
+        """ramp the magnetic field to the target value """
 
-        #isolate status string "OFF" or "ON"
-        value = f'{resp}'.split(':')[-1].strip()
+        #set cap on field change amount
+        intrvl_cap = 0.1
+
+        #get target to check against safety cap
+        target = self.read_target_field()
+
+        #get current fld to check against safety cap
+        current = self.read_supply_field()
+
+        #calculate proposed field change
+        field_delta = abs(target - current)
 
         #swh_status = value
         swh_status = self.read_switch_status()
@@ -207,11 +252,10 @@ class MercuryiPS(VisaInstrument):
         if swh_status == "OFF":
             raise InstrIOError('MercuryiPS: Switch heater is off. Commanded current will not flow through magnet coils.')
         elif swh_status == "ON":
-            if setpoint <= 0.1:
-                self.query('SET:DEV:GRPZ:PSU:SIG:FSET:' + str(setpoint))
+            if field_delta <= intrvl_cap:
                 self.query('SET:DEV:GRPZ:PSU:ACTN:RTOS')
             else:
-                raise InstrIOError('MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')
+                raise InstrIOError(f'MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')
         else:
             raise InstrIOError('MercuryiPS: Failed to read switch status')
 
