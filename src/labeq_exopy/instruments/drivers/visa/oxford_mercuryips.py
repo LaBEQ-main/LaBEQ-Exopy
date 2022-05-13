@@ -146,6 +146,51 @@ class MercuryiPS(VisaInstrument):
             raise InstrIOError('MercuryiPS: Coil current reading failed')
 
     @secure_communication()
+    def read_target_current(self):
+        """ return the target current reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:CSET?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:CSET:0.0000A. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('A','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Target current reading failed')
+
+    @secure_communication()
+    def read_target_current_rate(self):
+        """ return the target current rate reading"""
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:RCST?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:RCST:0.0000A/m. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('A/m','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Target current rate reading failed')
+    
+    @secure_communication()
+    def read_target_field(self):
+        """ return the target field """
+    
+        resp = self.query('READ:DEV:GRPZ:PSU:SIG:FSET?')
+
+        #query will return string STAT:DEV:GRPZ:PSU:SIG:FSET:0.0000T. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('T','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('MercuryiPS: Target field reading failed')
+
+    @secure_communication()
     def ramp_mag_field(self, setpoint):
         """ramp the magnetic field to the set point"""
 

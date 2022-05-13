@@ -74,7 +74,7 @@ class ReadActualFieldTask(InstrumentTask):
     the field produced by the SC magnet coils measured by a magnetometer inside the system.
 
 
-    Wait for any parallel operation before execution and then wait the
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the operation.
 
     """
@@ -97,7 +97,8 @@ class ReadActualFieldTask(InstrumentTask):
 class ReadSupplyVoltageTask(InstrumentTask):
     """     
         Read voltage supplied by magnet PSU in units of volts (V).
-    Wait for any parallel operation before execution and then wait the
+    
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the operation.
 
     """
@@ -120,7 +121,8 @@ class ReadSupplyVoltageTask(InstrumentTask):
 class ReadSupplyCurrentTask(InstrumentTask):
     """     
         Read current supplied by magnet PSU in units of Amps (A).
-    Wait for any parallel operation before execution and then wait the
+    
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the operation.
 
     """
@@ -143,7 +145,8 @@ class ReadSupplyCurrentTask(InstrumentTask):
 class ReadSupplyCurrentRateTask(InstrumentTask):
     """     
         Read supply current rate provided by PSU in units of volts per min (A/min).
-    Wait for any parallel operation before execution and then wait the
+    
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the operation.
 
     """
@@ -166,7 +169,8 @@ class ReadSupplyCurrentRateTask(InstrumentTask):
 class ReadCoilCurrentTask(InstrumentTask):
     """     
         Read current in coils in units of Amps (A). 
-    Wait for any parallel operation before execution and then wait the
+    
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the operation.
 
     """
@@ -186,13 +190,95 @@ class ReadCoilCurrentTask(InstrumentTask):
         value = self.driver.read_supply_current()
         self.write_in_database('ips_coil_current', value)
 
-class RampMagFieldTask(InstrumentTask):
-    """Ramp magnetic field to set value in Tesla (T). Drives current from PSU
-    to achieve desired field strength in the coils. The set field and the actual
-    field must be equal before ramping otherwise the magnet may quench.The switch 
-    needs to be open in order to energize coils. 
+class ReadTargetCurrentTask(InstrumentTask):
+    """     
+        Read target current in units of Amps (A). The target current is a 
+    quantity stored in memory. It is the amount of current that the 
+    iPS will ramp up to if commanded to do so.
+        
+        Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the operation.
 
-    Wait for any parallel operation before execution and then wait the
+    """
+    # Time to wait before operation.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'ips_target_current': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the target current.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_target_current()
+        self.write_in_database('ips_target_current', value)
+
+class ReadTargetCurrentRateTask(InstrumentTask):
+    """     
+        Read target current rate in units of Amps/minute (A/m). The target 
+    current rate is a quantity stored in memory. It is the rate at which the 
+    iPS will ramp the current when commanded to do so.
+        
+        Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the operation.
+
+    """
+    # Time to wait before operation.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'ips_target_current_rate': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the target current rate.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_target_current_rate()
+        self.write_in_database('ips_target_current_rate', value)
+
+class ReadTargetFieldTask(InstrumentTask):
+    """     
+        Read target field in units of Tesla (T). The target field is a
+    quantity stored in memory. It's an implicit target current. When the
+    iPS is commanded to ramp to this set point, it will drive the current 
+    necessary to produce the target field value in the coils. The switch 
+    heater must be open in order for the coils to be energized.
+        
+        Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the operation.
+
+    """
+    # Time to wait before operation.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'ips_target_field': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the target field.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_target_field()
+        self.write_in_database('ips_target_field', value)
+
+class RampMagFieldTask(InstrumentTask):
+    """
+        Ramps the magnetic field to target field value in Tesla (T). It drives 
+    current from the PSU to achieve the target field strength at the target rate. 
+    The supply field and the magnet field must be equal before ramping otherwise 
+    the magnet may quench.The switch heater must be open in order to energize the 
+    magnet coils. 
+
+        Wait for any parallel operation before execution and then wait the
     specified time before perfoming the mramp.
 
     """

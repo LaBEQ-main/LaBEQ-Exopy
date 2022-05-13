@@ -435,6 +435,21 @@ enamldef LaBEQManifest(PluginManifest):
                     instruments =   ['labeq_exopy.Legacy.MercuryiPS']
                     metadata = {'loopable': True}
                 Task:
+                    task = 'MercuryiPS_tasks:ReadTargetCurrentTask'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'MercuryiPS_tasks:ReadTargetCurrentRateTask'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'MercuryiPS_tasks:ReadTargetFieldTask'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
                     task = 'MercuryiPS_tasks:RampMagFieldTask'
                     view = 'views.MercuryiPS_views:RampMagFieldView'
                     instruments =   ['labeq_exopy.Legacy.MercuryiPS']
