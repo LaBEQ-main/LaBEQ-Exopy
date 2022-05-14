@@ -10,6 +10,7 @@
 """Drivers for oxford ips magnet supply using VISA library.
 
 """
+from tracemalloc import reset_peak
 from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
 
@@ -273,3 +274,42 @@ class MercuryiPS(VisaInstrument):
             return value 
         else:
             raise InstrIOError('MercuryiPS: Failed to read switch status')
+    
+    @secure_communication()
+    def read_sensor(self, device_name, value):
+        """read the switch heater status"""
+
+        print(device_name)
+        print(value)
+        #get address of device
+        dev_addr = device_name.split('_')[1]
+
+        print(dev_addr)
+
+        msg = f'READ:DEV:{dev_addr}:TEMP:SIG:{value}?'
+        print(msg)
+
+        # send the query and obtain the status string
+        resp = self.query(msg)
+
+        print(resp)
+
+        #query will return string STAT:DEV:{dev_addr}:TEMP:SIG:{value}:#.####K. We only want the last value as a float.
+        value = f'{resp}'.split(':')[-1]
+
+        if value == 'TEMP':
+            value = value.replace('K','')
+        elif value == "SLOP":
+            value = value.replace('R/K','')
+        elif value == "VOLT":
+            value = value.replace('mV','')
+        elif value == "RES":
+            value = value.replace('R','')
+        elif value == "SLOP":
+            value = value.replace('R/K','')
+        elif value == "CURR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
+            value = value.replace('microA','')
+        elif value == "POWR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
+            value = value.replace('microW','')
+
+        return value 
