@@ -202,6 +202,13 @@ enamldef LaBEQManifest(PluginManifest):
                                             {'port': 7020,
                                             'resource_class': 'SOCKET'}
                                         }
+                    Driver:
+                        driver = 'Oxford_MercuryiTC_driver:MercuryiTC'
+                        model = 'MercuryiTC'
+                        connections =   {'VisaTCPIP': 
+                                            {'port': 7020,
+                                            'resource_class': 'SOCKET'}
+                                        }
                 Drivers:
                     manufacturer = 'Cryomagnetics'
                     settings = {'MagnetConversionSetting': {}}
@@ -489,6 +496,9 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.MercuryiPS_views:ReadTempSensorView'
                     instruments =   ['labeq_exopy.Legacy.MercuryiPS']
                     metadata = {'loopable': True}
+                    Interface:
+                        interface = ('MercuryiTC_tasks:ReadTempSensorTask')
+                        instruments = ['labeq_exopy.Legacy.MercuryiTC']
                 Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Authors - Frank Duffy
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
 #
 # Distributed under the terms of the BSD license.
 #
