@@ -485,6 +485,11 @@ enamldef LaBEQManifest(PluginManifest):
                     instruments =   ['labeq_exopy.Legacy.MercuryiPS']
                     metadata = {'loopable': True}
                 Task:
+                    task = 'MercuryiPS_tasks:ReadTempSensorTask'
+                    view = 'views.MercuryiPS_views:ReadTempSensorView'
+                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                    metadata = {'loopable': True}
+                Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'
                     instruments = ['labeq_exopy.Legacy.LockInSR7265',
