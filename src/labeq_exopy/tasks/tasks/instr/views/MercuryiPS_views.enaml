@@ -1,0 +1,109 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Frank Duffy
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the Oxford Instruments MercuryiPS.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+enamldef SetTargetCurrentView(InstrView): view:
+    """View for the SetTargetCurrentTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target current.", 60)
+    Label:
+        text = 'Target Current (A)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_current
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Target current in Amps (A)", 60)
+
+enamldef SetTargetCurrentRateView(InstrView): view:
+    """View for the SetTargetCurrentRateTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target current rate.", 60)
+    Label:
+        text = 'Target Current Rate (A/min)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_current_rate
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Target current rate in Amps per minute (A/min)", 60)
+
+enamldef SetTargetFieldView(InstrView): view:
+    """View for the SetTargetFieldTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target field.", 60)
+    Label:
+        text = 'Target Field (T)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_field
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Target field in Teslas (T)", 60)
+
+enamldef SetTargetFieldRateView(InstrView): view:
+    """View for the SetTargetFieldRateTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target field rate.", 60)
+    Label:
+        text = 'Target Field Rate (T/min)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.target_field_rate
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Target field in Teslas per minute (T/min)", 60)
+
+enamldef RampToTargetView(InstrView): view:
+    """View for the RampToTargetTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before ramping field.", 60)
