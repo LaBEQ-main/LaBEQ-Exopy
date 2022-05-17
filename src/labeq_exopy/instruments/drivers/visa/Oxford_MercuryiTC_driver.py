@@ -117,7 +117,7 @@ def set_probe_temp(self, setpoint):
         value = f'{resp}'.split(':')[-1]
 
         if value != "VALID":
-            raise InstrIOError('MercuryiTC: VTI temp reading failed')
+            raise InstrIOError('MercuryiTC: Probe set temperature failed')
 
 
    
