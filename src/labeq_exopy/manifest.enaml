@@ -12,11 +12,11 @@
 import os
 
 import enaml
-from enaml.workbench.api import PluginManifest, Extension
-from exopy.app.api import AppStartup
+from enaml.workbench.api import PluginManifest, Extension, 
+from exopy.app.api import AppStartup 
 from exopy.tasks.api import Tasks, Task, Interface
-from exopy.instruments.api import (Starter, Connection, Drivers, Driver,
-                                  Settings)
+from  exopy.tasks.filters import GroupTaskFilter
+from exopy.instruments.api import (Starter, Connection, Drivers, Driver, Settings)
 
 from .instruments.starters.legacy_starter import (VisaLegacyStarter,
                                                   DllLegacyStarter)
@@ -27,6 +27,16 @@ enamldef LaBEQManifest(PluginManifest):
 
     """
     id = 'labeq_exopy'
+
+    Extension:
+        id = 'filters'
+        point = 'exopy.tasks.filters'
+        GroupTaskFilter:
+            id = 'MercuryiPS'
+            group = 'MercuryiPS'
+        GroupTaskFilter:
+            id = 'MercuryiTC'
+            group = 'MercuryiTC'
 
     Extension:
         id = 'startup'
@@ -392,6 +402,7 @@ enamldef LaBEQManifest(PluginManifest):
             Tasks:
                 path = 'instr'
                 group = 'instr'
+                
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
@@ -406,99 +417,132 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.CS4',
                                    'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSupplyFieldTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSupplyFieldRateTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadMagnetFieldTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSupplyVoltageTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSupplyCurrentTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSupplyCurrentRateTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadMagnetCurrentTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadTargetCurrentTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:SetTargetCurrentTask'
-                    view = 'views.MercuryiPS_views:SetTargetCurrentView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadTargetCurrentRateTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:SetTargetCurrentRateTask'
-                    view = 'views.MercuryiPS_views:SetTargetCurrentRateView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadTargetFieldTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:SetTargetFieldTask'
-                    view = 'views.MercuryiPS_views:SetTargetFieldView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadTargetFieldRateTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:SetTargetFieldRateTask'
-                    view = 'views.MercuryiPS_views:SetTargetFieldRateView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadSwitchHeaterStatusTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:RampToTargetTask'
-                    view = 'views.MercuryiPS_views:RampToTargetView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'MercuryiPS_tasks:ReadTempSensorTask'
-                    view = 'views.MercuryiPS_views:ReadTempSensorView'
-                    instruments =   ['labeq_exopy.Legacy.MercuryiPS']
-                    metadata = {'loopable': True}
-                    Interface:
-                        interface = ('MercuryiTC_tasks:ReadTempSensorTask')
-                        instruments = ['labeq_exopy.Legacy.MercuryiTC']
+
+                Tasks:
+                    group = 'MercuryiPS'
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSupplyFieldTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSupplyFieldRateTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadMagnetFieldTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSupplyVoltageTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSupplyCurrentTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSupplyCurrentRateTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadMagnetCurrentTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadTargetCurrentTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:SetTargetCurrentTask'
+                        view = 'views.MercuryiPS_views:SetTargetCurrentView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadTargetCurrentRateTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:SetTargetCurrentRateTask'
+                        view = 'views.MercuryiPS_views:SetTargetCurrentRateView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadTargetFieldTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:SetTargetFieldTask'
+                        view = 'views.MercuryiPS_views:SetTargetFieldView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadTargetFieldRateTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:SetTargetFieldRateTask'
+                        view = 'views.MercuryiPS_views:SetTargetFieldRateView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadSwitchHeaterStatusTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:RampToTargetTask'
+                        view = 'views.MercuryiPS_views:RampToTargetView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:ReadTempSensorTask'
+                        view = 'views.MercuryiPS_views:ReadTempSensorView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                Tasks:
+                    group = 'MercuryiTC'
+                    Task:
+                        task = 'MercuryiTC_tasks:ReadVTITemperatureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiTC_tasks:SetVTITemperatureTask'
+                        view = 'views.MercuryiTC_views:SetTemperatureView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiTC_tasks:ReadProbeTemperatureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiTC_tasks:SetProbeTemperatureTask'
+                        view = 'views.MercuryiTC_views:SetTemperatureView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiTC_tasks:ReadVTIPressureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiTC_tasks:ReadVTIValvePercentageTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
                 Task:
                     task = 'lock_in_measure_task:LockInMeasureTask'
                     view = 'views.lock_in_meas_view:LockInMeasView'

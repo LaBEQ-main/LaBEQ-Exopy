@@ -11,24 +11,152 @@ from time import sleep
 from atom.api import Float, Str, Enum, set_default
 from exopy.tasks.api import InstrumentTask, InterfaceableTaskMixin, TaskInterface
 
-class ReadTempSensorTask(TaskInterface):
-    """ Reads the specified device value for iTC"""
+class ReadVTITemperatureTask(InstrumentTask):
+    """
+        Read the VTI temperature. 
 
-    # Time to wait before the reading.
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
     wait_time = Float().tag(pref=True)
-    temp_sensor = Enum('1', '2', '3').tag(pref=True)
 
-    # temp_sensor = Enum('Magnet_MB1.T1', 'PT1_DB8.T1', 'PT2_DB7.T1').tag(pref=True)
-    # value = Enum('VOLT', 'CURR', 'POWR', 'RES', 'TEMP', 'SLOP').tag(pref=True)
+    database_entries = set_default({'vti_temp': 0.0})
 
-    # wait_time = set_default({'activated': True, 'wait': ['instr']})
-
-    # database_entries = set_default({'val': 0.0})
+    wait = set_default({'activated': True, 'wait': ['instr']})
 
     def perform(self):
-        """Wait and read the chosen value from the specified temperature sensor.
+        """Wait and read the temperature.
 
         """
         sleep(self.wait_time)
-        # val = self.driver.read_sensor(self.temp_sensor, self.value)
-        # self.write_in_database('val', val)
+        value = self.driver.read_VTI_temp()
+        self.write_in_database('vti_temp', value)
+
+class SetVTITemperatureTask(InstrumentTask):
+    """
+        Sets the target VTI temp set point. 
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+    temp_setpoint = Str().tag(pref=True)
+
+    database_entries = set_default({'vti_temp_setpoint': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and set the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        #returns float if given a float, returns database entry value type if given a database entry name
+        value = self.format_and_eval_string(self.temp_setpoint)
+
+        self.driver.set_VTI_temp(value)
+        self.write_in_database('vti_temp_setpoint', value)
+
+class ReadVTIPressureTask(InstrumentTask):
+    """
+        Read the VTI pressure. 
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'vti_pres': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """
+        Wait and read the pressure.
+
+        """
+        sleep(self.wait_time)
+        value = self.driver.read_VTI_pres()
+        self.write_in_database('vti_pres', value)
+
+class ReadVTIValvePercentageTask(InstrumentTask):
+    """
+        Read the VTI valve percentage. 
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'vti_valve_perc': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """
+        Wait and read the valve percentage.
+
+        """
+        sleep(self.wait_time)
+        value = self.driver.read_VTI_valv_perc()
+        self.write_in_database('vti_valve_perc', value)
+
+class ReadProbeTemperatureTask(InstrumentTask):
+    """
+        Read probe temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'probe_temp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the temperature.
+
+        """
+        sleep(self.wait_time)
+        value = self.driver.read_probe_temp()
+        self.write_in_database('probe_temp', value)
+
+class SetProbeTemperatureTask(InstrumentTask):
+    """
+        Sets the probe temp set point. 
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+    temp_setpoint = Str().tag(pref=True)
+
+    database_entries = set_default({'probe_temp_setpoint': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and set the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        #returns float if given a float, returns database entry value type if given a database entry name
+        value = self.format_and_eval_string(self.temp_setpoint)
+
+        self.driver.set_probe_temp(value)
+        self.write_in_database('probe_temp_setpoint', value)
