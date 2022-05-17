@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Authors - Frank Duffy
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
 #
 # Distributed under the terms of the BSD license.
 #
@@ -11,7 +11,7 @@ from time import sleep
 
 from atom.api import Float, Str, Enum, set_default
 
-from exopy.tasks.api import InstrumentTask
+from exopy.tasks.api import InstrumentTask, InterfaceableTaskMixin
 
 
 class ReadSupplyFieldTask(InstrumentTask):
@@ -465,7 +465,7 @@ class RampToTargetTask(InstrumentTask):
         sleep(self.wait_time)
         self.driver.ramp_to_target()
 
-class ReadTempSensorTask(InstrumentTask):
+class ReadTempSensorTask(InterfaceableTaskMixin, InstrumentTask):
     """ Reads the specified device value. Units: VOLT (mV), CURR (micro A), POWR (micro W), RES (Ohms), TEMP (K), SLOP (Ohms/K)"""
 
     # Time to wait before the reading.
@@ -478,7 +478,7 @@ class ReadTempSensorTask(InstrumentTask):
 
     database_entries = set_default({'val': 0.0})
 
-    def perform(self):
+    def i_perform(self):
         """Wait and read the chosen value from the specified temperature sensor.
 
         """
