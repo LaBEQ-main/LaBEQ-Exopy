@@ -108,7 +108,16 @@ class MercuryiTC(VisaInstrument):
         else:
             raise InstrIOError('MercuryiTC: Probe temp reading failed')
 
+def set_probe_temp(self, setpoint):
+        """
+            set probe temp
+        """
 
+        resp = self.query(f'SET:DEV:MB1.T1:TEMP:LOOP:TSET:'+ str(setpoint))
+        value = f'{resp}'.split(':')[-1]
+
+        if value != "VALID":
+            raise InstrIOError('MercuryiTC: VTI temp reading failed')
 
 
    
