@@ -291,7 +291,6 @@ class MercuryiPS(VisaInstrument):
 
         # send the query and obtain the status string
         resp = self.query(msg)
-
         print(resp)
 
         #query will return string STAT:DEV:{dev_addr}:TEMP:SIG:{value}:#.####K. We only want the last value as a float.
