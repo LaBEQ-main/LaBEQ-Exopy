@@ -122,6 +122,14 @@ enamldef LaBEQManifest(PluginManifest):
             Drivers:
                 path = 'visa'
                 starter = 'labeq_exopy.starter.visa'
+                Driver:
+                        driver = 'LivePlotter:LivePlotter'
+                        model = 'LivePlotter'
+                        manufacturer = 'LaBEQ'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaUSB': {'resource_class': 'INSTR'},
+                                       'VisaTCPIP': {'resource_class': 'INSTR'}
+                                       }
                 Drivers:
                     manufacturer = 'Keysight'
                     Driver:
@@ -403,6 +411,11 @@ enamldef LaBEQManifest(PluginManifest):
                 path = 'instr'
                 group = 'instr'
                 
+                Task:
+                    task = 'plot_task:PlotTask'
+                    view = 'views.LivePlotter_views:LivePlotterView'
+                    instruments =['labeq_exopy.Legacy.LivePlotter']
+
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
