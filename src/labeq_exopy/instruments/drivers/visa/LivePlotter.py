@@ -17,6 +17,8 @@ from ..visa_tools import VisaInstrument
 from matplotlib import pyplot as plt
 import numpy as np
 import math
+import time
+from csv import writer
 
 class LivePlotter(VisaInstrument):
     """Driver for the MercuryiPS superconducting magnet power supply 
@@ -53,7 +55,7 @@ class LivePlotter(VisaInstrument):
         fig = plt.figure()
         ax = fig.add_axes([0.1,0.1,0.8,0.8])
         plt.ion()
-        ax.plot(self.x,self.y, 'b')
+        ax.plot(self.x,self.y, 'b', linestyle='')
         ax.set_title("Data Collection")
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
@@ -64,9 +66,32 @@ class LivePlotter(VisaInstrument):
         
         self.x.append(x)
         self.y.append(y)
+        # print(f'x: {self.x}')
+        # print(f'y: {self.y}')
+        # ti = time.time()
+        self.ax.plot(self.x, self.y, color = 'b', marker = 'o', linestyle='')
+        # tbp = time.time()
+        plt.pause(0.001)
+        # tf = time.time()
+
+        # print(f'ti: {ti}, tbp: {tbp}, tf: {tf}')
+        # print(f'tbp - ti: {tbp-ti}')
+        # print(f'tf-tbp: {tf-tbp}')
+        # print(f'tf-ti: {tf-ti}')
+
+        # header = ['tf', 'tbp', 'ti']
+        # data = [tf, tbp, ti]
+        # with open('C:\\Users\\2administrator\\exopy\\tests\\LivePlottingTest\\data.csv', 'a', newline='') as f_object:
+  
+        #     # Pass this file object to csv.writer()
+        #     # and get a writer object
+        #     writer_object = writer(f_object)
         
-        print(f'x: {self.x}')
-        print(f'y: {self.y}')
-        self.ax.plot(self.x, self.y, 'b')
-        plt.pause(1)
+        #     # Pass the list as an argument into
+        #     # the writerow()
+        #     writer_object.writerow(data)
+        
+        #     #Close the file object
+        #     f_object.close()
+
         
