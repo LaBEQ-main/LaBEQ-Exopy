@@ -37,6 +37,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:
             id = 'MercuryiTC'
             group = 'MercuryiTC'
+        GroupTaskFilter:
+            id = 'Lock-in Amplifier'
+            group = 'Lock-in Amplifier'
 
     Extension:
         id = 'startup'
@@ -548,20 +551,22 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.MercuryiTC']
                         metadata = {'loopable': True}
-                Task:
-                    task = 'lock_in_measure_task:LockInMeasureTask'
-                    view = 'views.lock_in_meas_view:LockInMeasView'
-                    instruments = ['labeq_exopy.Legacy.LockInSR7265',
-                                   'labeq_exopy.Legacy.LockInSR830',
-                                   'labeq_exopy.Legacy.LockInSR810']
-                Task:
-                    task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
-                    view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
-                    instruments = ['labeq_exopy.Legacy.LockInSR810']
-                Task:
-                    task = 'lock_in_SetInputAndRef_task:LockInSetInputAndRefTask'
-                    view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
-                    instruments = ['labeq_exopy.Legacy.LockInSR810']
+                Tasks:
+                    group = "Lock-in Amplifier"
+                    Task:
+                        task = 'lock_in_measure_task:LockInMeasureTask'
+                        view = 'views.lock_in_meas_view:LockInMeasView'
+                        instruments = ['labeq_exopy.Legacy.LockInSR7265',
+                                    'labeq_exopy.Legacy.LockInSR830',
+                                    'labeq_exopy.Legacy.LockInSR810']
+                    Task:
+                        task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
+                        view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
+                        instruments = ['labeq_exopy.Legacy.LockInSR810']
+                    Task:
+                        task = 'lock_in_SetInputAndRef_task:LockInSetInputAndRefTask'
+                        view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
+                        instruments = ['labeq_exopy.Legacy.LockInSR810']
                 Task:
                     task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'
                     view = 'views.set_voltage_compliance_views:SetVoltageComplianceView'
