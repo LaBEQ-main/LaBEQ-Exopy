@@ -64,7 +64,7 @@ class MercuryiTC(VisaInstrument):
         value = f'{resp}'.split(':')[-1]
 
         if value != "VALID":
-            raise InstrIOError('MercuryiTC: VTI temp reading failed')
+            raise InstrIOError('MercuryiTC: VTI temp set failed')
 
     def read_VTI_pres(self):
         """
@@ -79,6 +79,17 @@ class MercuryiTC(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('MercuryiTC: VTI pressure reading failed')
+
+    def set_VTI_pres(self, setpoint):
+        """
+            set vti pres
+        """
+
+        resp = self.query(f'SET:DEV:DB5.P1:TEMP:LOOP:TSET:'+ str(setpoint))
+        value = f'{resp}'.split(':')[-1]
+
+        if value != "VALID":
+            raise InstrIOError('MercuryiTC: VTI pressure set failed')
     
     def read_VTI_valv_perc(self):
         """

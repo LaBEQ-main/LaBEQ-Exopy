@@ -539,6 +539,11 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments =   ['labeq_exopy.Legacy.MercuryiTC']
                         metadata = {'loopable': True}
                     Task:
+                        task = 'MercuryiTC_tasks:SetVTIPressureTask'
+                        view = 'views.MercuryiTC_views:SetVTIPressureView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                    Task:
                         task = 'MercuryiTC_tasks:ReadVTIValvePercentageTask'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.MercuryiTC']

@@ -51,3 +51,22 @@ enamldef SetTemperatureView(InstrView): view:
             entries_updater << task.list_accessible_database_entries
             tool_tip = fill("Temperature set point in K", 60)
 
+enamldef SetVTIPressureView(InstrView): view:
+    """View for the SetVTIPressureTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before execution.", 60)
+    Label:
+        text = 'Pressure Set Point (mB)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.pres_setpoint
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Pressure set point in mB", 60)
+

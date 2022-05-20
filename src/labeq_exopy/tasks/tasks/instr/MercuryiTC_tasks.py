@@ -86,6 +86,34 @@ class ReadVTIPressureTask(InstrumentTask):
         value = self.driver.read_VTI_pres()
         self.write_in_database('vti_pres', value)
 
+class SetVTIPressureTask(InstrumentTask):
+    """
+        Set the VTI pressure. 
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+    pres_setpoint = Str().tag(pref=True)
+
+    database_entries = set_default({'vti_pres_setpoint': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """
+        Wait and set the pressure.
+
+        """
+        sleep(self.wait_time)
+
+        #returns float if given a float, returns database entry value type if given a database entry name
+        value = self.format_and_eval_string(self.pres_setpoint)
+        self.driver.set_VTI_pres(value)
+        self.write_in_database('vti_pres_setpoint', value)
+
 class ReadVTIValvePercentageTask(InstrumentTask):
     """
         Read the VTI valve percentage. 
@@ -130,6 +158,8 @@ class ReadProbeTemperatureTask(InstrumentTask):
 
         """
         sleep(self.wait_time)
+
+        
         value = self.driver.read_probe_temp()
         self.write_in_database('probe_temp', value)
 
