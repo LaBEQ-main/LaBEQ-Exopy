@@ -415,7 +415,6 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'plot_task:PlotTask'
                     view = 'views.LivePlotter_views:LivePlotterView'
                     instruments =['labeq_exopy.Legacy.LivePlotter']
-
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'

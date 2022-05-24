@@ -32,16 +32,24 @@ enamldef LivePlotterView(InstrView): view:
                         "voltmeter.", 60)
     
     Label:
-        text = 'X'
+        text = 'X axis'
     QtLineCompleter:
             hug_width = 'ignore'
-            text := task.x
+            text := task.xcol
             entries_updater << task.list_accessible_database_entries
-            tool_tip = fill(" ", 60)
+            tool_tip = fill("Must match the header string of the desired data column in specified file.", 60)
     Label:
-        text = 'Y'
+        text = 'Y axis'
     QtLineCompleter:
             hug_width = 'ignore'
-            text := task.y
+            text := task.ycol
             entries_updater << task.list_accessible_database_entries
-            tool_tip = fill(" ", 60)
+            tool_tip = fill("Must match the header string in the data file you wish to plot", 60)
+
+    Label:
+        text = 'Data file'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.file
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Location of data to plot live.", 60)

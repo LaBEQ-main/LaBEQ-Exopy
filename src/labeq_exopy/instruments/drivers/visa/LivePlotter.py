@@ -20,78 +20,54 @@ import math
 import time
 from csv import writer
 
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import time
+
+from csv import writer
+from multiprocessing import Process
+import os
+
 class LivePlotter(VisaInstrument):
-    """Driver for the MercuryiPS superconducting magnet power supply 
-    manufactured by Oxford Instruments.
-
-    Parameters
-    ----------
-    see the `VisaInstrument` parameters in the `driver_tools` module
-
-    Methods
-    -------
-    read_x()
-        Return the x quadrature measured by the instrument
-
-    Notes
-
-    -----
+    """Live Plotter
 
     """
-
+    
+    xcol = ""
+    ycol = ""
+    file = ""
+    fname = ""
 
     def open_connection(self, **para):
         pass
 
     
-    def __init__(self, *args, **kwargs):
-        """Open the connection to the instr using the `connection_str`.
+    # def __init__(self, *args, **kwargs):
+    #     """Open the connection to the instr using the `connection_str`.
 
-        """
-        super(LivePlotter, self).__init__(*args, **kwargs)
-        self.y = []
-        self.x = []
+    #     """
+    #     super(LivePlotter, self).__init__(*args, **kwargs)
         
+
+    def start(self):
+        self.fname = (self.file.split("\\")[-1])
+        print('plotting',self.xcol,',',self.ycol,'data from: ',self.file)
         fig = plt.figure()
-        ax = fig.add_axes([0.1,0.1,0.8,0.8])
-        plt.ion()
-        ax.plot(self.x,self.y, 'b', linestyle='')
-        ax.set_title("Data Collection")
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        self.ax = ax
-            
+        ani = FuncAnimation(fig, self.animate, interval=500)
+        plt.tight_layout()
+        plt.show()
+    
+    def animate(self, i):
+    
+        data = pd.read_csv(self.file, sep = '\t')
+        x = data[self.xcol]
+        y = data[self.ycol]
 
-    def test(self, x, y):
-        
-        self.x.append(x)
-        self.y.append(y)
-        # print(f'x: {self.x}')
-        # print(f'y: {self.y}')
-        # ti = time.time()
-        self.ax.plot(self.x, self.y, color = 'b', marker = 'o', linestyle='')
-        # tbp = time.time()
-        plt.pause(0.001)
-        # tf = time.time()
-
-        # print(f'ti: {ti}, tbp: {tbp}, tf: {tf}')
-        # print(f'tbp - ti: {tbp-ti}')
-        # print(f'tf-tbp: {tf-tbp}')
-        # print(f'tf-ti: {tf-ti}')
-
-        # header = ['tf', 'tbp', 'ti']
-        # data = [tf, tbp, ti]
-        # with open('C:\\Users\\2administrator\\exopy\\tests\\LivePlottingTest\\data.csv', 'a', newline='') as f_object:
-  
-        #     # Pass this file object to csv.writer()
-        #     # and get a writer object
-        #     writer_object = writer(f_object)
-        
-        #     # Pass the list as an argument into
-        #     # the writerow()
-        #     writer_object.writerow(data)
-        
-        #     #Close the file object
-        #     f_object.close()
-
-        
+        plt.cla()
+        plt.xlabel(str(self.xcol))
+        plt.ylabel(str(self.ycol))
+        plt.title(f"Live plot: {self.fname}")
+        plt.plot(x, y, label=f'Channel {self.fname}')
+        plt.legend(loc='upper right')
+        plt.tight_layout()

@@ -26,20 +26,17 @@ class PlotTask(InstrumentTask):
     """
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
-    x = Str().tag(pref=True)
-    y = Str().tag(pref=True)
-
-    database_entries = set_default({'plot': 1.0})
+    xcol = Str().tag(pref=True)
+    ycol = Str().tag(pref=True)
+    file = Str().tag(pref=True)
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
     def perform(self):
-        """Wait and read the AC current.
-
         """
-        # sleep(self.wait_time)
+        """
 
-        x = self.format_and_eval_string(self.x)
-        y = self.format_and_eval_string(self.y)
-        self.driver.test(x, y)
-        # self.write_in_database('plot', value)
+        self.driver.xcol = self.xcol
+        self.driver.ycol = self.ycol
+        self.driver.file = self.file
+        self.driver.start()
