@@ -126,6 +126,13 @@ enamldef LaBEQManifest(PluginManifest):
                 path = 'visa'
                 starter = 'labeq_exopy.starter.visa'
                 Drivers:
+                    manufacturer = 'LaBEQ'
+                    Driver:
+                        driver = 'Timer_driver:Timer'
+                        model = 'Timer'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       }
+                Drivers:
                     manufacturer = 'Keysight'
                     Driver:
                         driver = 'agilent_multimeters:Agilent34410A'
@@ -405,7 +412,16 @@ enamldef LaBEQManifest(PluginManifest):
             Tasks:
                 path = 'instr'
                 group = 'instr'
-                
+                Task:
+                    task = 'Timer_tasks:InitiateTimer'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments = ['labeq_exopy.Legacy.Timer']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'Timer_tasks:GetElapsedTime'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments = ['labeq_exopy.Legacy.Timer']
+                    metadata = {'loopable': True}
                 Task:
                     task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
                     view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
