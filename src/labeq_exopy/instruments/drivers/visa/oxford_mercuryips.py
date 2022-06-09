@@ -276,39 +276,39 @@ class MercuryiPS(VisaInstrument):
             raise InstrIOError('MercuryiPS: Failed to read switch status')
     
     @secure_communication()
-    def read_sensor(self, device_name, value):
+    def read_sensor(self, device_name, var):
         """read the switch heater status"""
 
         print(device_name)
-        print(value)
+        print(var)
         #get address of device
         dev_addr = device_name.split('_')[1]
 
         print(dev_addr)
 
-        msg = f'READ:DEV:{dev_addr}:TEMP:SIG:{value}?'
+        msg = f'READ:DEV:{dev_addr}:TEMP:SIG:{var}?'
         print(msg)
 
         # send the query and obtain the status string
         resp = self.query(msg)
         print(resp)
 
-        #query will return string STAT:DEV:{dev_addr}:TEMP:SIG:{value}:#.####K. We only want the last value as a float.
+        #query will return string STAT:DEV:{dev_addr}:TEMP:SIG:{var}:#.####K. We only want the last value as a float.
         value = f'{resp}'.split(':')[-1]
 
-        if value == 'TEMP':
+        if var == 'TEMP':
             value = value.replace('K','')
-        elif value == "SLOP":
+        elif var == "SLOP":
             value = value.replace('R/K','')
-        elif value == "VOLT":
+        elif var == "VOLT":
             value = value.replace('mV','')
-        elif value == "RES":
+        elif var == "RES":
             value = value.replace('R','')
-        elif value == "SLOP":
+        elif var == "SLOP":
             value = value.replace('R/K','')
-        elif value == "CURR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
+        elif var == "CURR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
             value = value.replace('microA','')
-        elif value == "POWR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
+        elif var == "POWR":                   #currently not readable, likely due to greek letter mu for micro. ascii cant decode
             value = value.replace('microW','')
 
         return value 
