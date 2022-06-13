@@ -126,12 +126,17 @@ enamldef LaBEQManifest(PluginManifest):
                 path = 'visa'
                 starter = 'labeq_exopy.starter.visa'
                 Drivers:
+                    manufacturer = 'NF Corporation'
+                    Driver:
+                        driver = 'NF_LI5650_driver:LI5650'
+                        model = 'LI5650'
+                        connections = {'VisaTCPIP': {'resource_class': 'INSTR'}}
+                Drivers:
                     manufacturer = 'LaBEQ'
                     Driver:
                         driver = 'Timer_driver:Timer'
                         model = 'Timer'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       }
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'}}
                 Drivers:
                     manufacturer = 'Keysight'
                     Driver:
