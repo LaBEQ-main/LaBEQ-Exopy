@@ -24,3 +24,8 @@ class LI5650(VisaInstrument):
         super(LI5650, self).open_connection(**para)
         self.write_termination = '\n'
         self.read_termination = '\n'
+
+    def set_sens_mode(self, mode):
+        """ set sensitivity mode """
+        
+        self.write('SENS:VOLT:AC:RANG:AUTO ' + str(mode))
