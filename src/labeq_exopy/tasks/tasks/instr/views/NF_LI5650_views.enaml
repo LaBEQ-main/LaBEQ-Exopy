@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the NF LI5650 lock in amplifier.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+enamldef SetSensAndDynResrvView(InstrView): view:
+    """View for the SetSensAndDynResrvTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target current.", 60)
+    Label:
+        text = 'Sensitivity (V)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.sensitivity
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("range 10E-9 to 1, 1-2-5 sequence, in units of volts", 60)
+    Label:
+        text = 'Dynamic Reserve'
+    ObjectCombo:
+        items << list(task.get_member('dynres').items)
+        selected := task.dynres
+        tool_tip = fill("Available modes", 60)
+    
+    Label:
+        text = 'AUTO'
+    ObjectCombo:
+        items << list(task.get_member('mode').items)
+        selected := task.mode
+        tool_tip = fill("Available modes", 60)
+
+enamldef SetTimeConstantView(InstrView): view:
+    """View for the SetTimeConstantView.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before setting target current.", 60)
+    Label:
+        text = 'Time Constant (s)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.tc
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("range 5E-6 to 50E+3, in 1-2-5 sequence, in units of seconds", 60)
+    Label:
+        text = 'Slope'
+    ObjectCombo:
+        items << list(task.get_member('slope').items)
+        selected := task.slope
+        tool_tip = fill("Available modes", 60)
+

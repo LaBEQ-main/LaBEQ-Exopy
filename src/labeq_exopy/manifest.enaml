@@ -40,6 +40,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:
             id = 'Lock-in Amplifier'
             group = 'Lock-in Amplifier'
+        GroupTaskFilter:    
+            id = 'NF LI5650'
+            group = 'NF LI5650'
 
     Extension:
         id = 'startup'
@@ -427,21 +430,18 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_task_view:SimpleTaskView'
                     instruments = ['labeq_exopy.Legacy.Timer']
                     metadata = {'loopable': True}
-                Task:
-                    task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
-                    view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
-                    instruments = ['labeq_exopy.Legacy.IPS12010',
-                                   'labeq_exopy.Legacy.CS4',
-                                   'labeq_exopy.Legacy.C4G']
-                    metadata = {'loopable': True}
-                Task:
-                    task = 'apply_mag_field_task:ApplyMagFieldTask'
-                    view = 'views.apply_mag_field_view:ApplyMagFieldView'
-                    instruments = ['labeq_exopy.Legacy.IPS12010',
-                                   'labeq_exopy.Legacy.CS4',
-                                   'labeq_exopy.Legacy.C4G']
-                    metadata = {'loopable': True}
-
+                Tasks:
+                    group = 'NF LI5650'
+                    Task:
+                        task = 'NF_LI5650_tasks:SetSensAndDynResrvTask'
+                        view = 'views.NF_LI5650_views:SetSensAndDynResrvView'
+                        instruments =   ['labeq_exopy.Legacy.LI5650']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'NF_LI5650_tasks:SetTimeConstantTask'
+                        view = 'views.NF_LI5650_views:SetTimeConstantView'
+                        instruments =   ['labeq_exopy.Legacy.LI5650']
+                        metadata = {'loopable': True}
                 Tasks:
                     group = 'MercuryiPS'
                     Task:
@@ -814,3 +814,18 @@ enamldef LaBEQManifest(PluginManifest):
                     task = 'run_awg:RunAWGTask'
                     view = 'views.run_awg_views:RunAWGView'
                     instruments = ['labeq_exopy.Legacy.AWG']
+                Task:
+                    task = 'apply_mag_field_task:ApplyMagFieldAndDropTask'
+                    view = 'views.apply_mag_field_view:ApplyMagFieldAndDropView'
+                    instruments = ['labeq_exopy.Legacy.IPS12010',
+                                   'labeq_exopy.Legacy.CS4',
+                                   'labeq_exopy.Legacy.C4G']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'apply_mag_field_task:ApplyMagFieldTask'
+                    view = 'views.apply_mag_field_view:ApplyMagFieldView'
+                    instruments = ['labeq_exopy.Legacy.IPS12010',
+                                   'labeq_exopy.Legacy.CS4',
+                                   'labeq_exopy.Legacy.C4G']
+                    metadata = {'loopable': True}
+

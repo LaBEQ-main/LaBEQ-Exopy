@@ -29,3 +29,25 @@ class LI5650(VisaInstrument):
         """ set sensitivity mode """
         
         self.write('SENS:VOLT:AC:RANG:AUTO ' + str(mode))
+
+    def set_dynres(self, mode):
+        """ set dynamic reserve low/med/high """
+
+        self.write('SENS:DRES ' + str(mode))
+
+    def set_sensitivity(self, val):
+        """ set sensitivity range 10E-9 to 1, 1-2-5 sequence, unit Vrms """
+
+        self.write('SENS:VOLT:AC:RANG:UPP ' + str(val))
+
+    def set_tc(self, val):
+        """set time constant """
+
+        self.write('SENS:FILT:LPAS:TCON ' + str(val))
+    
+    def set_tc_slope(self, val):
+        """set time constant """
+
+        self.write('SENS:FILT:LPAS:SLOP ' + str(val))
+
+
