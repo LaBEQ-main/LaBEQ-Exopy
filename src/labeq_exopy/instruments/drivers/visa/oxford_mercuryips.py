@@ -235,7 +235,7 @@ class MercuryiPS(VisaInstrument):
         """ramp the magnetic field to the target value """
 
         #set cap on field change amount
-        intrvl_cap = 0.1
+        intrvl_cap = 12.0
 
         #get target to check against safety cap
         target = self.read_target_field()
