@@ -442,6 +442,11 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.NF_LI5650_views:SetTimeConstantView'
                         instruments =   ['labeq_exopy.Legacy.LI5650']
                         metadata = {'loopable': True}
+                    Task:
+                        task = 'NF_LI5650_tasks:SetInputAndRefTask'
+                        view = 'views.NF_LI5650_views:SetInputAndRefView'
+                        instruments =   ['labeq_exopy.Legacy.LI5650']
+                        metadata = {'loopable': True}
                 Tasks:
                     group = 'MercuryiPS'
                     Task:

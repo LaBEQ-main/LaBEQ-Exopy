@@ -69,456 +69,71 @@ class SetTimeConstantTask(InstrumentTask):
         self.write_in_database('tc', tc)
         self.write_in_database('slope', slope)
 
-            
+class SetInputAndRefTask(InstrumentTask):
+    """ Sets time constant (s) and slope (dB)"""
 
-class ReadSupplyFieldTask(InstrumentTask):
-    """     
-        Read the current field supply of the system. This value corresponds 
-    to "Field (T)" on the iPS UI. It represents the maximum field strength that
-    would be produced if the switch was opened to allow the PSU to drive the 
-    present circulating current through the coils. It is proportional to the
-    current driven by the PSU. 
-
-    Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
+    # Time to wait before execution
     wait_time = Float().tag(pref=True)
 
-    database_entries = set_default({'ips_supply_field': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the supply field.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_field()
-        self.write_in_database('ips_supply_field', value)
-
-class ReadSupplyFieldRateTask(InstrumentTask):
-    """     
-        Read the Supply field rate of the system in T/min. This value gives
-    the target rate of change of the supply field during ramping. 
-
-    Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'mag_field_setpoint': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the magnetic field.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_field_rate()
-        self.write_in_database('mag_field_setpoint', value)
-
-class ReadMagnetFieldTask(InstrumentTask):
-    """     
-        Read the magnetic field strength produced by the energized SC coils. 
-    This value corresponds to "Magnet (T)" on the iPS UI. This value is the 
-    strength of the field produced by the SC magnet coils measured by a 
-    magnetometer inside the system.
-
-
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'magnet_field': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the magnetic field produced by SC coils.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_magnet_field()
-        self.write_in_database('magnet_field', value)
-
-class ReadSupplyVoltageTask(InstrumentTask):
-    """     
-        Read voltage supplied by magnet PSU in units of volts (V).
     
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_supply_voltage': 0.0})
+    input = Enum('A', 'AB', 'I').tag(pref=True)
+    coupling = Enum('AC', 'DC').tag(pref=True)
+    refsource = Enum('INT OSC', 'REF IN', 'SIGNAL').tag(pref=True)
+    RefInType = Enum('SIN', 'TPOS', 'TNEG').tag(pref=True)
+    IntOscFreq = Str().tag(pref=True)
+    IntOscAmp = Str().tag(pref=True)
+    IntOscRange = Str().tag(pref=True)
+    RefSigPhaseShift = Str().tag(pref=True)
 
     wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the supply voltage.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_voltage()
-        self.write_in_database('ips_supply_voltage', value)
-
-class ReadSupplyCurrentTask(InstrumentTask):
-    """     
-        Read current supplied by magnet PSU in units of Amps (A).
     
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_supply_current': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
+    database_entries = set_default({'input': ''})
+    database_entries = set_default({'coupling': ''})
+    database_entries = set_default({'refsource': ''})
+    database_entries = set_default({'RefInType': ''})
+    database_entries = set_default({'IntOscFreq': ''})
+    database_entries = set_default({'IntOscAmp': ''})
+    database_entries = set_default({'IntOscRange': ''})
+    database_entries = set_default({'RefSigPhaseShift': ''})
 
     def perform(self):
-        """Wait and read the supply current.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_current()
-        self.write_in_database('ips_supply_current', value)
-
-class ReadSupplyCurrentRateTask(InstrumentTask):
-    """     
-        Read supply current rate provided by PSU in units of volts per min (A/min).
-    
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_supply_current_rate': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the supply current rate.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_current_rate()
-        self.write_in_database('ips_supply_current_rate', value)
-
-class ReadMagnetCurrentTask(InstrumentTask):
-    """     
-        Read the current circulating through the magnet coils in units of Amps (A).
-    
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_magnet_current': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the magnet current.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_supply_current()
-        self.write_in_database('ips_magnet_current', value)
-
-class ReadTargetCurrentTask(InstrumentTask):
-    """     
-        Read target current in units of Amps (A). The target current is a 
-    quantity stored in memory. It is the amount of current that the 
-    iPS will ramp up to if commanded to do so.
         
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_target_current': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the target current.
-
-        """
         sleep(self.wait_time)
 
-        value = self.driver.read_target_current()
-        self.write_in_database('ips_target_current', value)
+        input = self.input
+        self.driver.set_sig_input(input)
+        self.write_in_database('input', input)
 
-class SetTargetCurrentTask(InstrumentTask):
-    """
-        Sets the target. 
+        coupling = self.coupling
+        self.driver.set_input_coup(coupling)
+        self.write_in_database('coupling', coupling)
 
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the mramp.
+        refsource = self.refsource
+        self.driver.set_ref_sig(refsource)
+        self.write_in_database('refsource', refsource)
 
-    """
-    # Time to wait before the ramp.
-    wait_time = Float().tag(pref=True)
-    target_current = Str().tag(pref=True)
-
-    database_entries = set_default({'ips_target_current': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the magnetic field.
-
-        """
-        sleep(self.wait_time)
-
-        #returns float if given a float, returns database entry value type if given a database entry name
-        value = self.format_and_eval_string(self.target_current)
-
-        self.driver.set_target_current(value)
-        self.write_in_database('ips_target_current', value)
-
-class ReadTargetCurrentRateTask(InstrumentTask):
-    """     
-        Read target current rate in units of Amps/minute (A/m). The target 
-    current rate is a quantity stored in memory. It is the rate at which the 
-    iPS will ramp the current when commanded to do so.
+        if refsource == 'REF IN':
+            RefInType = self.RefInType
+            self.driver.set_refin_type(RefInType)
+            self.write_in_database('RefInType', RefInType)
         
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
+        if refsource == 'INT OSC':
 
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
+            #set int osc freq
+            IntOscFreq = self.format_and_eval_string(self.IntOscFreq)
+            self.driver.set_psd1_freq(IntOscFreq)
+            self.write_in_database('IntOscFreq', IntOscFreq)
 
-    database_entries = set_default({'ips_target_current_rate': 0.0})
+            #set int osc amplitude
+            IntOscAmp = self.format_and_eval_string(self.IntOscAmp)
+            self.driver.set_psd1_amp(IntOscAmp)
+            self.write_in_database('IntOscAmp', IntOscAmp)
 
-    wait = set_default({'activated': True, 'wait': ['instr']})
+            #set int osc range
+            IntOscRange = self.format_and_eval_string(self.IntOscRange)
+            self.driver.set_psd1_range(IntOscRange)
+            self.write_in_database('IntOscRange', IntOscRange)
 
-    def perform(self):
-        """Wait and read the target current rate.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_target_current_rate()
-        self.write_in_database('ips_target_current_rate', value)
-
-class SetTargetCurrentRateTask(InstrumentTask):
-    """
-        Sets the target current ramp rate. 
-
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the mramp.
-
-    """
-    # Time to wait before the ramp.
-    wait_time = Float().tag(pref=True)
-    target_current_rate = Str().tag(pref=True)
-
-    database_entries = set_default({'ips_target_current_rate': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and set the target current ramp rate.
-
-        """
-        sleep(self.wait_time)
-
-        #returns float if given a float, returns database entry value type if given a database entry name
-        value = self.format_and_eval_string(self.target_current_rate)
-
-        self.driver.set_target_current_rate(value)
-        self.write_in_database('ips_target_current_rate', value)
-
-class ReadTargetFieldTask(InstrumentTask):
-    """     
-        Read target field in units of Tesla (T). The target field is a
-    quantity stored in memory. It's an implicit target current. When the
-    iPS is commanded to ramp to this set point, it will drive the current 
-    necessary to produce the target field value in the coils. The switch 
-    heater must be open in order for the coils to be energized.
-        
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_target_field': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the target field.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_target_field()
-        self.write_in_database('ips_target_field', value)
-
-class SetTargetFieldTask(InstrumentTask):
-    """
-        Sets the target field. 
-
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the mramp.
-
-    """
-    # Time to wait before the ramp.
-    wait_time = Float().tag(pref=True)
-    target_field = Str().tag(pref=True)
-
-    database_entries = set_default({'ips_target_field': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and set the target field.
-
-        """
-        sleep(self.wait_time)
-
-        #returns float if given a float, returns database entry value type if given a database entry name
-        value = self.format_and_eval_string(self.target_field)
-
-        self.driver.set_target_field(value)
-        self.write_in_database('ips_target_field', value)
-
-class ReadTargetFieldRateTask(InstrumentTask):
-    """     
-        Read target field rate in units of Tesla/minute (T/m). The target field
-    rate is a quantity stored in memory. It's an implicit target current rate. 
-    It is the rate at which the iPS will ramp the field to the target field by 
-    driving current when commanded to do so.
-        
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_target_field_rate': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the target field rate.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_target_field_rate()
-        self.write_in_database('ips_target_field_rate', value)
-
-class SetTargetFieldRateTask(InstrumentTask):
-    """
-        Sets the target field rate. 
-
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the mramp.
-
-    """
-    # Time to wait before the ramp.
-    wait_time = Float().tag(pref=True)
-    target_field_rate = Str().tag(pref=True)
-
-    database_entries = set_default({'ips_target_field_rate': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and set the target field rate.
-
-        """
-        sleep(self.wait_time)
-
-        #returns float if given a float, returns database entry value type if given a database entry name
-        value = self.format_and_eval_string(self.target_field_rate)
-
-        self.driver.set_target_field_rate(value)
-        self.write_in_database('ips_target_field_rate', value)
-
-class ReadSwitchHeaterStatusTask(InstrumentTask):
-    """     
-        Read switch heater status. Will return "ON" or "OFF" and store
-    in the database.w
-        
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the operation.
-
-    """
-    # Time to wait before operation.
-    wait_time = Float().tag(pref=True)
-
-    database_entries = set_default({'ips_switch_heater_status': 0.0})
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the switch heater status.
-
-        """
-        sleep(self.wait_time)
-
-        value = self.driver.read_switch_status()
-        self.write_in_database('ips_switch_heater_status', value)
-
-class RampToTargetTask(InstrumentTask):
-    """
-        Ramps the magnetic field to target field value in Tesla (T). It drives 
-    current from the PSU to achieve the target field strength at the target rate. 
-    If the switch heater is OFF, then the operation will throw an error. If the 
-    target field is greater than 0.1T, the operaton will throw an error. The 
-    supply field and the magnet field must be equal before ramping otherwise the 
-    magnet may quench.The switch heater must be open in order to energize the 
-    magnet coils. 
-
-        Setting the target current in favor of the target field before executing 
-    the RampToTargetTask has the same effect. The quantities are coupled. When one 
-    is set, the other changes to reflect the corresponding current or field.
-
-        Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the mramp.
-
-    """
-    # Time to wait before the ramp.
-    wait_time = Float().tag(pref=True)
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-
-    def perform(self):
-        """Wait and read the magnetic field.
-
-        """
-        sleep(self.wait_time)
-        self.driver.ramp_to_target()
-
+        RefSigPhaseShift = self.format_and_eval_string(self.RefSigPhaseShift)
+        self.driver.set_psd1_phase(RefSigPhaseShift)
+        self.write_in_database('RefSigPhaseShift', RefSigPhaseShift)

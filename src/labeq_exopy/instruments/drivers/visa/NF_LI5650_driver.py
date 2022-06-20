@@ -49,5 +49,53 @@ class LI5650(VisaInstrument):
         """set time constant """
 
         self.write('SENS:FILT:LPAS:SLOP ' + str(val))
+    
+    def set_sig_input(self, val):
+        """set signal input"""
 
+        self.write('ROUT:TERM ' + str(val))
 
+    def set_input_coup(self, val):
+        """set input coupling """
+
+        self.write('INP:COUP ' + str(val))
+
+    def set_ref_sig(self, val):
+        """set reference signal """
+
+        if val == "REF IN":
+            self.write('ROUT2:TERM RINP')
+        elif val == "INT OSC":
+            self.write('ROUT2:TERM IOSC')
+        elif val == "SIGNAL":
+            self.write('ROUT2:TERM SINP')
+    
+    def set_refin_type(self, val):
+        """set reference input type """
+        
+        if val == "SIN":
+            self.write('INP2:TYPE SIN')
+        elif val == "TPOS":
+            self.write('INP2:TYPE TPOS')
+        elif val == "TNEG":
+            self.write('INP2:TYPE TNEG')
+    
+    def set_psd1_freq(self, val):
+        """set psd1 freq"""
+        
+        self.write('SOUR:FREQ ' +str(val))
+    
+    def set_psd1_amp(self, val):
+        """set psd1 amp"""
+        
+        self.write('SOUR:VOLT ' +str(val))
+
+    def set_psd1_range(self, val):
+        """set psd1 amp"""
+        
+        self.write('SOUR:VOLT:RANG ' +str(val))
+
+    def set_psd1_phase(self, val):
+        """set psd1 phase"""
+        
+        self.write('SENS:PHAS ' +str(val))
