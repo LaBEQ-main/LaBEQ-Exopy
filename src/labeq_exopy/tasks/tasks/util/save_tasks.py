@@ -53,7 +53,7 @@ class SaveTask(SimpleTask):
     file_object = Value()
 
     #: Opening mode to use when saving to a file.
-    file_mode = Enum('New', 'Add')
+    file_mode = Enum('Add', 'New').tag(pref=True)
 
     #: Header to write at the top of the file.
     header = Str().tag(pref=True)
@@ -86,6 +86,7 @@ class SaveTask(SimpleTask):
         file when the expected number of lines has been written.
 
         """
+        print(f'self.file_mode1: {self.file_mode}')
         # Initialisation.
         if not self.initialized:
 
@@ -100,7 +101,14 @@ class SaveTask(SimpleTask):
                 full_folder_path = self.format_string(self.folder)
                 filename = self.format_string(self.filename)
                 full_path = os.path.join(full_folder_path, filename)
-                mode = 'wb' if self.file_mode == 'New' else 'ab'
+                #mode = 'wb' if self.file_mode == 'New' else 'ab'
+                if self.file_mode == 'New':
+                    mode = 'wb'
+                else:
+                    mode = 'ab'
+
+                print(f'self.file_mode2: {self.file_mode}')
+                print(f'mode: {mode}')
 
                 try:
                     self.file_object = open(full_path, mode)
