@@ -118,7 +118,7 @@ enamldef SetInputAndRefView(InstrView): view:
         selected := task.RefInType
         tool_tip = fill("Setting issued only if REF IN selected from Reference Source", 60)
     Label:
-        text = 'INT OSC Frequency'
+        text = 'INT OSC Frequency (Hz)'
     QtLineCompleter:
             text := task.IntOscFreq
             entries_updater << task.list_accessible_database_entries
@@ -126,7 +126,7 @@ enamldef SetInputAndRefView(InstrView): view:
                             "unit Hz"
                             , 60)
     Label:
-        text = 'INT OSC Amplitude'
+        text = 'INT OSC Amplitude (Vrms)'
     QtLineCompleter:
             text := task.IntOscAmp
             entries_updater << task.list_accessible_database_entries
@@ -134,14 +134,14 @@ enamldef SetInputAndRefView(InstrView): view:
                             "(at output voltage range full scale), unit Vrms"
                             , 60)
     Label:
-        text = 'INT OSC Range'
+        text = 'INT OSC Range (V)'
     QtLineCompleter:
             text := task.IntOscRange
             entries_updater << task.list_accessible_database_entries
             tool_tip = fill("Internal oscillator output voltage range,  range {10E-3|100E-3|1}, unit V"
                             , 60)
     Label:
-        text = 'Ref Phase Shift'
+        text = 'Ref Phase Shift (degrees)'
     QtLineCompleter:
             text := task.RefSigPhaseShift
             entries_updater << task.list_accessible_database_entries
