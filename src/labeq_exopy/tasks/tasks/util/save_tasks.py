@@ -86,7 +86,6 @@ class SaveTask(SimpleTask):
         file when the expected number of lines has been written.
 
         """
-        print(f'self.file_mode1: {self.file_mode}')
         # Initialisation.
         
         if not self.initialized:
@@ -103,9 +102,6 @@ class SaveTask(SimpleTask):
                 filename = self.format_string(self.filename)
                 full_path = os.path.join(full_folder_path, filename)
                 mode = 'wb' if self.file_mode == 'New' else 'ab'
-
-                print(f'self.file_mode2: {self.file_mode}')
-                print(f'mode: {mode}')
 
                 try:
                     self.file_object = open(full_path, mode)
