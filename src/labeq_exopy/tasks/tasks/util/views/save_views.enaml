@@ -150,6 +150,7 @@ enamldef SaveView(BaseTaskView):
         ed.operations = ('add', 'move', 'remove')
         ed.attributes = {'task': task}
 
+    
 
 enamldef SaveFileView(BaseTaskView):
     """View for the save file task.
