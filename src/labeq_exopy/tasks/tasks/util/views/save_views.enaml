@@ -134,8 +134,9 @@ enamldef SaveView(BaseTaskView):
                 entries_updater << task.list_accessible_database_entries
                 tool_tip = FORMATTER_TOOLTIP
             ObjectCombo: mode:
-                items = list(task.get_member('file_mode').items)
+                items << list(task.get_member('file_mode').items)
                 selected := task.file_mode
+                tool_tip = fill("", 60)
             PushButton: header:
                 text = 'Header'
                 hug_width = 'strong'
