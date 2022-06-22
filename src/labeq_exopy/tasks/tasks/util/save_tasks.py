@@ -88,6 +88,7 @@ class SaveTask(SimpleTask):
         """
         print(f'self.file_mode1: {self.file_mode}')
         # Initialisation.
+        
         if not self.initialized:
 
             self.line_index = 0
@@ -121,10 +122,12 @@ class SaveTask(SimpleTask):
                     for line in h.split('\n'):
                         self.file_object.write(('# ' + line +
                                                 '\n').encode('utf-8'))
-                labels = [self.format_string(s) for s in self.saved_values]
-                self.file_object.write(('\t'.join(labels) +
-                                        '\n').encode('utf-8'))
-                self.file_object.flush()
+                
+                if self.file_mode == "New":
+                    labels = [self.format_string(s) for s in self.saved_values]
+                    self.file_object.write(('\t'.join(labels) +
+                                            '\n').encode('utf-8'))
+                    self.file_object.flush()
 
             if self.saving_target != 'File':
                 # TODO add more flexibilty on the dtype (possible complex
