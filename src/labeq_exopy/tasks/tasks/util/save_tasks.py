@@ -101,11 +101,7 @@ class SaveTask(SimpleTask):
                 full_folder_path = self.format_string(self.folder)
                 filename = self.format_string(self.filename)
                 full_path = os.path.join(full_folder_path, filename)
-                #mode = 'wb' if self.file_mode == 'New' else 'ab'
-                if self.file_mode == 'New':
-                    mode = 'wb'
-                else:
-                    mode = 'ab'
+                mode = 'wb' if self.file_mode == 'New' else 'ab'
 
                 print(f'self.file_mode2: {self.file_mode}')
                 print(f'mode: {mode}')
