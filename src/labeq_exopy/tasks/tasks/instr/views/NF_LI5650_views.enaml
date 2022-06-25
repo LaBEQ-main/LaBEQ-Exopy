@@ -1,0 +1,168 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the NF LI5650 lock in amplifier.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+enamldef MeasureView(InstrView): view:
+    """View for the MeasureTask. Assumes data output is in "R,PHASE,X,Y" format.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Parameter'
+    ObjectCombo:
+        items << list(task.get_member('val').items)
+        selected := task.val
+        tool_tip = fill("Available parameters to measure", 60)
+
+enamldef SetSensAndDynResrvView(InstrView): view:
+    """View for the SetSensAndDynResrvTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Sensitivity (V)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.sensitivity
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("range 10E-9 to 1, 1-2-5 sequence, in units of volts", 60)
+    Label:
+        text = 'Dynamic Reserve'
+    ObjectCombo:
+        items << list(task.get_member('dynres').items)
+        selected := task.dynres
+        tool_tip = fill("Available modes", 60)
+    
+    Label:
+        text = 'AUTO'
+    ObjectCombo:
+        items << list(task.get_member('mode').items)
+        selected := task.mode
+        tool_tip = fill("Available modes", 60)
+
+enamldef SetTimeConstantView(InstrView): view:
+    """View for the SetTimeConstantView.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Time Constant (s)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.tc
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("range 5E-6 to 50E+3, in 1-2-5 sequence, in units of seconds", 60)
+    Label:
+        text = 'Slope'
+    ObjectCombo:
+        items << list(task.get_member('slope').items)
+        selected := task.slope
+        tool_tip = fill("Available modes", 60)
+
+enamldef SetInputAndRefView(InstrView): view:
+
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Signal Input'
+    ObjectCombo:
+        items << list(task.get_member('input').items)
+        selected := task.input
+        tool_tip = fill("A - single end voltage (terminal A, 1 V max), "
+                        "AB -  Differential voltage (terminal A-B, 1 V max), "
+                        "I - Current (terminal I, 1 μA max when conversion gain is 1MV/A 10 nA max when conversion gain is 100MV/A)"
+                        , 60)
+    Label:
+        text = 'Input Coupling'
+    ObjectCombo:
+        items << list(task.get_member('coupling').items)
+        selected := task.coupling
+        tool_tip = fill("AC - AC coupling (cutoff frequency approx. 0.1 Hz)"
+                        "DC - DC coupling", 60)
+    Label:
+        text = 'Reference Source'
+    ObjectCombo:
+        items << list(task.get_member('refsource').items)
+        selected := task.refsource
+        tool_tip = fill("REF IN - reference input connector"
+                        "INT OSC - internal oscillator"
+                        "SIGNAL - signal input connector"
+                        ,60)
+    Label:
+        text = 'REF IN Type'
+    ObjectCombo:
+        items << list(task.get_member('RefInType').items)
+        selected := task.RefInType
+        tool_tip = fill("Setting issued only if REF IN selected from Reference Source", 60)
+    Label:
+        text = 'INT OSC Frequency (Hz)'
+    QtLineCompleter:
+            text := task.IntOscFreq
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Internal oscillator frequency, range 5E-4 to 2.6E+5, resolution 6 digits (0.1 mHz under 100 Hz),"
+                            "unit Hz"
+                            , 60)
+    Label:
+        text = 'INT OSC Amplitude (Vrms)'
+    QtLineCompleter:
+            text := task.IntOscAmp
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Internal oscillator amplitude, range 0.00000 to 1.000, setting resolution 4 digits"
+                            "(at output voltage range full scale), unit Vrms"
+                            , 60)
+    Label:
+        text = 'INT OSC Range (V)'
+    QtLineCompleter:
+            text := task.IntOscRange
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Internal oscillator output voltage range,  range {10E-3|100E-3|1}, unit V"
+                            , 60)
+    Label:
+        text = 'Ref Phase Shift (degrees)'
+    QtLineCompleter:
+            text := task.RefSigPhaseShift
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Phase shift, range -180.000 to +179.999, resolution 0.001, unit degrees"
+                            , 60)
+    

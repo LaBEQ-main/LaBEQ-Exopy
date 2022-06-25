@@ -16,22 +16,7 @@ from ..visa_tools import VisaInstrument
 
 class MercuryiTC(VisaInstrument):
     """Driver for the MercuryiTC temperature controller 
-    manufactured by Oxford Instruments.
-
-    Parameters
-    ----------
-    see the `VisaInstrument` parameters in the `driver_tools` module
-
-    Methods
-    -------
-    read_x()
-        Return the x quadrature measured by the instrument
-
-    Notes
-
-    -----
-
-    """
+    manufactured by Oxford Instruments. """
 
     def open_connection(self, **para):
         """Open the connection to the instr using the `connection_str`.
