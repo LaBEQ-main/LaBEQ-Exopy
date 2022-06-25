@@ -20,6 +20,24 @@ from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 from exopy.utils.widgets.qt_completers import QtLineCompleter
 
+enamldef MeasureView(InstrView): view:
+    """View for the MeasureTask. Assumes data output is in "R,PHASE,X,Y" format.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Parameter'
+    ObjectCombo:
+        items << list(task.get_member('val').items)
+        selected := task.val
+        tool_tip = fill("Available parameters to measure", 60)
+
 enamldef SetSensAndDynResrvView(InstrView): view:
     """View for the SetSensAndDynResrvTask.
 

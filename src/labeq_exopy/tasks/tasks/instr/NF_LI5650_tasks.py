@@ -13,6 +13,24 @@ from atom.api import Float, Str, Enum, set_default
 
 from exopy.tasks.api import InstrumentTask, InterfaceableTaskMixin
 
+class NFLockInMeasureTask(InstrumentTask):
+    """ Measure lock in output"""
+
+    # Time to wait before execution
+    wait_time = Float().tag(pref=True)
+
+    val = Enum('R', 'Phase', 'X', 'Y').tag(pref=True)
+    wait = set_default({'activated': True, 'wait': ['instr']})
+    database_entries = set_default({'val': 0.0})
+
+    def perform(self):
+        
+        sleep(self.wait_time)
+
+        num = self.driver.measure(self.val)
+        self.write_in_database('val', num)
+
+
 class SetSensAndDynResrvTask(InstrumentTask):
     """ Sets sensitivity mode. OFF - sensitivity and dynamic reserve chosen by device. ON - chosen by user."""
 

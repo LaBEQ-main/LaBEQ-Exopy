@@ -25,6 +25,31 @@ class LI5650(VisaInstrument):
         self.write_termination = '\n'
         self.read_termination = '\n'
 
+    def measure(self, val):
+        """ set sensitivity mode """
+        
+        #first make sure data output format is DATA1,DATA2,DATA3,DATA4
+        self.write('DATA 30')
+        
+        #now ensure data outputs are R,Phase,X,Y
+        self.write('CALC1:FORM MLIN')
+        self.write('CALC2:FORM PHAS')
+        self.write('CALC3:FORM REAL')
+        self.write('CALC4:FORM IMAG')
+
+        #get data
+        data = (self.query('FETC?')).split(',')
+
+        #measure the specified value
+        if val == 'R':
+            return data[0]
+        elif val == 'Phase':
+            return data[1]
+        elif val == 'X':
+            return data[2]
+        elif val == 'Y':
+            return data[3]
+
     def set_sens_mode(self, mode):
         """ set sensitivity mode """
         
