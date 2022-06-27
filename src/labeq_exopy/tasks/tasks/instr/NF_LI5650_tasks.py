@@ -44,7 +44,6 @@ class SetSensAndDynResrvTask(InstrumentTask):
     wait = set_default({'activated': True, 'wait': ['instr']})
     
     database_entries = set_default({'val': 0.0})
-    database_entries = set_default({'mode': 'none'})
 
     def perform(self):
         
@@ -58,7 +57,7 @@ class SetSensAndDynResrvTask(InstrumentTask):
             self.write_in_database('val', val)
         elif self.mode == "ON":
             self.driver.set_sens_mode(self.mode)
-            self.write_in_database('mode', self.mode)
+
 
 class SetTimeConstantTask(InstrumentTask):
     """ Sets time constant (s) and slope (dB)"""
@@ -69,10 +68,13 @@ class SetTimeConstantTask(InstrumentTask):
     tc = Str().tag(pref=True)
     slope = Enum('6', '12', '18', '24').tag(pref=True)
 
-    wait = set_default({'activated': True, 'wait': ['instr']})
     
-    database_entries = set_default({'tc': 0.0})
+    
+    #database_entries = set_default({'tc': 0.0})
     database_entries = set_default({'slope': 0.0})
+    database_entries = set_default({'tc1': 0.0})
+    
+    wait = set_default({'activated': True, 'wait': ['instr']})
 
     def perform(self):
         
@@ -80,11 +82,10 @@ class SetTimeConstantTask(InstrumentTask):
 
         tc = self.format_and_eval_string(self.tc)
         self.driver.set_tc(tc)
+        self.write_in_database('tc1', tc)
 
         slope = self.format_and_eval_string(self.slope)
         self.driver.set_tc_slope(slope)
-
-        self.write_in_database('tc', tc)
         self.write_in_database('slope', slope)
 
 class SetInputAndRefTask(InstrumentTask):
@@ -104,15 +105,11 @@ class SetInputAndRefTask(InstrumentTask):
     RefSigPhaseShift = Str().tag(pref=True)
 
     wait = set_default({'activated': True, 'wait': ['instr']})
-    
-    database_entries = set_default({'input': ''})
-    database_entries = set_default({'coupling': ''})
-    database_entries = set_default({'refsource': ''})
-    database_entries = set_default({'RefInType': ''})
-    database_entries = set_default({'IntOscFreq': ''})
-    database_entries = set_default({'IntOscAmp': ''})
-    database_entries = set_default({'IntOscRange': ''})
-    database_entries = set_default({'RefSigPhaseShift': ''})
+
+    database_entries = set_default({'IntOscFreq': 0.0})
+    database_entries = set_default({'IntOscAmp': 0.0})
+    database_entries = set_default({'IntOscRange': 0.0})
+    database_entries = set_default({'RefSigPhaseShift': 0.0})
 
     def perform(self):
         
@@ -120,20 +117,16 @@ class SetInputAndRefTask(InstrumentTask):
 
         input = self.input
         self.driver.set_sig_input(input)
-        self.write_in_database('input', input)
 
         coupling = self.coupling
         self.driver.set_input_coup(coupling)
-        self.write_in_database('coupling', coupling)
 
         refsource = self.refsource
         self.driver.set_ref_sig(refsource)
-        self.write_in_database('refsource', refsource)
 
         if refsource == 'REF IN':
             RefInType = self.RefInType
             self.driver.set_refin_type(RefInType)
-            self.write_in_database('RefInType', RefInType)
         
         if refsource == 'INT OSC':
 
