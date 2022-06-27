@@ -68,16 +68,8 @@ class SetTimeConstantTask(InstrumentTask):
 
     tc = Str().tag(pref=True)
     slope = Enum('6', '12', '18', '24').tag(pref=True)
-<<<<<<< Updated upstream
-
-    wait = set_default({'activated': True, 'wait': ['instr']})
-    
-    database_entries = set_default({'tc': 0.0})
-    database_entries = set_default({'slope': 0.0})
-=======
     
     wait = set_default({'activated': True, 'wait': ['instr']})
->>>>>>> Stashed changes
 
     def perform(self):
         
@@ -88,10 +80,6 @@ class SetTimeConstantTask(InstrumentTask):
 
         slope = self.format_and_eval_string(self.slope)
         self.driver.set_tc_slope(slope)
-
-        self.write_in_database('tc', tc)
-        self.write_in_database('slope', slope)
->>>>>>> Stashed changes
 
 class SetInputAndRefTask(InstrumentTask):
     """ Sets time constant (s) and slope (dB)"""
