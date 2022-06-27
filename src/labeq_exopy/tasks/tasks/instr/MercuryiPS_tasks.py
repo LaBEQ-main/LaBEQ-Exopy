@@ -485,3 +485,24 @@ class ReadTempSensorTask(InterfaceableTaskMixin, InstrumentTask):
         sleep(self.wait_time)
         val = self.driver.read_sensor(self.temp_sensor, self.value)
         self.write_in_database('val', val)
+
+class HoldFieldTask(InstrumentTask):
+    """
+        Switches controller state to Hold from either Ramp To Set Point or Ramp To Zero.
+    Required before a new set point may be ramped to.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before perfoming the mramp.
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and execute.
+
+        """
+        sleep(self.wait_time)
+        self.driver.hold_field()

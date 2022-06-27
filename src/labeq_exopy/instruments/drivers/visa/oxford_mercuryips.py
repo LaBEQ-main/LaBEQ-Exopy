@@ -256,7 +256,7 @@ class MercuryiPS(VisaInstrument):
             if field_delta <= intrvl_cap:
                 self.query('SET:DEV:GRPZ:PSU:ACTN:RTOS')
             else:
-                raise InstrIOError(f'MercuryiPS: Field strength set point greater than 0.1T. Reduce and try again.')
+                raise InstrIOError(f'MercuryiPS: Field strength set point greater than {intrvl_cap}. Reduce and try again.')
         else:
             raise InstrIOError('MercuryiPS: Failed to read switch status')
 
@@ -312,3 +312,9 @@ class MercuryiPS(VisaInstrument):
             value = value.replace('microW','')
 
         return value 
+
+    @secure_communication()
+    def hold_field(self):
+        """sets field to hold"""
+        
+        self.query('SET:DEV:GRPZ:PSU:ACTN:HOLD')

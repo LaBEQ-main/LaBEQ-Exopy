@@ -407,6 +407,7 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'save_tasks:SaveTask'
                     view = 'views.save_views:SaveView'
+                    metadata = {'loopable': True}
                 Task:
                     task = 'save_tasks:SaveFileTask'
                     view = 'views.save_views:SaveFileView'
@@ -543,6 +544,11 @@ enamldef LaBEQManifest(PluginManifest):
                     Task:
                         task = 'MercuryiPS_tasks:ReadTempSensorTask'
                         view = 'views.MercuryiPS_views:ReadTempSensorView'
+                        instruments =   ['labeq_exopy.Legacy.MercuryiPS']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'MercuryiPS_tasks:HoldFieldTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.MercuryiPS']
                         metadata = {'loopable': True}
                 Tasks:
