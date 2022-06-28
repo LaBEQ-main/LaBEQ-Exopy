@@ -54,7 +54,6 @@ class SetSensAndDynResrvTask(InstrumentTask):
             
             self.driver.set_sensitivity(val)
             self.driver.set_dynres(self.dynres)
-            self.write_in_database('val', val)
         elif self.mode == "ON":
             self.driver.set_sens_mode(self.mode)
 
@@ -67,12 +66,6 @@ class SetTimeConstantTask(InstrumentTask):
 
     tc = Str().tag(pref=True)
     slope = Enum('6', '12', '18', '24').tag(pref=True)
-
-    
-    
-    #database_entries = set_default({'tc': 0.0})
-    database_entries = set_default({'slope': 0.0})
-    database_entries = set_default({'tc1': 0.0})
     
     wait = set_default({'activated': True, 'wait': ['instr']})
 
@@ -82,11 +75,9 @@ class SetTimeConstantTask(InstrumentTask):
 
         tc = self.format_and_eval_string(self.tc)
         self.driver.set_tc(tc)
-        self.write_in_database('tc1', tc)
 
         slope = self.format_and_eval_string(self.slope)
         self.driver.set_tc_slope(slope)
-        self.write_in_database('slope', slope)
 
 class SetInputAndRefTask(InstrumentTask):
     """ Sets time constant (s) and slope (dB)"""
@@ -105,11 +96,6 @@ class SetInputAndRefTask(InstrumentTask):
     RefSigPhaseShift = Str().tag(pref=True)
 
     wait = set_default({'activated': True, 'wait': ['instr']})
-
-    database_entries = set_default({'IntOscFreq': 0.0})
-    database_entries = set_default({'IntOscAmp': 0.0})
-    database_entries = set_default({'IntOscRange': 0.0})
-    database_entries = set_default({'RefSigPhaseShift': 0.0})
 
     def perform(self):
         
@@ -133,18 +119,14 @@ class SetInputAndRefTask(InstrumentTask):
             #set int osc freq
             IntOscFreq = self.format_and_eval_string(self.IntOscFreq)
             self.driver.set_psd1_freq(IntOscFreq)
-            self.write_in_database('IntOscFreq', IntOscFreq)
 
             #set int osc amplitude
             IntOscAmp = self.format_and_eval_string(self.IntOscAmp)
             self.driver.set_psd1_amp(IntOscAmp)
-            self.write_in_database('IntOscAmp', IntOscAmp)
 
             #set int osc range
             IntOscRange = self.format_and_eval_string(self.IntOscRange)
             self.driver.set_psd1_range(IntOscRange)
-            self.write_in_database('IntOscRange', IntOscRange)
 
         RefSigPhaseShift = self.format_and_eval_string(self.RefSigPhaseShift)
         self.driver.set_psd1_phase(RefSigPhaseShift)
-        self.write_in_database('RefSigPhaseShift', RefSigPhaseShift)
