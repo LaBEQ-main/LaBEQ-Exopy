@@ -42,6 +42,9 @@ class SetSensAndDynResrvTask(InstrumentTask):
     mode = Enum('OFF', 'ON').tag(pref=True)
 
     wait = set_default({'activated': True, 'wait': ['instr']})
+    
+    database_entries = set_default({'val': 0.0})
+    database_entries = set_default({'mode': 'none'})
 
     def perform(self):
         
@@ -52,8 +55,10 @@ class SetSensAndDynResrvTask(InstrumentTask):
             
             self.driver.set_sensitivity(val)
             self.driver.set_dynres(self.dynres)
+            self.write_in_database('val', val)
         elif self.mode == "ON":
             self.driver.set_sens_mode(self.mode)
+            self.write_in_database('mode', self.mode)
 
 class SetTimeConstantTask(InstrumentTask):
     """ Sets time constant (s) and slope (dB)"""
@@ -94,6 +99,14 @@ class SetInputAndRefTask(InstrumentTask):
 
     wait = set_default({'activated': True, 'wait': ['instr']})
     
+    database_entries = set_default({'input': ''})
+    database_entries = set_default({'coupling': ''})
+    database_entries = set_default({'refsource': ''})
+    database_entries = set_default({'RefInType': ''})
+    database_entries = set_default({'IntOscFreq': ''})
+    database_entries = set_default({'IntOscAmp': ''})
+    database_entries = set_default({'IntOscRange': ''})
+    database_entries = set_default({'RefSigPhaseShift': ''})
 
     def perform(self):
         
@@ -101,30 +114,38 @@ class SetInputAndRefTask(InstrumentTask):
 
         input = self.input
         self.driver.set_sig_input(input)
+        self.write_in_database('input', input)
 
         coupling = self.coupling
         self.driver.set_input_coup(coupling)
+        self.write_in_database('coupling', coupling)
 
         refsource = self.refsource
         self.driver.set_ref_sig(refsource)
+        self.write_in_database('refsource', refsource)
 
         if refsource == 'REF IN':
             RefInType = self.RefInType
             self.driver.set_refin_type(RefInType)
+            self.write_in_database('RefInType', RefInType)
         
         if refsource == 'INT OSC':
 
             #set int osc freq
             IntOscFreq = self.format_and_eval_string(self.IntOscFreq)
             self.driver.set_psd1_freq(IntOscFreq)
+            self.write_in_database('IntOscFreq', IntOscFreq)
 
             #set int osc amplitude
             IntOscAmp = self.format_and_eval_string(self.IntOscAmp)
             self.driver.set_psd1_amp(IntOscAmp)
+            self.write_in_database('IntOscAmp', IntOscAmp)
 
             #set int osc range
             IntOscRange = self.format_and_eval_string(self.IntOscRange)
             self.driver.set_psd1_range(IntOscRange)
+            self.write_in_database('IntOscRange', IntOscRange)
 
         RefSigPhaseShift = self.format_and_eval_string(self.RefSigPhaseShift)
         self.driver.set_psd1_phase(RefSigPhaseShift)
+        self.write_in_database('RefSigPhaseShift', RefSigPhaseShift)
