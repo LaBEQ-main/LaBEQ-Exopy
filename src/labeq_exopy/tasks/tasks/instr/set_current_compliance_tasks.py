@@ -31,6 +31,6 @@ class SetCurrentComplianceTask(InstrumentTask):
         """Set comp_c.
 
         """
-
-        value = self.driver.set_current_comp(self.comp_c)
+        value = self.comp_c
+        self.driver.set_current_comp(value)
         self.write_in_database('comp_c', value)

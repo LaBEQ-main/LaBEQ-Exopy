@@ -50,6 +50,15 @@ class YokogawaGS200(VisaInstrument):
         self.read_termination = '\n'
         self.write('*CLS')
 
+    @secure_communication()
+    def set_current_comp(self, val):
+        self.write('SOUR:PROT:CURR ' + str(val))
+
+    @secure_communication()
+    def set_voltage_comp(self, val):
+        self.write('SOUR:PROT:VOLT ' + str(val))
+
+
     @instrument_property
     @secure_communication()
     def voltage(self):

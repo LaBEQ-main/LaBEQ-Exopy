@@ -421,6 +421,7 @@ enamldef LaBEQManifest(PluginManifest):
             Tasks:
                 path = 'instr'
                 group = 'instr'
+
                 Task:
                     task = 'Timer_tasks:InitiateTimer'
                     view = 'views.simple_task_view:SimpleTaskView'
@@ -607,12 +608,14 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'
                     view = 'views.set_voltage_compliance_views:SetVoltageComplianceView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'set_current_compliance_tasks:SetCurrentComplianceTask'
                     view = 'views.set_current_compliance_views:SetCurrentComplianceView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'source_dcvoltage_tasks:SourceDCVoltageTask'

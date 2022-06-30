@@ -32,5 +32,6 @@ class SetVoltageComplianceTask(InstrumentTask):
 
         """
 
-        value = self.driver.set_voltage_comp(self.comp_v)
+        value = self.comp_v
+        self.driver.set_voltage_comp(value)
         self.write_in_database('comp_v', value)
