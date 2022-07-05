@@ -173,7 +173,7 @@ enamldef SetDcFunctionView(InstrView): view:
         Label:
             text = 'function mode'
         ObjectCombo:
-            items << list(['VOLT','CURR'])
+            items << list(task.get_member('switch').items)
             selected := task.switch
 
 enamldef SetDcOutputView(InstrView): view:
@@ -187,9 +187,8 @@ enamldef SetDcOutputView(InstrView): view:
     constraints = [factory(auto_grid_layout)]
 
     Conditional:
-        condition << not in_loop
         Label:
             text = 'output'
         ObjectCombo:
-            items << list(['ON','OFF'])
-            selected := task.switch
+            items << list(task.get_member('mode').items)
+            selected := task.mode

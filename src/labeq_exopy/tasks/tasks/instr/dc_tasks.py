@@ -12,13 +12,13 @@
 import time
 import numbers
 
-from atom.api import (Float, Value, Str, Int, set_default, Tuple)
+from atom.api import (Float, Value, Str, Int, set_default, Tuple, Enum)
 
 from exopy.tasks.api import (InstrumentTask, TaskInterface,
                             InterfaceableTaskMixin, validators)
 
 
-class SetDCVoltageTask(InterfaceableTaskMixin, InstrumentTask):
+class SetDCVoltageTask(InstrumentTask):
     """Set a DC voltage to the specified value.
 
     The user can choose to limit the rate by choosing an appropriate back step
@@ -41,86 +41,22 @@ class SetDCVoltageTask(InterfaceableTaskMixin, InstrumentTask):
     delay = Float(0.01).tag(pref=True)
 
     parallel = set_default({'activated': True, 'pool': 'instr'})
-    database_entries = set_default({'voltage': 0.01})
+    database_entries = set_default({'voltage': 0.00})
 
-    def i_perform(self, value=None):
-        """Default interface.
+    wait = set_default({'activated': True, 'wait': ['instr']})
 
-        """
-        if self.driver.owner != self.name:
-            self.driver.owner = self.name
-            if hasattr(self.driver, 'function') and\
-                    self.driver.function != 'VOLT':
-                msg = ('Instrument assigned to task {} is not configured to '
-                       'output a voltage')
-                raise ValueError(msg.format(self.name))
+    def perform(self):
 
-        setter = lambda value: setattr(self.driver, 'voltage', value)
-        current_value = getattr(self.driver, 'voltage')
 
-        self.smooth_set(value, setter, current_value)
+        if hasattr(self.driver, 'function') and\
+                self.driver.function != 'VOLT':
+            msg = ('Instrument assigned to task {} is not configured to '
+                    'output a voltage')
+            raise ValueError(msg.format(self.name))
 
-    def smooth_set(self, target_value, setter, current_value):
-        """ Smoothly set the voltage.
-
-        target_value : float
-            Voltage to reach.
-
-        setter : callable
-            Function to set the voltage, should take as single argument the
-            value.
-
-        current_value: float
-            Current voltage.
-
-        """
-        if target_value is not None:
-            value = target_value
-        else:
-            value = self.format_and_eval_string(self.target_value)
-
-        if self.safe_delta and abs(current_value-value) > self.safe_delta:
-            msg = ('Requested voltage {} is too far away from the current voltage {}!')
-            raise ValueError(msg.format(value, current_value))
-
-        if self.safe_max and self.safe_max < abs(value):
-            msg = 'Requested voltage {} exceeds safe max : {}'
-            raise ValueError(msg.format(value, self.safe_max))
-
-        last_value = current_value
-
-        if abs(last_value - value) < 1e-12:
-            self.write_in_database('voltage', value)
-            return
-
-        elif self.back_step == 0:
-            self.write_in_database('voltage', value)
-            setter(value)
-            return
-
-        else:
-            if (value - last_value)/self.back_step > 0:
-                step = self.back_step
-            else:
-                step = -self.back_step
-
-        if abs(value-last_value) > abs(step):
-            while not self.root.should_stop.is_set():
-                # Avoid the accumulation of rounding errors
-                last_value = round(last_value + step, 9)
-                setter(last_value)
-                if abs(value-last_value) > abs(step):
-                    time.sleep(self.delay)
-                else:
-                    break
-
-        if not self.root.should_stop.is_set():
-            setter(value)
-            self.write_in_database('voltage', value)
-            return
-
-        self.write_in_database('voltage', last_value)
-
+        voltage = self.format_and_eval_string(self.target_value)
+        self.driver.set_voltage(voltage)
+        self.write_in_database('voltage', voltage)
 
 class MultiChannelVoltageSourceInterface(TaskInterface):
     """Interface for multiple outputs sources.
@@ -172,7 +108,7 @@ class MultiChannelVoltageSourceInterface(TaskInterface):
             return True, {}
 
 
-class SetDCCurrentTask(InterfaceableTaskMixin, InstrumentTask):
+class SetDCCurrentTask(InstrumentTask):
     """Set a DC current to the specified value.
 
     The user can choose to limit the rate by choosing an appropriate back step
@@ -180,7 +116,7 @@ class SetDCCurrentTask(InterfaceableTaskMixin, InstrumentTask):
 
     """
     #: Target value for the source (dynamically evaluated)
-    target_value = Str().tag(pref=True, feval=validators.SkipLoop(types=numbers.Real))
+    target_value = Str().tag(pref=True)
 
     #: Largest allowed step when changing the output of the instr.
     back_step = Float().tag(pref=True)
@@ -192,122 +128,70 @@ class SetDCCurrentTask(InterfaceableTaskMixin, InstrumentTask):
     delay = Float(0.01).tag(pref=True)
 
     parallel = set_default({'activated': True, 'pool': 'instr'})
-    database_entries = set_default({'current': 0.01})
+    database_entries = set_default({'current': 0.00})
 
-    def i_perform(self, value=None):
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
         """Default interface.
 
         """
-        if self.driver.owner != self.name:
-            self.driver.owner = self.name
-            if hasattr(self.driver, 'function') and\
-                    self.driver.function != 'CURR':
-                msg = ('Instrument assigned to task {} is not configured to '
-                       'output a current')
-                raise ValueError(msg.format(self.name))
 
-        setter = lambda value: setattr(self.driver, 'current', value)
-        current_value = getattr(self.driver, 'current')
+        if hasattr(self.driver, 'function') and\
+                self.driver.function != 'CURR':
+            msg = ('Instrument assigned to task {} is not configured to '
+                    'output a current')
+            raise ValueError(msg.format(self.name))
+        
+        current = self.format_and_eval_string(self.target_value)
+        self.driver.set_current(current)
+        self.write_in_database('current', current)
 
-        self.smooth_set(value, setter, current_value)
-
-    def smooth_set(self, target_value, setter, current_value):
-        """ Smoothly set the current.
-
-        target_value : float
-            Current to reach.
-
-        setter : callable
-            Function to set the current, should take as single argument the
-            value.
-
-        """
-        if target_value is not None:
-            value = target_value
-        else:
-            value = self.format_and_eval_string(self.target_value)
-
-        if self.safe_max and self.safe_max < abs(value):
-            msg = 'Requested current {} exceeds safe max : {}'
-            raise ValueError(msg.format(value, self.safe_max))
-
-        last_value = current_value
-
-        if abs(last_value - value) < 1e-12:
-            self.write_in_database('current', value)
-            return
-
-        elif self.back_step == 0:
-            self.write_in_database('current', value)
-            setter(value)
-            return
-
-        else:
-            if (value - last_value)/self.back_step > 0:
-                step = self.back_step
-            else:
-                step = -self.back_step
-
-        if abs(value-last_value) > abs(step):
-            while not self.root.should_stop.is_set():
-                # Avoid the accumulation of rounding errors
-                last_value = round(last_value + step, 9)
-                setter(last_value)
-                if abs(value-last_value) > abs(step):
-                    time.sleep(self.delay)
-                else:
-                    break
-
-        if not self.root.should_stop.is_set():
-            setter(value)
-            self.write_in_database('current', value)
-            return
-
-        self.write_in_database('current', last_value)
-
-
-class SetDCFunctionTask(InterfaceableTaskMixin, InstrumentTask):
+class SetDCFunctionTask(InstrumentTask):
     """Set a DC source function to the specified value: VOLT or CURR
 
     """
     #: Target value for the source (dynamically evaluated)
-    switch = Str('VOLT').tag(pref=True, feval=validators.SkipLoop())
+    switch = Enum('VOLT','CURR').tag(pref=True)
 
     database_entries = set_default({'function': 'VOLT'})
 
-    def i_perform(self, switch=None):
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
         """Default interface.
 
         """
-        if switch is None:
-            switch = self.format_and_eval_string(self.switch)
 
-        if switch == 'VOLT':
-            self.driver.function = 'VOLT'
+        mode = self.switch
+        if mode == 'VOLT':
+            self.driver.set_function(mode)
             self.write_in_database('function', 'VOLT')
 
-        if switch == 'CURR':
-            self.driver.function = 'CURR'
+        if mode == 'CURR':
+            self.driver.set_function(mode)
             self.write_in_database('function', 'CURR')
 
 
-class SetDCOutputTask(InterfaceableTaskMixin, InstrumentTask):
+class SetDCOutputTask(InstrumentTask):
     """Set a DC source output to the specified value: ON or OFF
 
     """
     #: Target value for the source output
-    switch = Str('OFF').tag(pref=True)
+    mode = Enum('OFF', 'ON').tag(pref=True)
 
-    database_entries = set_default({'output': 'OFF'})
+    database_entries = set_default({'output': 'None'})
 
-    def i_perform(self, switch=None):
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
         """Default interface.
 
         """
-        if self.switch == 'ON':
-            self.driver.output = 'ON'
+        if self.mode == 'ON':
+            self.driver.set_output("ON")
             self.write_in_database('output', 'ON')
 
-        elif self.switch == 'OFF':
-            self.driver.output = 'OFF'
+        elif self.mode == 'OFF':
+            self.driver.set_output("OFF")
             self.write_in_database('output', 'OFF')

@@ -9,7 +9,7 @@
 """Base classes for instrument relying on the VISA protocol.
 
 """
-import re
+import re, time
 from textwrap import fill
 from inspect import cleandoc
 
@@ -41,6 +41,8 @@ class YokogawaGS200(VisaInstrument):
         State of the output 'ON'(True)/'OFF'(False).
 
     """
+
+
     def open_connection(self, **para):
         """Open the connection to the instr using the `connection_str`.
 
@@ -50,40 +52,25 @@ class YokogawaGS200(VisaInstrument):
         self.read_termination = '\n'
         self.write('*CLS')
 
-    @secure_communication()
+        self.output = float(self.query('OUTP?'))
+        self.function = self.query('SOUR:FUNC?')
+        self.voltage = float(self.query(":SOUR:LEV?"))
+        self.curr = float(self.query(":SOUR:LEV?"))
+
     def set_current_comp(self, val):
         self.write('SOUR:PROT:CURR ' + str(val))
 
-    @secure_communication()
     def set_voltage_comp(self, val):
         self.write('SOUR:PROT:VOLT ' + str(val))
 
-
-    @instrument_property
-    @secure_communication()
-    def voltage(self):
-        """Voltage getter method. NB: does not check the current function.
-
-        """
-        voltage = self.query(":SOURce:LEVel?")
-        if voltage:
-            return float(voltage)
-        else:
-            raise InstrIOError('Instrument did not return the voltage')
-
-    @secure_communication()
     def read_voltage_dc(self):
-        """Wrapper for the voltage getter that checks for the mode
 
-        """
         if self.function == 'VOLT':
             return self.voltage
         msg = ('Instrument cannot read its voltage when in current mode')
         raise InstrIOError(msg)
 
-    @voltage.setter
-    @secure_communication()
-    def voltage(self, set_point):
+    def set_voltage(self, set_point):
         """Voltage setter method. NB: does not check the current function.
 
         """
@@ -143,29 +130,8 @@ class YokogawaGS200(VisaInstrument):
                 raise InstrIOError(cleandoc('''Instrument did not set correctly
                     the range'''))
 
-    @instrument_property
-    @secure_communication()
-    def current(self):
-        """Current getter method.
-
-        NB: does not check the current function.
-
-        """
-        current = self.query(":SOURce:LEVel?")
-        if current:
-            return float(current)
-        else:
-            raise InstrIOError('Instrument did not return the current')
-
-    @current.setter
-    @secure_communication()
-    def current(self, set_point):
-        """Current setter method.
-
-        NB: does not check the current function.
-
-        """
-        self.write(":SOURce:LEVel {}".format(set_point))
+    def set_current(self, set_point):
+        self.write(":SOUR:LEV :" + str(set_point))
         value = self.query('SOURce:LEVel?')
         # to avoid floating point rouding
         if abs(float(value) - round(set_point, 9)) > 10**-9:
@@ -217,34 +183,19 @@ class YokogawaGS200(VisaInstrument):
                 raise InstrIOError(cleandoc('''Instrument did not set correctly
                     the range'''))
 
-    @instrument_property
-    @secure_communication()
-    def function(self):
-        """Function getter method
 
-        """
-        value = self.query('SOURce:FUNCtion?')
-        if value:
-            return value
-        else:
-            raise InstrIOError('Instrument did not return the function')
-
-    @function.setter
-    @secure_communication()
-    def function(self, mode):
+    def set_function(self, mode):
         """Function setter method
 
         """
-        volt = re.compile('VOLT', re.IGNORECASE)
-        curr = re.compile('CURR', re.IGNORECASE)
-        if self.voltage == 0 and self.output is False:
-            if volt.match(mode):
+        if self.voltage == 0.0 and float(self.output) == 0:
+            if mode == "VOLT":
                 self.write(':SOURce:FUNCtion VOLT')
                 value = self.query('SOURce:FUNCtion?')
                 if value != 'VOLT':
                     raise InstrIOError('Instrument did not set correctly the'
                                        'mode')
-            elif curr.match(mode):
+            elif mode == "CURR":
                 self.write(':SOURce:FUNCtion CURR')
                 value = self.query('SOURce:FUNCtion?')
                 if value != 'CURR':
@@ -255,42 +206,31 @@ class YokogawaGS200(VisaInstrument):
                             method of the Yokogawa driver'''.format(value), 80)
                 raise errors.VisaTypeError(mess)
         else:
+
             mess = ''' Set current/voltage to 0 and output off to change the
                     function mode of a Yokogawa. Currently voltage/current = {}
                     and output is {}'''
             raise InstrIOError(mess.format(self.voltage, self.output))
 
-    @instrument_property
     @secure_communication()
-    def output(self):
-        """Output getter method
-
-        """
-        value = self.query(':OUTPUT?')
-        if value:
-            return bool(int(value))
-        else:
-            raise InstrIOError('Instrument did not return the output state')
-
-    @output.setter
-    @secure_communication()
-    def output(self, value):
+    def set_output(self, value):
         """Output setter method
 
         """
-        on = re.compile('on', re.IGNORECASE)
-        off = re.compile('off', re.IGNORECASE)
+
         # output is only switched on if voltage or current is 0
         # note that self.voltage gets the source level, which is the voltage
         # in voltage mode, and the current in current mode.
         if self.voltage == 0:
-            if on.match(value) or value == 1:
+            if value == "ON":
                 self.write(':OUTPUT ON')
+                time.sleep(5)
                 if self.query(':OUTPUT?') != '1':
                     raise InstrIOError(cleandoc('''Instrument did not set
                                                 correctly the output'''))
-            elif off.match(value) or value == 0:
+            elif value == "OFF":
                 self.write(':OUTPUT OFF')
+                time.sleep(5)
                 if self.query(':OUTPUT?') != '0':
                     raise InstrIOError(cleandoc('''Instrument did not set
                                                 correctly the output'''))
@@ -300,7 +240,7 @@ class YokogawaGS200(VisaInstrument):
                                      driver''').format(value), 80)
                 raise errors.VisaTypeError(mess)
         else:
-            msg = 'set volage/current to 0 to change the DC output'
+            msg = 'set voltage/current to 0 to change the DC output'
             raise InstrIOError(msg)
 
     def check_connection(self):
