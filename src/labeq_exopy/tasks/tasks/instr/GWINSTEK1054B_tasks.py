@@ -27,22 +27,3 @@ class MeasMean(InstrumentTask):
 
         value = self.driver.read_mean()
         self.write_in_database('mean', value)
-
-class SetRange(InstrumentTask):
-    """set voltage compliance.
-
-    Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the measure.
-
-    """
-    comp_v = Float().tag(pref=True)
-
-    database_entries = set_default({'range': 0.0})
-
-    def perform(self):
-        """Set comp_v.
-
-        """
-
-        value = self.driver.set_range(self.range_val)
-        self.write_in_database('range', value)

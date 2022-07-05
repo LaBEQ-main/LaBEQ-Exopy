@@ -10,6 +10,8 @@ from ..visa_tools import VisaInstrument
 
 
 class Keithley6500(VisaInstrument):
+    rangeVal = ""
+
 
     caching_permissions = {'function': True}
 
@@ -27,7 +29,12 @@ class Keithley6500(VisaInstrument):
     def read_voltage_dc(self):
     # The SENS:FUNC setting may be circumvented by using MEAS:FUNC ('SENS:FUNC "VOLT:DC"')
     #MEAS:FUNC is a coupling of the sens:func and data?
+        if self.rangeVal :
+            self.write('SENS:VOLT:RANG ' + self.rangeVal)
+        
         value = self.query('MEAS:VOLT:DC?')
+        # print('MEAS:VOLT:DC:Range ' +self.rangeVal+'?')
+        # value = self.query('MEAS:VOLT:DC:Range ' +self.rangeVal+'?')
 
 
         #split string into list to get voltage measurement
@@ -43,6 +50,9 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_voltage_ac(self):    
+        if self.rangeVal :
+            self.write('SENS:VOLT:RANG ' + self.rangeVal)
+        
         value = self.query('MEAS:VOLT:AC?')
         value = value.split(",")[0]
         value = value.replace("NVAC","")
@@ -54,7 +64,7 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_two_resistance(self):
-        value = self.query('MEAS:RES?')
+        value = self.query('MEAS:RES'+self.rangeVal+'?')
         value = value.split(",")[0]
         value = value.replace("NOHM","")
         
@@ -65,7 +75,7 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_four_resistance(self):
-        value = self.query('MEAS:FRES?')
+        value = self.query('MEAS:FRES'+self.rangeVal+'?')
         value = value.split(",")[0]
         value = value.replace("NOHM4W","")
         
@@ -76,7 +86,7 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_current_dc(self):
-        value = self.query('meas:CURR:DC?')
+        value = self.query('meas:CURR:DC'+self.rangeVal+'?')
         value = value.split(",")[0]
         value = value.replace("NADC","")
 
@@ -87,7 +97,7 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_current_ac(self):
-        value = self.query('MEAS:CURR:AC?')
+        value = self.query('MEAS:CURR:AC'+self.rangeVal+'?')
         value = value.split(",")[0]
         value = value.replace("NAAC","")
 
@@ -95,6 +105,14 @@ class Keithley6500(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('Keithley6500: AC current measure failed')
+
+    @secure_communication()
+    def set_range(self, range_val):
+        if not range_val :
+            self.write('SENS:VOLT:RANG 100')
+            self.rangeVal = ""
+        else:
+            self.rangeVal = str(range_val)
 
     @secure_communication()
     def check_connection(self):
