@@ -17,7 +17,7 @@ from inspect import cleandoc
 from threading import Lock
 from contextlib import contextmanager
 
-from visa import VisaTypeError, VisaIOError
+from pyvisa import VisaTypeError, VisaIOError
 
 from ..driver_tools import (BaseInstrument, InstrIOError, secure_communication,
                             instrument_property)

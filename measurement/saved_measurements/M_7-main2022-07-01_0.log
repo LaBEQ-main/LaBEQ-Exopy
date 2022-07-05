@@ -1,0 +1,33 @@
+2022-07-01 15:51:18,221 | INFO | Check successful
+2022-07-01 15:51:18,241 | CRITICAL | C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\pyvisa\resources\messagebased.py:642: UserWarning: write message already ends with termination characters
+  self.write(message)
+2022-07-01 15:51:18,249 | INFO | Iterating connection 0/2 for instrument Keithley6500
+2022-07-01 15:51:18,269 | INFO | Iterating connection 1/2 for instrument Keithley6500
+2022-07-01 15:51:18,303 | INFO | Iterating connection 0/2 for instrument Keithley6500
+2022-07-01 15:51:18,327 | INFO | Iterating connection 0/2 for instrument Keithley6500
+2022-07-01 15:51:18,349 | INFO | Iterating connection 1/2 for instrument Keithley6500
+2022-07-01 15:51:18,372 | INFO | Iterating connection 1/2 for instrument Keithley6500
+2022-07-01 15:51:18,396 | INFO | Iterating connection 0/2 for instrument Keithley6500
+2022-07-01 15:51:18,418 | INFO | Iterating connection 1/2 for instrument Keithley6500
+2022-07-01 15:51:18,441 | ERROR | The following unhandled exception occured :
+Traceback (most recent call last):
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\base_tasks.py", line 1148, in perform
+    child.perform_()
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\decorators.py", line 86, in decorator
+    return function_to_decorate(*args, **kwargs)
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\decorators.py", line 307, in wrapper
+    return perform(obj, *args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\tasks\tasks\instr\meas_dccurrent_tasks.py", line 39, in perform
+    value = self.driver.read_current_dc()
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\driver_tools.py", line 126, in wrapper
+    return method(self, *args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\visa\KeithleyDMM6500DigitMultimeter_driver.py", line 209, in read_current_dc
+    self.function = 'CURR:DC'
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\driver_tools.py", line 101, in __set__
+    super(instrument_property, self).__set__(obj, value)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\driver_tools.py", line 126, in wrapper
+    return method(self, *args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\visa\KeithleyDMM6500DigitMultimeter_driver.py", line 87, in function
+    raise InstrIOError('Keithley6500: Failed to set function')
+labeq_exopy.instruments.drivers.driver_tools.InstrIOError: Keithley6500: Failed to set function
+2022-07-01 15:51:20,451 | INFO | Process shuting down

@@ -13,7 +13,7 @@ import logging
 from inspect import cleandoc
 import numpy as np
 
-from visa import VisaIOError, constants
+from pyvisa import VisaIOError, constants
 
 from ..driver_tools import (BaseInstrument, InstrIOError, InstrError,
                             secure_communication, instrument_property)

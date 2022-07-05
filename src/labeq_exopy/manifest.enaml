@@ -195,6 +195,28 @@ enamldef LaBEQManifest(PluginManifest):
                                        'VisaRS232':
                                            {'resource_class': 'INSTR'}
                                        }
+                    Driver:
+                        driver = 'KeithleyDMM6500DigitMultimeter_driver:Keithley6500'    #Jake Addition
+                        model = '6500'
+                        kind = 'Multimeter'
+                        connections = {'VisaTCPIP':
+                                           {'port': 5025,
+                                            'resource_class': 'SOCKET'}
+                                       }
+                Drivers:
+                    manufacturer = 'GW Instek'
+                    Driver:
+                        driver = 'GWINSTEK1054BOscilloscope_driver:GWINSTEK1054B'    #Jake Addition
+                        model = '1054B'
+                        kind = 'Other' 
+                        #Kind value does not matter. BUT,
+                        #this variable may only be assiged a value defined within your exopy package. 
+                        #At default, the possible vals are: 'Other', 'DC source', 'AWG', 'RF source', 'Lock-in',
+                        #'Spectrum analyser', 'Multimeter'. 
+                        connections = {'VisaTCPIP':
+                                           {'port': 3000,
+                                            'resource_class': 'SOCKET'}
+                                       }
                 Drivers:
                     manufacturer = 'Keithley'
                     Driver:
@@ -380,6 +402,9 @@ enamldef LaBEQManifest(PluginManifest):
                     driver = 'alazar935x:Alazar935x'
                     manufacturer = 'AlazarTech'
                     model = 'ATS9350'
+            
+            #####################################################
+
 
     Extension:
         id = 'labeq_exopy.tasks'
@@ -632,17 +657,23 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.Keithley2400',
                                    'labeq_exopy.Legacy.Agilent34410A',
                                    'labeq_exopy.Legacy.Yokogawa7651',
-                                   'labeq_exopy.Legacy.YokogawaGS200']
+                                   'labeq_exopy.Legacy.YokogawaGS200',
+                                   'labeq_exopy.Legacy.Keithley2400',
+                                   'labeq_exopy.Legacy.Keithley6500']
+
                 Task:
                     task = 'meas_dccurrent_tasks:MeasDCCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001',
-                                   'labeq_exopy.Legacy.Keithley2400']
+                                   'labeq_exopy.Legacy.Keithley2400',
+                                   'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable': True}
                 Task:
                     task = 'meas_two_res_tasks:MeasTwoResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                    'labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable' : True}
                     Interface:
                         interface = ('meas_two_res_tasks:Keithley2400MeasTwoResistanceInterface')
@@ -654,11 +685,13 @@ enamldef LaBEQManifest(PluginManifest):
                                  'views.keithley2400_resistance_measurement_view:VoltageComplianceValue',
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
-                        instruments = ['labeq_exopy.Legacy.Keithley2400']
+                        instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                        'labeq_exopy.Legacy.Keithley6500']
                 Task:
                     task = 'meas_four_res_tasks:MeasFourResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                    'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable' : True}
                     Interface:
                         interface = ('meas_four_res_tasks:Keithley2400MeasFourResistanceInterface')
@@ -670,16 +703,20 @@ enamldef LaBEQManifest(PluginManifest):
                                  'views.keithley2400_resistance_measurement_view:VoltageComplianceValue',
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
-                        instruments = ['labeq_exopy.Legacy.Keithley2400']
+                        instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                        'labeq_exopy.Legacy.Keithley6500']
                 Task:
                     task = 'meas_acvoltage_tasks:MeasACVoltageTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                    'labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable': True}
                 Task:
                     task = 'meas_accurrent_tasks:MeasACCurrentTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2001']
+                    instruments = ['labeq_exopy.Legacy.Keithley2001',
+                                    'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable': True}
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'
@@ -845,3 +882,9 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
 
+                Task:
+                    task = 'GWINSTEK1054B_tasks:MeasMean'
+                    view = 'views.simple_measurement_view:SimpleMeasView'
+                    instruments = ['labeq_exopy.Legacy.GWINSTEK1054B']
+                    metadata = {'loopable': True}
+              

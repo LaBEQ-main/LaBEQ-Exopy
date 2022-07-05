@@ -6,7 +6,7 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""Task to measure DC current.
+"""Task to measure AC current.
 
 """
 from time import sleep

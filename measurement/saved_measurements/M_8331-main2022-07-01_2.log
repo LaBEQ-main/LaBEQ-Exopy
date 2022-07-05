@@ -1,0 +1,7 @@
+2022-07-01 16:56:07,360 | INFO | Check successful
+2022-07-01 16:56:07,412 | INFO | CURR:DC
+2022-07-01 16:56:07,443 | INFO | value : -2.075008E-06
+2022-07-01 16:56:09,456 | INFO | Iterating connection 0/2 for instrument Keithley6500
+2022-07-01 16:56:09,584 | INFO | 4.059629E-05
+2022-07-01 16:56:10,083 | INFO | -1.536325E-06
+2022-07-01 16:56:12,136 | INFO | Process shuting down

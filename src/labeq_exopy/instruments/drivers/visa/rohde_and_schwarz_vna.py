@@ -18,7 +18,7 @@ from textwrap import fill
 from ..driver_tools import (BaseInstrument, InstrIOError, InstrError,
                             secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
-from visa import VisaTypeError
+from pyvisa import VisaTypeError
 
 
 FORMATTING_DICT = {'PHAS': lambda x: np.angle(x, deg=True),
