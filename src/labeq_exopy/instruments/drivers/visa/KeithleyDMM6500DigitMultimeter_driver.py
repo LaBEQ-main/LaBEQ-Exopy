@@ -33,9 +33,6 @@ class Keithley6500(VisaInstrument):
             self.write('SENS:VOLT:RANG ' + self.rangeVal)
         
         value = self.query('MEAS:VOLT:DC?')
-        # print('MEAS:VOLT:DC:Range ' +self.rangeVal+'?')
-        # value = self.query('MEAS:VOLT:DC:Range ' +self.rangeVal+'?')
-
 
         #split string into list to get voltage measurement
         value = value.split(",")[0]

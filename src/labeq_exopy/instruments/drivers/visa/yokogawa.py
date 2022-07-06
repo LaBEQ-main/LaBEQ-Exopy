@@ -18,6 +18,29 @@ from ..driver_tools import (InstrIOError, instrument_property,
 from ..visa_tools import VisaInstrument, errors
 
 
+
+def measure(thing):
+    value = thing.query(":SOURce:LEV:AUTO?")
+    if value:
+        return float(value)
+    else:
+        raise InstrIOError('Instrument did not return the value')
+
+def resistance(thing) :
+    thing.write('SOUR:FUNC VOLT')
+    volt = measure(thing)
+    thing.write('SOUR:FUNC CURR')
+    current = measure(thing)
+
+    if not current :
+        return 99999999999999
+    
+    value = (volt / current)
+    if value:
+        return float(value)
+    else:
+        raise InstrIOError('Resistance measure failed')
+
 class YokogawaGS200(VisaInstrument):
     """
     Driver for the YokogawaGS200, using the VISA library.
@@ -61,16 +84,6 @@ class YokogawaGS200(VisaInstrument):
             return float(voltage)
         else:
             raise InstrIOError('Instrument did not return the voltage')
-
-    @secure_communication()
-    def read_voltage_dc(self):
-        """Wrapper for the voltage getter that checks for the mode
-
-        """
-        if self.function == 'VOLT':
-            return self.voltage
-        msg = ('Instrument cannot read its voltage when in current mode')
-        raise InstrIOError(msg)
 
     @voltage.setter
     @secure_communication()
@@ -298,6 +311,30 @@ class YokogawaGS200(VisaInstrument):
         """
         """
         return False
+######################################################################################################### Jake Additions
+    @secure_communication()
+    def read_voltage_dc(self):
+        self.write('SOUR:FUNC VOLT')
+        return measure(self)
+
+    @secure_communication()
+    def read_current_dc(self):
+        self.write('SOUR:FUNC CURR')
+        return measure(self)
+
+
+    @secure_communication()
+    def read_two_resistance(self):
+        return resistance(self)
+
+    @secure_communication()
+    def read_four_resistance(self):
+        self.write('sens:rem 1')
+        value = resistance(self)
+        self.write('sens:rem 0')
+        return value
+#############################################################################################################
+
 
 
 class Yokogawa7651(VisaInstrument):
@@ -343,17 +380,6 @@ class Yokogawa7651(VisaInstrument):
             return voltage
         else:
             raise InstrIOError('Instrument did not return the voltage')
-
-    @secure_communication()
-    def read_voltage_dc(self):
-        """Wrapper for the voltage getter that checks for the mode
-
-        """
-        if self.function == 'VOLT':
-            return self.voltage
-        msg = ('Instrument cannot read its voltage when in current mode')
-        raise InstrIOError(msg)
-
 
     @voltage.setter
     @secure_communication()

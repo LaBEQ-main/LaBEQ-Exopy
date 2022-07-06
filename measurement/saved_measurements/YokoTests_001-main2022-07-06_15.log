@@ -1,0 +1,17 @@
+2022-07-06 15:57:34,789 | INFO | Check successful
+2022-07-06 15:57:34,816 | ERROR | The following unhandled exception occured :
+Traceback (most recent call last):
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\base_tasks.py", line 1148, in perform
+    child.perform_()
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\decorators.py", line 86, in decorator
+    return function_to_decorate(*args, **kwargs)
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\decorators.py", line 307, in wrapper
+    return perform(obj, *args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\tasks\tasks\instr\meas_dc_tasks.py", line 39, in perform
+    value = self.driver.read_voltage_dc()
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\driver_tools.py", line 126, in wrapper
+    return method(self, *args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\instruments\drivers\visa\yokogawa.py", line 298, in read_voltage_dc
+    print (self.measureVal(self))
+TypeError: YokogawaGS200.measureVal() takes 1 positional argument but 2 were given
+2022-07-06 15:57:36,833 | INFO | Process shuting down

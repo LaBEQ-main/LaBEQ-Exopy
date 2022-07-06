@@ -666,14 +666,16 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001',
                                    'labeq_exopy.Legacy.Keithley2400',
-                                   'labeq_exopy.Legacy.Keithley6500']
+                                   'labeq_exopy.Legacy.Keithley6500',
+                                   'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'meas_two_res_tasks:MeasTwoResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001',
                                     'labeq_exopy.Legacy.Keithley2400',
-                                    'labeq_exopy.Legacy.Keithley6500']
+                                    'labeq_exopy.Legacy.Keithley6500',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable' : True}
                     Interface:
                         interface = ('meas_two_res_tasks:Keithley2400MeasTwoResistanceInterface')
@@ -686,12 +688,14 @@ enamldef LaBEQManifest(PluginManifest):
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceLabel',
                                  'views.keithley2400_resistance_measurement_view:CurrentComplianceValue']
                         instruments = ['labeq_exopy.Legacy.Keithley2400',
-                                        'labeq_exopy.Legacy.Keithley6500']
+                                        'labeq_exopy.Legacy.Keithley6500',
+                                        'labeq_exopy.Legacy.YokogawaGS200']
                 Task:
                     task = 'meas_four_res_tasks:MeasFourResistanceTask'
                     view = 'views.simple_measurement_view:SimpleMeasView'
                     instruments = ['labeq_exopy.Legacy.Keithley2001',
-                                    'labeq_exopy.Legacy.Keithley6500']
+                                    'labeq_exopy.Legacy.Keithley6500',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable' : True}
                     Interface:
                         interface = ('meas_four_res_tasks:Keithley2400MeasFourResistanceInterface')
