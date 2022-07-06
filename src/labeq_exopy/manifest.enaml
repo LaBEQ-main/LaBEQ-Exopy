@@ -725,7 +725,8 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'Keithley6500_tasks:SetRange'
                     view = 'views.set_range_views:SetRangeView'
-                    instruments = ['labeq_exopy.Legacy.Keithley6500']
+                    instruments = ['labeq_exopy.Legacy.Keithley6500',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'

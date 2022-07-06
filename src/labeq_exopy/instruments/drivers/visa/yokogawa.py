@@ -20,7 +20,7 @@ from ..visa_tools import VisaInstrument, errors
 
 
 def measure(thing):
-    value = thing.query(":SOURce:LEV:AUTO?")
+    value = thing.query(":SOURce:LEV?")
     if value:
         return float(value)
     else:
@@ -333,8 +333,15 @@ class YokogawaGS200(VisaInstrument):
         value = resistance(self)
         self.write('sens:rem 0')
         return value
+    
+    @secure_communication()
+    def set_range(self, range_val):
+        if not range_val :
+            self.write('sour:RANG MIN')
+        else:
+            self.write('sour:RANG '+ str(range_val))
+        return "success"
 #############################################################################################################
-
 
 
 class Yokogawa7651(VisaInstrument):
