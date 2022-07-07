@@ -102,7 +102,8 @@ class YokogawaGS200(VisaInstrument):
         return value
     
     @secure_communication()
-    def set_range(self, range_val):
+    def set_range(self, range_val, funcVal):
+        self.write('SOUR:FUNC '+funcVal)
         if not range_val :
             self.write('sour:RANG MIN')
         else:
@@ -110,11 +111,13 @@ class YokogawaGS200(VisaInstrument):
         return "success"
     
     @secure_communication()
-    def set_range(self, range_val):
+    def set_ramp(self, range_val, funcVal):
+        self.write('SOUR:FUNC '+funcVal)
+
         if not range_val :
             self.write('sour:RANG MIN')
         else:
-            self.write('sour:RANG '+ str(range_val))
+            self.write('prog:slop '+str(range_val))
         return "success"
 #############################################################################################################
 

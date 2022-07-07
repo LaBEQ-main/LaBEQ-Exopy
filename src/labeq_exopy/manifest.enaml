@@ -725,10 +725,19 @@ enamldef LaBEQManifest(PluginManifest):
                                     'labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable': True}
                 Task:
+                    task = 'yokogawaGS200_tasks:RampTask'
+                    view = 'views.yokoGS200_views:RampView'
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
+                    metadata = {'loopable': True}
+                Task:
+                    task = 'yokogawaGS200_tasks:SetRangeTask'
+                    view = 'views.yokoGS200_views:RangeView'
+                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
+                    metadata = {'loopable': True}
+                Task:
                     task = 'Keithley6500_tasks:SetRange'
                     view = 'views.set_range_views:SetRangeView'
-                    instruments = ['labeq_exopy.Legacy.Keithley6500',
-                                    'labeq_exopy.Legacy.YokogawaGS200']
+                    instruments = ['labeq_exopy.Legacy.Keithley6500']
                     metadata = {'loopable': True}
                 Task:
                     task = 'rf_tasks:SetRFFrequencyTask'

@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""View for the SourceDCVoltageTask.
+
+"""
+
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+
+enamldef RampView(InstrView): view:
+    """View for the SourceDCCurrentTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'func_v'
+    ObjectCombo:
+        items << list(task.get_member('func_v').items)
+        selected := task.func_v
+
+    Label:
+        text = 'Ramp time'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.ramp_v
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Amount of current in Amps to source", 60)
+    #FloatField:
+    #    value := task.source_c
+    #    tool_tip = fill("Amount of current in Amps to source", 60)
+
+enamldef RangeView(InstrView): view:
+    """View for the SourceDCCurrentTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'func_v'
+    ObjectCombo:
+        items << list(task.get_member('func_v').items)
+        selected := task.func_v
+    
+    Label:
+        text = 'range_v'
+    ObjectCombo:
+        items << list(task.get_member('range_v').items)
+        selected := task.range_v
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.range_v
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Amount of current in Amps to source", 60)
