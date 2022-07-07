@@ -642,12 +642,14 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'source_dcvoltage_tasks:SourceDCVoltageTask'
                     view = 'views.source_dcvoltage_views:SourceDCVoltView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'source_dccurrent_tasks:SourceDCCurrentTask'
                     view = 'views.source_dccurrent_views:SourceDCCurrentView'
-                    instruments = ['labeq_exopy.Legacy.Keithley2400']
+                    instruments = ['labeq_exopy.Legacy.Keithley2400',
+                                    'labeq_exopy.Legacy.YokogawaGS200']
                     metadata = {'loopable': True}
                 Task:
                     task = 'meas_dc_tasks:MeasDCVoltageTask'

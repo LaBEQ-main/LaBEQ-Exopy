@@ -1,0 +1,11 @@
+2022-07-07 13:33:39,194 | INFO | Check successful
+2022-07-07 13:33:39,231 | ERROR | The following unhandled exception occured in Bothe :
+Traceback (most recent call last):
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\decorators.py", line 105, in decorator
+    return function_to_decorate(*args, **kwargs)
+  File "C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\exopy\tasks\tasks\task_interface.py", line 86, in perform
+    return self.i_perform(*args, **kwargs)
+  File "c:\users\tojak\source\repos\labeq-exopy\src\labeq_exopy\tasks\tasks\instr\dc_tasks.py", line 207, in i_perform
+    raise ValueError(msg.format(self.name))
+ValueError: Instrument assigned to task Bothe is not configured to output a current
+2022-07-07 13:33:41,261 | INFO | Process shuting down
