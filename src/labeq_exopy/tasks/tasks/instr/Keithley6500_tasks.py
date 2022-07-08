@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
-#
-# Distributed under the terms of the BSD license.
-#
-# The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
-"""Task to set current compliance.
+#Jake Macdonald 7/8/22
+"""Keithley6500 tasks
 
 """
 from time import sleep

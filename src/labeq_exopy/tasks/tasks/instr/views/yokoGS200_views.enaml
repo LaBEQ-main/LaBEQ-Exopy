@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
-#
-# Distributed under the terms of the BSD license.
-#
-# The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
-"""View for the SourceDCVoltageTask.
+#Jake Macdonald 7/8/22
+"""Yokogawa GS200 views
 
 """
 
@@ -22,7 +15,7 @@ from exopy.utils.widgets.qt_completers import QtLineCompleter
 
 
 enamldef SetRampViewYoko(InstrView): view:
-    """View for the SourceDCCurrentTask.
+    """Ramp view
 
     """
     constraints = [factory(auto_grid_layout)]
@@ -40,12 +33,9 @@ enamldef SetRampViewYoko(InstrView): view:
             text := task.ramp_v
             entries_updater << task.list_accessible_database_entries
             tool_tip = fill("Amount of current in Amps to source", 60)
-    #FloatField:
-    #    value := task.source_c
-    #    tool_tip = fill("Amount of current in Amps to source", 60)
 
 enamldef SetRangeViewYoko(InstrView): view:
-    """View for the SourceDCCurrentTask.
+    """View for SetRangeViewYoko
 
     """
     constraints = [factory(auto_grid_layout)]
