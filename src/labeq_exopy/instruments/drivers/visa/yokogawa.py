@@ -1,14 +1,5 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by ExopyHqcLegacy Authors, see AUTHORS for more details.
-#
-# Distributed under the terms of the BSD license.
-#
-# The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
-"""Base classes for instrument relying on the VISA protocol.
+# Jake Macdonald 7/8/2022
 
-"""
 import re
 from textwrap import fill
 from inspect import cleandoc
@@ -18,7 +9,7 @@ from ..driver_tools import (InstrIOError, instrument_property,
 from ..visa_tools import VisaInstrument, errors
 
 
-
+######################################################################################################### Jake Additions
 def measure(thing):
     value = thing.query(":SOURce:LEV?")
     if value:
@@ -33,7 +24,7 @@ def resistance(thing) :
     current = measure(thing)
 
     if not current :
-        return 99999999999999
+        return "aproaching infinite"
     
     value = (volt / current)
     if value:
@@ -42,31 +33,15 @@ def resistance(thing) :
         raise InstrIOError('Resistance measure failed')
     
 def setSource(thing, point) :
-    thing.write('SOURce:LEVel ' + str(point))
-    value = thing.query('SOURce:LEVel?')
-        # to avoid floating point rouding
-    if abs(float(value) - round(point, 9)) > 10**-9:
-        raise InstrIOError('Instrument did not set correctly the voltage')
+    thing.write('SOUR:LEV ' + str(point))
+    # value = thing.query('SOURce:LEVel?')
+    #     # to avoid floating point rouding
+    # if abs(float(value) - round(point, 9)) > 10**-9:
+    #     raise InstrIOError('Instrument did not set correctly the voltage')
 
 
 class YokogawaGS200(VisaInstrument):
     
-    
-    def open_connection(self, **para):
-        """Open the connection to the instr using the `connection_str`.
-
-        """
-        super(YokogawaGS200, self).open_connection(**para)
-        self.write_termination = '\n'
-        self.read_termination = '\n'
-        self.write('*CLS')
-   
-
-    def check_connection(self):
-        """
-        """
-        return False
-######################################################################################################### Jake Additions
     @secure_communication()
     def source_voltage_dc(self, value) :
         self.write('sour:func volt')
@@ -75,6 +50,7 @@ class YokogawaGS200(VisaInstrument):
 
     @secure_communication()
     def source_current_dc(self, value) :
+        print (str(value))
         self.write('sour:func curr')
         setSource(self,value)
 
@@ -104,6 +80,21 @@ class YokogawaGS200(VisaInstrument):
     @secure_communication()
     def set_range(self, range_val, funcVal):
         self.write('SOUR:FUNC '+funcVal)
+
+        if funcVal == 'MIN' :
+            try :
+                self.write ('sour:func min')
+            except :
+                1 + 1 #its going to throw, but it still does the task
+            return "success"
+        
+        if funcVal == 'MAX' :
+            try :
+                self.write ('sour:func max')
+            except :
+                1 + 1 #its going to throw, but it still does the task
+            return "success"
+
         if not range_val :
             self.write('sour:RANG MIN')
         else:
@@ -111,15 +102,25 @@ class YokogawaGS200(VisaInstrument):
         return "success"
     
     @secure_communication()
-    def set_ramp(self, range_val, funcVal):
+    def set_ramp(self, rampVal, funcVal):
         self.write('SOUR:FUNC '+funcVal)
-
-        if not range_val :
-            self.write('sour:RANG MIN')
-        else:
-            self.write('prog:slop '+str(range_val))
+        self.write('prog:slop '+str(rampVal))
         return "success"
 #############################################################################################################
+    def open_connection(self, **para):
+        """Open the connection to the instr using the `connection_str`.
+
+        """
+        super(YokogawaGS200, self).open_connection(**para)
+        self.write_termination = '\n'
+        self.read_termination = '\n'
+        self.write('*CLS')
+   
+
+    def check_connection(self):
+        """
+        """
+        return False
 
 
 class Yokogawa7651(VisaInstrument):

@@ -13,7 +13,7 @@ from atom.api import (Enum, Float, Str, set_default)
 
 from exopy.tasks.api import InstrumentTask
 
-class RampTask(InstrumentTask):
+class SetRampTaskYoko(InstrumentTask):
     """source a dc voltage.
 
     Wait for any parallel operation before execution and then wait the
@@ -23,7 +23,7 @@ class RampTask(InstrumentTask):
     # Time to wait before the measurement.
     func_v = Enum('Voltage', 'Current').tag(pref=True)
     ramp_v = Str().tag(pref=True)
-    database_entries = set_default({'ramp': 1.0})
+    database_entries = set_default({'set_ramp': 1.0})
 
 
 
@@ -41,19 +41,17 @@ class RampTask(InstrumentTask):
         value = self.format_and_eval_string(self.ramp_v)
 
         value = self.driver.set_ramp(value,funcVal)
-        self.write_in_database('ramp', value)
+        self.write_in_database('set_ramp', value)
 
-class SetRangeTask(InstrumentTask):
-    """source a dc voltage.
-
-    Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the measure.
+class SetRangeTaskYoko(InstrumentTask):
+    """thotery at play
 
     """
     # Time to wait before the measurement.
+
     func_v = Enum('Voltage', 'Current', 'Both').tag(pref=True)
-    range_v = Enum('MIN', '1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
-    database_entries = set_default({'A Range': 1.0})
+    set_range_val = Enum('MIN', '1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
+    database_entries = set_default({'set_Range': 1.0})
 
 
 
@@ -68,10 +66,10 @@ class SetRangeTask(InstrumentTask):
             funcVal = 'CURR'
 
 
-        value = self.format_and_eval_string(self.range_v)
+        value = self.format_and_eval_string(self.set_range_val)
 
         value = self.driver.set_range(value,funcVal)
-        self.write_in_database('range', value)
+        self.write_in_database('set_Range', value)
 
 ############################### work in progress
 
