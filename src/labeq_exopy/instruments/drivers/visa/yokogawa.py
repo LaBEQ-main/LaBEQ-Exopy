@@ -34,6 +34,7 @@ def resistance(thing) :
     
 def setSource(thing, point) :
     thing.write('SOUR:LEV ' + str(point))
+    return "success"
    
 
 
@@ -42,14 +43,13 @@ class YokogawaGS200(VisaInstrument):
     @secure_communication()
     def source_voltage_dc(self, value) :
         self.write('sour:func volt')
-        setSource(self,value)
+        return setSource(self,value)
 
 
     @secure_communication()
     def source_current_dc(self, value) :
-        print (str(value))
         self.write('sour:func curr')
-        setSource(self,value)
+        return setSource(self,value)
 
 
     @secure_communication()
@@ -75,27 +75,14 @@ class YokogawaGS200(VisaInstrument):
         return value
     
     @secure_communication()
-    def set_range(self, range_val, funcVal):
+    def set_range_yoko(self, range_val, funcVal):
         self.write('SOUR:FUNC '+funcVal)
 
-        if funcVal == 'MIN' :
-            try :
-                self.write ('sour:func min')
-            except :
-                1 + 1 #its going to throw, but it still does the task
-            return "success"
-        
-        if funcVal == 'MAX' :
-            try :
-                self.write ('sour:func max')
-            except :
-                1 + 1 #its going to throw, but it still does the task
+        if range_val == 'MAX' or not range_val :
+            self.write("sour:rang max")
             return "success"
 
-        if not range_val :
-            self.write('sour:RANG MIN')
-        else:
-            self.write('sour:RANG '+ str(range_val))
+        self.write('sour:RANG '+ str(range_val))
         return "success"
     
     @secure_communication()

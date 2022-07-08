@@ -38,9 +38,9 @@ class SetRampTaskYoko(InstrumentTask):
             funcVal = 'CURR'
 
 
-        value = self.format_and_eval_string(self.ramp_v)
+        # value = self.format_and_eval_string(self.ramp_v)
 
-        value = self.driver.set_ramp(value,funcVal)
+        value = self.driver.set_ramp(self.ramp_v,funcVal)
         self.write_in_database('set_ramp', value)
 
 class SetRangeTaskYoko(InstrumentTask):
@@ -50,8 +50,8 @@ class SetRangeTaskYoko(InstrumentTask):
     # Time to wait before the measurement.
 
     func_v = Enum('Voltage', 'Current', 'Both').tag(pref=True)
-    set_range_val = Enum('MIN', '1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
-    database_entries = set_default({'set_Range': 1.0})
+    set_range_val = Enum('1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
+    database_entries = set_default({'set_range_val': 1.0})
 
 
 
@@ -60,16 +60,18 @@ class SetRangeTaskYoko(InstrumentTask):
 
         # self.driver.epicPlays()        self.write('SOUR:FUNC VOLT')
         funcVal = ''
-        if (self.func_v == 'Voltage'):
+        if self.func_v == 'Voltage':
             funcVal = 'VOLT'
-        else: 
+        elif self.func_v == 'Current': 
             funcVal = 'CURR'
+        
+        if self.func_v == 'Both' :
+            self.driver.set_range_yoko(self.set_range_val,'VOLT')
+            value = self.driver.set_range_yoko(self.set_range_val,'CURR')
+        else :
+            value = self.driver.set_range_yoko(self.set_range_val,funcVal)
 
-
-        value = self.format_and_eval_string(self.set_range_val)
-
-        value = self.driver.set_range(value,funcVal)
-        self.write_in_database('set_Range', value)
+        self.write_in_database('set_range_val', value)
 
 ############################### work in progress
 
