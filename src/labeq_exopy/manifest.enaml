@@ -905,10 +905,14 @@ enamldef LaBEQManifest(PluginManifest):
                         task = 'yokogawaGS200_tasks:SetRampTaskYoko'
                         view = 'views.yokoGS200_views:SetRampViewYoko'
                         instruments = ['labeq_exopy.Legacy.YokogawaGS200']
-                        metadata = {'loopable': True}
                     Task:
                         task = 'yokogawaGS200_tasks:SetRangeTaskYoko'
                         view = 'views.yokoGS200_views:SetRangeViewYoko'
                         instruments = ['labeq_exopy.Legacy.YokogawaGS200']
-                        metadata = {'loopable': True}
+                        
+                    Task:
+                        task = 'yokogawaGS200_tasks:SetComplianceTaskYoko'
+                        view = 'views.yokoGS200_views:SetRangeViewYoko'
+                        instruments = ['labeq_exopy.Legacy.YokogawaGS200']
+                       
                 

@@ -36,8 +36,6 @@ class SetRangeTaskYoko(InstrumentTask):
     set_range_val = Enum('1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
     database_entries = set_default({'set_range_val': 1.0})
 
-
-
     def perform(self):
         funcVal = ''
         if self.func_v == 'Voltage':
@@ -52,3 +50,20 @@ class SetRangeTaskYoko(InstrumentTask):
             value = self.driver.set_range_yoko(self.set_range_val,funcVal)
 
         self.write_in_database('set_range_val', value)
+
+class SetComplianceTaskYoko(SetRangeTaskYoko):
+    def perform(self):
+        funcVal = ''
+        if self.func_v == 'Voltage':
+            funcVal = 'VOLT'
+        elif self.func_v == 'Current': 
+            funcVal = 'CURR'
+        
+        if self.func_v == 'Both' :
+            self.driver.set_range_yoko(self.set_range_val,'VOLT')
+            value = self.driver.set_range_yoko(self.set_range_val,'CURR')
+        else :
+            value = self.driver.set_range_yoko(self.set_range_val,funcVal)
+
+        self.write_in_database('set_range_val', value)
+

@@ -51,3 +51,4 @@ enamldef SetRangeViewYoko(InstrView): view:
     ObjectCombo:
         items << list(task.get_member('set_range_val').items)
         selected := task.set_range_val
+    
