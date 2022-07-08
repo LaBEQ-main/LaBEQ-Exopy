@@ -34,10 +34,7 @@ def resistance(thing) :
     
 def setSource(thing, point) :
     thing.write('SOUR:LEV ' + str(point))
-    # value = thing.query('SOURce:LEVel?')
-    #     # to avoid floating point rouding
-    # if abs(float(value) - round(point, 9)) > 10**-9:
-    #     raise InstrIOError('Instrument did not set correctly the voltage')
+   
 
 
 class YokogawaGS200(VisaInstrument):
