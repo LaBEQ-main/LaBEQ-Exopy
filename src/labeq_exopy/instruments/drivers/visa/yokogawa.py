@@ -91,10 +91,6 @@ class YokogawaGS200(VisaInstrument):
         self.write('prog:slop '+str(rampVal))
         return "success"
     
-    @secure_communication()
-    def set_compliance_yoko(self, range_val, funcVal):
-        print ("epic wins")
-    
 #############################################################################################################
     def open_connection(self, **para):
         """Open the connection to the instr using the `connection_str`.
