@@ -1,0 +1,34 @@
+#Jake Macdonald 7/8/22
+"""Yokogawa GS200 views
+
+"""
+
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+
+
+
+enamldef SetRampViewGwinstek(InstrView): view:
+    """Ramp view
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Duration'
+    FloatField:
+        value := task.dur_v
+        tool_tip = fill("Voltage compliance value", 60)
+    Label:
+        text = 'Goal Value'
+    FloatField:
+        value := task.gv_v
+        tool_tip = fill("Voltage compliance value", 60)
+
+    

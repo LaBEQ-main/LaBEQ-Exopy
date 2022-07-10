@@ -46,6 +46,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'YokogawaGS200'
             group = 'YokogawaGS200'
+        GroupTaskFilter:    
+            id = 'GWINSTEKGDS1054B'
+            group = 'GWINSTEKGDS1054B'
 
     Extension:
         id = 'startup'
@@ -209,7 +212,7 @@ enamldef LaBEQManifest(PluginManifest):
                 Drivers:
                     manufacturer = 'GW Instek'
                     Driver:
-                        driver = 'GWINSTEK1054BOscilloscope_driver:GWINSTEK1054B'    #Jake Addition
+                        driver = 'GWINSTEKGDS1054B_driver:GWINSTEKGDS1054B'    #Jake Addition
                         model = '1054B'
                         kind = 'Other' 
                         #Kind value does not matter. BUT,
@@ -896,11 +899,18 @@ enamldef LaBEQManifest(PluginManifest):
                                    'labeq_exopy.Legacy.C4G']
                     metadata = {'loopable': True}
 
-                Task:
-                    task = 'GWINSTEK1054B_tasks:MeasMean'
-                    view = 'views.simple_measurement_view:SimpleMeasView'
-                    instruments = ['labeq_exopy.Legacy.GWINSTEK1054B']
-                    metadata = {'loopable': True}
+                Tasks:
+                    group = 'GWINSTEKGDS1054B'
+                    Task:
+                        task = 'GWINSTEKGDS1054B_tasks:MeasMeanTask'
+                        view = 'views.simple_measurement_view:SimpleMeasView'
+                        instruments = ['labeq_exopy.Legacy.GWINSTEKGDS1054B']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'GWINSTEKGDS1054B_tasks:RampCursorTask'
+                        view = 'views.GWINSTEKGDS1054B_views:SetRampViewGwinstek'
+                        instruments = ['labeq_exopy.Legacy.GWINSTEKGDS1054B']
+                        metadata = {'loopable': True}
                     
                 Tasks:
                     group = "YokogawaGS200"
