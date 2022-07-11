@@ -27,6 +27,18 @@ enamldef SetRampViewYoko(InstrView): view:
         selected := task.func_v
 
     Label:
+        text = 'use non-default function (will have more control)'
+    ObjectCombo:
+        items << list(task.get_member('default_v').items)
+        selected := task.default_v
+    
+    Label:
+        text = 'set range value for current mode'
+    FloatField:
+        value := task.goal_v
+        tool_tip = fill("Voltage compliance value", 60)
+
+    Label:
         text = 'Ramp time'
     QtLineCompleter:
             hug_width = 'ignore'

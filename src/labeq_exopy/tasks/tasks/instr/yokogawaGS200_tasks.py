@@ -2,16 +2,23 @@
 """Yokogawa GS200 tasks
 
 """
+
+from time import sleep
+
 from atom.api import (Enum, Float, Str, set_default)
 
 from exopy.tasks.api import InstrumentTask
+
 
 class SetRampTaskYoko(InstrumentTask):
     """ Set Ramp Task for Yokogawa GS200
 
     """
     func_v = Enum('Voltage', 'Current').tag(pref=True)
+    default_v = Enum('True', 'False').tag(pref=True)
     ramp_v = Str().tag(pref=True)
+    goal_v = Float().tag(pref=True)
+
     database_entries = set_default({'set_ramp': 1.0})
 
 
@@ -24,7 +31,7 @@ class SetRampTaskYoko(InstrumentTask):
         else: 
             funcVal = 'CURR'
 
-        value = self.driver.set_ramp(self.ramp_v,funcVal)
+        value = self.driver.set_ramp(self.ramp_v,funcVal, self.default_v, self.goal_v)
         self.write_in_database('set_ramp', value)
 
 class SetRangeTaskYoko(InstrumentTask):

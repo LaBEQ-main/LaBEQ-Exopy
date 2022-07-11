@@ -9,7 +9,32 @@ from ..driver_tools import (InstrIOError, instrument_property,
 from ..visa_tools import VisaInstrument, errors
 
 
+import time
+import pyvisa
+from time import sleep
+from multiprocessing import Process
+from multiprocessing import current_process
+
+
 ######################################################################################################### Jake Additions
+
+def ramp (name, duration, initVal, goal) : 
+    rm = pyvisa.ResourceManager()
+    inst = rm.open_resource(name)
+    
+    start = time.time()
+    dif = goal - initVal
+    percent = 0
+
+    while percent < 1 :
+        percent = (time.time() - start) /duration
+        if (percent >= 0.99) :
+            inst.write ('Sour:lev ' + str(goal))
+            break
+
+        inst.write ('Sour:lev ' + str(initVal + (dif * percent)))
+        sleep(.05)
+
 def measure(thing):
     value = thing.query(":SOURce:LEV?")
     if value:
@@ -86,9 +111,25 @@ class YokogawaGS200(VisaInstrument):
         return "success"
     
     @secure_communication()
-    def set_ramp(self, rampVal, funcVal):
+    def set_ramp(self, rampVal, funcVal, useBetter, goalVal):
         self.write('SOUR:FUNC '+funcVal)
-        self.write('prog:slop '+str(rampVal))
+        
+        if goalVal > float(self.query('sour:rang?')): 
+            raise Exception("Target value exceeds range")
+
+        if (useBetter == 'True') :
+            if __name__ == 'labeq_exopy.instruments.drivers.visa.yokogawa':
+                print (self.connection_str)
+                thisProcess = current_process()
+                thisProcess.daemon = False
+                initVal = self.query('sour:lev?')
+
+                process = Process(target=ramp, args=(self.connection_str, float(rampVal), float(initVal), float(goalVal)), daemon=False)
+                process.start()
+        else:
+            self.write('prog:slop '+str(rampVal))
+            self.write('sour:lev '+ str(goalVal))
+
         return "success"
     
 #############################################################################################################
