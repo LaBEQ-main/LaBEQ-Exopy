@@ -6,12 +6,6 @@ from exopy.tasks.api import InstrumentTask
 
 
 class MeasMeanTask(InstrumentTask):
-    """Measure a dc current.
-
-    Wait for any parallel operation before execution and then wait the
-    specified time before perfoming the measure.
-
-    """
     # Time to wait before the measurement.
     wait_time = Float().tag(pref=True)
 
