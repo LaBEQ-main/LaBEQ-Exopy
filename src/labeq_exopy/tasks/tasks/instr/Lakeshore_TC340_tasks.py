@@ -17,8 +17,9 @@ from exopy.tasks.api import InstrumentTask
 class LakeshoreTC340MeasureTask(InstrumentTask):
     
     def perform(self):
-        ''
+        self.driver.set_input_curve()
+
 class LakeshoreTC340ConfigureTask(InstrumentTask):
     
     def perform(self):
-        ''
+        self.driver.set_input_curve()

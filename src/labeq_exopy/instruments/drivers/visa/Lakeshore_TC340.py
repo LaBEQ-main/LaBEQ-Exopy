@@ -16,59 +16,62 @@ from ..visa_tools import VisaInstrument
 
 class LakeshoreTC340(VisaInstrument):
     """Lakeshore 340 Temperature Controller. """
+    """def __init__(self, *args, **kwargs):
+
+        super(LakeshoreTC340, self).__init__(*args, **kwargs)
+        bus = kwargs.get('bus', 'GPIB')
+    """
 
     def open_connection(self, **para):
-        """Open the connection to the instr using the `connection_str`.
-
-        """
+        #Open the connection to the instr using the `connection_str`.
         super(LakeshoreTC340, self).open_connection(**para)
         self.write_termination = '\n'
         self.read_termination = '\n'
-
-    def set_loop_limits(self, val):
+    
+    def set_loop_limits(self):
         """CLIMIT handels all limit settings for loop 1 or 2:
             setpoint limit/loop cutoff, max positive change in output, max negative change in output, 
             max current, max heater range """
 
         self.write()
 
-    def set_heater_range(self, ):
+    def set_heater_range(self):
         "Sets Heater Range to 'off' or one of the output values"
 
-    def set_control_channel(self, ):
+    def set_control_channel(self):
         "Sets the control channel to input A or B"
     
-    def configure_control(self, ):
+    def configure_control(self):
         """CSET configures the control loop parameters of loop 1 or 2:
             control channel, setpoint units, on/off, on/off on startup"""
     
-    def measure_temperature(self, ):
+    def measure_temperature(self):
         """ Returns the temperature reading the selected input in kelvin """
 
         self.write()
 
-    def set_PID(self, val):
+    def set_PID(self):
         """ Sets the PID values of the selected loop or sets to AUTO PID"""
 
         self.write()
 
-    def set_mout(self, val):
+    def set_mout(self):
         """Sets the manual output percentage """
 
         self.write()
     
-    def set_setpoint(self, val):
+    def set_setpoint(self):
         """sets the heater setpoint """
 
         self.write()
     
-    def input_settings(self, val):
+    def input_settings(self):
         """The INTYPE command controlls all of the input settings for A or B: 
             Diode type, Units, Coefficient, Excitation, Range"""
 
         self.write()
 
-    def set_input_curve(self, val):
+    def set_input_curve(self):
         """sets the diode curve """
 
         self.write()

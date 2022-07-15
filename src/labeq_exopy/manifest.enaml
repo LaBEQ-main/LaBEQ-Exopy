@@ -144,6 +144,15 @@ enamldef LaBEQManifest(PluginManifest):
                         model = 'LI5650'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}}
                 Drivers:
+                    manufacturer = 'LakeShore Cryotronics'
+                    Driver:
+                        driver = 'Lakeshore_TC340:LakeshoreTC340'
+                        model ='340'
+                        kind = 'Temperature Controller'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':{'resource_class': 'INSTR'}
+                                        }
+                Drivers:
                     manufacturer = 'LaBEQ'
                     Driver:
                         driver = 'Timer_driver:Timer'
@@ -394,15 +403,6 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'anapico:AnapicoMulti'
                         model = 'APUASYN20'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
-                                       }
-                Drivers:
-                    manufacturer = 'LakeShore Cryotronics'
-                    Driver:
-                        driver = 'Lakeshore_TC340:LakeshoreTC340'
-                        model ='340'
-                        kind = 'Temperature Controller'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaRS232':{'resource_class': 'INSTR'}
                                        }
             Drivers:
                 path = 'dll'
@@ -944,12 +944,12 @@ enamldef LaBEQManifest(PluginManifest):
                     group = "Lakeshore"
                     Task:
                         task = 'Lakeshore_TC340_tasks:LakeshoreTC340MeasureTask'
-                        view = 'Lakeshore_TC340_views:LakeshoreTC340MeasureView'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340MeasureView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
-                        #metadata = {'loopable': True}
+                        metadata = {'loopable': True}
                     Task:
                         task = 'Lakeshore_TC340_tasks:LakeshoreTC340ConfigureTask'
-                        view = 'Lakeshore_TC340_views:LakeshoreTC340ConfigureView'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340ConfigureView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
-                        #metadata = {'loopable': True}
+                        metadata = {'loopable': True}
                 

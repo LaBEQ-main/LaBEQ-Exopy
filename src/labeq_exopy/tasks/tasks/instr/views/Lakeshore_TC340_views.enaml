@@ -12,6 +12,7 @@
 """
 from textwrap import fill
 from exopy.utils.widgets.qt_completers import QtLineCompleter
+from enaml.layout.api import factory
 
 from enaml.core.api import Conditional, Include
 from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox, Container)
@@ -25,7 +26,15 @@ enamldef LakeshoreTC340MeasureView(InstrView): view:
     """View for the LakeshoreTC340MeasureTask
 
     """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
 enamldef LakeshoreTC340ConfigureView(InstrView): view:
     """View for the LakeshoreTC340ConfigureTask
 
     """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
