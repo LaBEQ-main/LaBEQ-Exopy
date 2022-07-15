@@ -125,13 +125,13 @@ class YokogawaGS200(VisaInstrument):
                 print (self.connection_str)
                 thisProcess = current_process()
                 thisProcess.daemon = False
-                initVal = self.query('sour:lev?')
+                initVal = float(self.query('sour:lev?'))
                 start = time.time()
-                dif = goalVal - initVal
+                dif = float(goalVal) - initVal
                 percent = 0
 
                 while percent < 1 :
-                    percent = (time.time() - start) /rampVal
+                    percent = (time.time() - start) /float(rampVal)
                     if (percent >= 0.99) :
                         self.write ('Sour:lev ' + str(goalVal))
                         break
@@ -140,8 +140,8 @@ class YokogawaGS200(VisaInstrument):
                     sleep(.05)
                 
         else:
-            self.write('prog:slop '+str(rampVal))
-            self.write('sour:lev '+ str(goalVal))
+            self.write('prog:slop '+rampVal)
+            self.write('sour:lev '+ goalVal)
 
         return "success"
     
