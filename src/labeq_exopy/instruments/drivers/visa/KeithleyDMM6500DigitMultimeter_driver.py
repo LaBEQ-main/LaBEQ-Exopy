@@ -7,6 +7,8 @@
 from ..driver_tools import (InstrIOError, secure_communication,
                             instrument_property)
 from ..visa_tools import VisaInstrument
+from time import sleep
+
 
 
 class Keithley6500(VisaInstrument):
@@ -29,12 +31,11 @@ class Keithley6500(VisaInstrument):
     def read_voltage_dc(self):
     # The SENS:FUNC setting may be circumvented by using MEAS:FUNC ('SENS:FUNC "VOLT:DC"')
     #MEAS:FUNC is a coupling of the sens:func and data?
-        if self.rangeVal :
-            self.write('SENS:VOLT:RANG ' + self.rangeVal)
-        
+
+        self.query('MEAS:VOLT:DC?')
         value = self.query('MEAS:VOLT:DC?')
 
-        #split string into list to get voltage measurement
+        # print ("DC VOLT " + value)
         value = value.split(",")[0]
 
         #remove "NVDC" string from measurement so we can cast to a float
@@ -47,10 +48,16 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_voltage_ac(self):    
-        if self.rangeVal :
-            self.write('SENS:VOLT:RANG ' + self.rangeVal)
-        
+
+
+                
+
+        self.query('MEAS:VOLT:AC?')
         value = self.query('MEAS:VOLT:AC?')
+
+        # print ("AC VOLT " + value)
+
+
         value = value.split(",")[0]
         value = value.replace("NVAC","")
         
@@ -61,7 +68,13 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_two_resistance(self):
-        value = self.query('MEAS:RES'+self.rangeVal+'?')
+
+        
+        self.query('MEAS:RES?')
+        value = self.query('MEAS:RES?')
+
+        # print ("RES " + value)
+
         value = value.split(",")[0]
         value = value.replace("NOHM","")
         
@@ -72,7 +85,12 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_four_resistance(self):
-        value = self.query('MEAS:FRES'+self.rangeVal+'?')
+        self.query('MEAS:FRES?')
+        value = self.query('MEAS:FRES?')
+
+        # print ("FRES " + value)
+
+
         value = value.split(",")[0]
         value = value.replace("NOHM4W","")
         
@@ -83,7 +101,12 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_current_dc(self):
-        value = self.query('meas:CURR:DC'+self.rangeVal+'?')
+        
+        self.query('MEAS:CURR:DC?')
+        value = self.query('MEAS:CURR:DC?')
+
+        # print ("DC CURR " + value)
+
         value = value.split(",")[0]
         value = value.replace("NADC","")
 
@@ -94,7 +117,13 @@ class Keithley6500(VisaInstrument):
 
     @secure_communication()
     def read_current_ac(self):
-        value = self.query('MEAS:CURR:AC'+self.rangeVal+'?')
+        
+        self.query('MEAS:CURR:AC?')
+        value = self.query('MEAS:CURR:AC?')
+
+        # print ("AC CURR " + value)
+
+
         value = value.split(",")[0]
         value = value.replace("NAAC","")
 
