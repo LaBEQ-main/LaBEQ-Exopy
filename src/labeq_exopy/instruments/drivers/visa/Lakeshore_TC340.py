@@ -10,21 +10,15 @@
 """Drivers for Lakeshore 340 Temperature Controller using VISA library.
 
 """
-from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
+from ..driver_tools import (InstrIOError)
 from ..visa_tools import VisaInstrument
 
 #note: 
-#termination requirements unclear. Addition of a termination charachter at the end of each 
+#termination requirements unclear. Addition of a termination character at the end of each 
 # command may be nesessary. For now, it is operational without terminaiton
 #(see lakeshore 340 temperature controller manual)
 
 class LakeshoreTC340(VisaInstrument):
-    """Lakeshore 340 Temperature Controller. """
-    """def __init__(self, *args, **kwargs):
-
-        super(LakeshoreTC340, self).__init__(*args, **kwargs)
-        bus = kwargs.get('bus', 'GPIB')
-    """
 
     def open_connection(self, **para):
         #Open the connection to the instr using the `connection_str`.
@@ -47,9 +41,7 @@ class LakeshoreTC340(VisaInstrument):
     def configure_control(self, parameters):
         """CSET configures the control loop parameters of loop 1 or 2:
             control channel, setpoint units, on/off, on/off on startup"""
-        #note:
-        #a funciton for switiching only the control channel may become nessesary
-
+            
         self.write('CSET ' + str(parameters))
     
     def measure_temperature(self,input):
@@ -120,3 +112,13 @@ class LakeshoreTC340(VisaInstrument):
         #Correction for this is included in the corresponding task file
 
         self.write('INCRV ' + str(input) + ',' + str(curve))
+    
+    def LoopONCheck(self,loop):
+        "Returns a loop's on or off status: 1 = On, 0 = Off"
+
+        
+        loop_parameters = self.write('CSET? ' + str(loop))
+        loop_parameters_str = str(loop_parameters)
+        loop_parameters_arr = loop_parameters_str.split(',')
+
+        return int(loop_parameters_arr[3])

@@ -21,20 +21,183 @@ from enaml.layout.api import grid, vbox, hbox, factory, align
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 from enaml.qt import QtCore
+from enaml.stdlib.fields import FloatField
 
 enamldef LakeshoreTC340MeasureView(InstrView): view:
     """View for the LakeshoreTC340MeasureTask
 
     """
-    constraints = [factory(auto_grid_layout)]
+    constraints = [vbox(grid([instr_label],[instr_selection]),MeasTemp)]
 
-    Label:
-        text = 'Wait (s)'
+    GroupBox: MeasTemp:
+        constraints = [factory(auto_grid_layout)]
+        title = 'Measure Temperature'
+        tool_tip='Returns the Kelvin temperature measurement of the selected input'
+        Label:
+            text = 'Input'
+        ObjectCombo:
+            items << list(task.get_member('MeasInput').items)
+            selected := task.MeasInput
+        
+        
 enamldef LakeshoreTC340ConfigureView(InstrView): view:
     """View for the LakeshoreTC340ConfigureTask
 
     """
-    constraints = [factory(auto_grid_layout)]
+    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, LoopLims, HeaterRange, ConfigCntrlLoop, ConfigInput, PID, SetPoint)]
 
-    Label:
-        text = 'Wait (s)'
+    GroupBox: Loop:
+        title = 'Loop'
+        tool_tip='Select Control Loop'
+        ObjectCombo:
+            items << list(task.get_member('Loop').items)
+            selected := task.Loop
+    
+    GroupBox: LoopLims:
+        constraints = [factory(auto_grid_layout)]
+        title = 'Loop Limits'
+        #tool_tip=''
+        Label:
+            hug_width = 'ignore'
+            text = 'Set Point Limit'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.SetPointLimit
+            tool_tip = fill('Units: Kelvin',
+                            60)
+        Label:
+            hug_width = 'ignore'
+            text = 'Positive Slope Max'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.PosSlopeMax
+            tool_tip = fill('Units: %',
+                            60)
+        Label:
+            hug_width = 'ignore'
+            text = 'Negative Slope Max'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.NegSlopeMax
+            tool_tip = fill('Units: %',
+                            60)
+        Label:
+            hug_width = 'ignore'
+            text = 'Max Current Output'
+        ObjectCombo:
+            items << list(task.get_member('MaxCurr').items)
+            selected := task.MaxCurr
+
+        Label:
+            hug_width = 'ignore'
+            text = 'Max Heater Range'
+        ObjectCombo:
+            items << list(task.get_member('MaxHtrRange').items)
+            selected := task.MaxHtrRange
+        
+
+    GroupBox: HeaterRange:
+        title = 'Heater Range'
+        ObjectCombo:
+            items << list(task.get_member('SetHtrRange').items)
+            selected := task.SetHtrRange
+    
+    GroupBox: ConfigCntrlLoop:
+        constraints = [factory(auto_grid_layout)]
+        title = 'Configure Control Loop'
+        Label:
+            hug_width = 'ignore'
+            text = 'Control Channel'
+        ObjectCombo:
+            items << list(task.get_member('CntrlChannel').items)
+            selected := task.CntrlChannel
+        
+        Label:
+            hug_width = 'ignore'
+            text = 'Units'
+        ObjectCombo:
+            items << list(task.get_member('SetpUnits').items)
+            selected := task.SetpUnits
+
+    GroupBox: PID:
+        constraints = [factory(auto_grid_layout)]
+        title = 'PID Settings'
+        tool_tip='Selecting "Auto" automatically disables manual settings'
+        CheckBox: AutoPID:
+                text = 'AUTO PID'
+                checked := task.AutoPID
+        Label:
+            hug_width = 'ignore'
+            text = 'Manual PID Settings'
+
+        Label:
+            hug_width = 'ignore'
+            text = 'P'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.P
+            tool_tip = fill('Set P value',
+                            60)
+            enabled << (not task.AutoPID)
+
+        Label:
+            hug_width = 'ignore'
+            text = 'I'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.I
+            tool_tip = fill('Set I value',
+                            60)
+            enabled << (not task.AutoPID)
+        
+        Label:
+            hug_width = 'ignore'
+            text = 'D'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.D
+            tool_tip = fill('Set D value',
+                            60)
+            enabled << (not task.AutoPID)
+        Label:
+            hug_width = 'ignore'
+            text = 'Mout'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.Mout
+            tool_tip = fill('Set Mout value',
+                            60)
+            enabled << (not task.AutoPID)
+    
+    GroupBox: SetPoint:
+        title = 'Set Point'
+        #tool_tip=''
+        FloatField:
+            hug_width = 'ignore'
+            value := task.SetPoint
+            tool_tip = fill('Units set by the "Units" setting under "Configure Control Loop": 325',
+                            60)
+    
+    GroupBox: ConfigInput:
+        constraints = [factory(auto_grid_layout)]
+        title = 'Configure Input Settings'
+        Label:
+            hug_width = 'ignore'
+            text = 'Input to Configure'
+        ObjectCombo:
+            items << list(task.get_member('ConfigInput').items)
+            selected := task.ConfigInput
+        
+        Label:
+            hug_width = 'ignore'
+            text = 'Diode'
+        ObjectCombo:
+            items << list(task.get_member('Diode').items)
+            selected := task.Diode
+        Label:
+            hug_width = 'ignore'
+            text = 'Curve'
+        ObjectCombo:
+            items << list(task.get_member('Curve').items)
+            selected := task.Curve
+    
