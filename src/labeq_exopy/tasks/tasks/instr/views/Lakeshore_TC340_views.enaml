@@ -44,7 +44,7 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
     """View for the LakeshoreTC340ConfigureTask
 
     """
-    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, LoopLims, HeaterRange, ConfigCntrlLoop, ConfigInput, PID, SetPoint)]
+    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, LoopLims, ConfigInput, PID, ConfigCntrlLoop, SetPoint, HeaterRange)]
 
     GroupBox: Loop:
         title = 'Loop'
@@ -63,7 +63,7 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
         FloatField:
             hug_width = 'ignore'
             value := task.SetPointLimit
-            tool_tip = fill('Units: Kelvin',
+            tool_tip = fill('Units are the same as set using "Setpoint Units"',
                             60)
         Label:
             hug_width = 'ignore'
@@ -87,7 +87,16 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
         ObjectCombo:
             items << list(task.get_member('MaxCurr').items)
             selected := task.MaxCurr
-
+        
+        Label:
+            hug_width = 'ignore'
+            text = 'Heater Resistance'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.HtrRes
+            tool_tip = fill('Units: \u03A9',
+                            60)
+        
         Label:
             hug_width = 'ignore'
             text = 'Max Heater Range'
@@ -114,7 +123,7 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
         
         Label:
             hug_width = 'ignore'
-            text = 'Units'
+            text = 'Setpoint Units'
         ObjectCombo:
             items << list(task.get_member('SetpUnits').items)
             selected := task.SetpUnits
@@ -170,8 +179,8 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
             enabled << (not task.AutoPID)
     
     GroupBox: SetPoint:
-        title = 'Set Point'
-        #tool_tip=''
+        title = 'Setpoint'
+        tool_tip='Units set by the "Units" setting under "Configure Control Loop": 325'
         FloatField:
             hug_width = 'ignore'
             value := task.SetPoint

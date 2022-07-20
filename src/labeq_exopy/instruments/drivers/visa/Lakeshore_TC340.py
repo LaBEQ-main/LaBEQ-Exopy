@@ -80,9 +80,14 @@ class LakeshoreTC340(VisaInstrument):
 
         if(Auto == True):
             self.write('CMODE 4')
-        else:
+            print('it set auto')
+        elif (pid != 0):
             self.write('CMODE 1')
             self.write('PID ' + str(pid))
+            print('it set manual')
+        else:
+            raise InstrIOError('Auto PID Failed!')
+            
     
     def set_mout(self,val):
         """Sets the manual output percentage """
@@ -113,12 +118,19 @@ class LakeshoreTC340(VisaInstrument):
 
         self.write('INCRV ' + str(input) + ',' + str(curve))
     
-    def LoopONCheck(self,loop):
-        "Returns a loop's on or off status: 1 = On, 0 = Off"
+    def TurnLoopOff(self,loop):
+        "Turns a loop off"
 
+        self.write('CSET ' + str(loop)+',,,0,0')
         
-        loop_parameters = self.write('CSET? ' + str(loop))
-        loop_parameters_str = str(loop_parameters)
-        loop_parameters_arr = loop_parameters_str.split(',')
 
-        return int(loop_parameters_arr[3])
+    def set_heater_resistance(self,loop,val):
+        """Sets the Heater resistance"""
+        #Note:
+        #This function works on the assumtion that only one loop is used
+        #It can be expanded to use an option for both 1 or 2 loops
+        #The function will automatically set the heater output to display in "power" units
+        #This can be changed to add the option of "current" units
+        #(See Lakeshore TC340 Manual)
+
+        self.write('CDISP ' + str(loop) +',' + '1' + ',' + str(val) + ',2/r/n')
