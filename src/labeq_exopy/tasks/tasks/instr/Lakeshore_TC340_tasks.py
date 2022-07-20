@@ -37,6 +37,7 @@ class LakeshoreTC340MeasureTask(InstrumentTask):
             value = self.driver.measure_temperature(self.MeasInput)
             self.write_in_database('A_Temp', value)
         elif self.MeasInput == 'B':
+            value = self.driver.measure_temperature(self.MeasInput)
             self.write_in_database('B_Temp', value)
         
         #Wait for the last operation to finish
