@@ -12,6 +12,7 @@
 """
 from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
+import time
 
 
 class LI5650(VisaInstrument):
@@ -24,21 +25,36 @@ class LI5650(VisaInstrument):
         super(LI5650, self).open_connection(**para)
         self.write_termination = '\n'
         self.read_termination = '\n'
+        self.timeout = 5000
 
     def measure(self, val):
         """ set sensitivity mode """
         
-        #first make sure data output format is DATA1,DATA2,DATA3,DATA4
-        self.write('DATA 30')
+        ###for debug
+        f = open("C:\\Users\\2administrator\\Desktop\\Exopy Errors\\timeout_data.txt", "a")
         
-        #now ensure data outputs are R,Phase,X,Y
-        self.write('CALC1:FORM MLIN')
-        self.write('CALC2:FORM PHAS')
-        self.write('CALC3:FORM REAL')
-        self.write('CALC4:FORM IMAG')
 
+        # #first make sure data output format is DATA1,DATA2,DATA3,DATA4
+        # self.write('DATA 30')
+        
+        # #now ensure data outputs are R,Phase,X,Y
+        # self.write('CALC1:FORM MLIN')
+        # self.write('CALC2:FORM PHAS')
+        # self.write('CALC3:FORM REAL')
+        # self.write('CALC4:FORM IMAG')
+
+        
+        t1 = time.time()
         #get data
         data = (self.query('FETC?')).split(',')
+
+        t2 = time.time()
+        dt = t2 - t1
+
+        ### for debug
+        f.write(f"{dt}\n")
+        f.close()
+        print(dt)
 
         #measure the specified value
         if val == 'R':
