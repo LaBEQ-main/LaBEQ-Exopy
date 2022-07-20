@@ -394,7 +394,15 @@ enamldef LaBEQManifest(PluginManifest):
                         model = 'APUASYN20'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
                                        }
-
+                Drivers:
+                    manufacturer = 'AMETEK'
+                    Driver:
+                        driver = 'lock_in_EGG_PAR_5210: LockInEGGPAR5210'
+                        model = '5210'
+                        kind = 'Lock-in'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':{'resource_class': 'INSTR'}
+                                       }
             Drivers:
                 path = 'dll'
                 starter = 'labeq_exopy.starter.dll'
