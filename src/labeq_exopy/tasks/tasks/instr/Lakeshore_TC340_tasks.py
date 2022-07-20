@@ -21,26 +21,37 @@ from exopy.tasks.api import InstrumentTask
 class LakeshoreTC340MeasureTask(InstrumentTask):
     #: Input value to retrieve.
     MeasInput = Enum('A', 'B').tag(pref=True)
-    
     #: Time to wait before performing the measurement.
-    #waiting_time = Float().tag(pref=True)
+    DualTemp = Bool(False).tag(pref=True)
+    waiting_time = Float(1).tag(pref=True)
 
-    database_entries = set_default({'A': 1.0})
+        
+    database_entries = set_default({'A_Temp': 0,
+                                    'B_Temp':0})
 
-    #wait = set_default({'activated': True, 'wait': ['instr']})
+    wait = set_default({'activated': True, 'wait': ['instr']})
 
     def perform(self):
-        """Wait and query the last value in the instrument buffer.
-
-        """
-        #sleep(self.waiting_time)
         #measurement selection
         if self.MeasInput == 'A':
             value = self.driver.measure_temperature(self.MeasInput)
-            self.write_in_database('A', value)
+            self.write_in_database('A_Temp', value)
         elif self.MeasInput == 'B':
-            value = self.driver.measure_temperature(self.MeasInput)
-            self.write_in_database('B', value)
+            self.write_in_database('B_Temp', value)
+        
+        #Wait for the last operation to finish
+        while self.driver.busy_status() == 1:
+            print('Busy')
+            sleep(self.waiting_time)
+
+        if self.DualTemp:
+            if self.MeasInput == 'A':
+                value2 = self.driver.measure_temperature('B')
+                self.write_in_database('B_Temp', value2)
+            if self.MeasInput == 'B':
+                value2 = self.driver.measure_temperature('A')
+                self.write_in_database('A_Temp', value2)
+        
     
     def _post_setattr_MeasInput(self, old, new):
         """ Update the database entries acording to the MeasInput.
@@ -50,9 +61,10 @@ class LakeshoreTC340MeasureTask(InstrumentTask):
             if k in entries:
                 del entries[k]
         if new == 'A':
-            entries['a'] = 1.0
+            entries['A_Temp'] = 0
         elif new == 'B':
-            entries['b'] = 1.0
+            entries['B_Temp'] = 0
+            
         self.database_entries = entries
 
 class LakeshoreTC340ConfigureTask(InstrumentTask):
@@ -153,26 +165,60 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
         #PID Settings: Switches between Auto and Manual
         if self.AutoPID:
             pid = 0
-            self.driver.set_PID(self.AutoPID, str(pid))
+            self.driver.set_PID(self.AutoPID, str(pid),self.Loop)
         else:
             pid_arr = [self.Loop,self.P,self.I,self.D]
             pid = ','.join(str(i) for i in pid_arr)
-            self.driver.set_PID(self.AutoPID, str(pid))
+            print(pid)
+            self.driver.set_PID(self.AutoPID, str(pid),self.Loop)
         
         #Set Mout value
-        mout_input = str(self.Loop) + ',' + str(self.Mout)
-        self.driver.set_mout(mout_input)
+        if self.AutoPID:
+            mout_input = str(self.Loop) + ',0'
+            self.driver.set_mout(mout_input)
+        else:
+            mout_input = str(self.Loop) + ',' + str(self.Mout)
+            self.driver.set_mout(mout_input)
 
         #Configure loop limits
-        limits_arr = [self.Loop, self.SetPointLimit, self.PosSlopeMax, self.NegSlopeMax, self.MaxCurr, self.MaxHtrRange]
+        if self.MaxHtrRange == 'Full' :
+            max_htr_range = '5'
+        elif self.MaxHtrRange == '1/10' :
+            max_htr_range = '4'
+        elif self.MaxHtrRange == '1/10\u00b2' :
+            max_htr_range = '3'
+        elif self.MaxHtrRange == '1/10\u00b3' :
+            max_htr_range = '2'
+        elif self.MaxHtrRange == '1/10\u2074' :
+            max_htr_range = '1'
+        elif self.MaxHtrRange == 'OFF' :
+            max_htr_range = '0'
+        limits_arr = [self.Loop, self.SetPointLimit, self.PosSlopeMax, self.NegSlopeMax, self.MaxCurr, max_htr_range]
         limits = ','.join(str(i) for i in limits_arr)
         self.driver.set_loop_limits(limits)
-
+        
+        
+        
         #Set Heater Resistance
         self.driver.set_heater_resistance(self.Loop,self.HtrRes)
         
         #Set Setpoint
         self.driver.set_setpoint(self.Loop,self.SetPoint)
+
+        #Set Heater Range
+        if self.SetHtrRange == 'Full' :
+            htr_range = '5'
+        elif self.SetHtrRange == '1/10' :
+            htr_range = '4'
+        elif self.SetHtrRange == '1/10\u00b2' :
+            htr_range = '3'
+        elif self.SetHtrRange == '1/10\u00b3' :
+            htr_range = '2'
+        elif self.SetHtrRange == '1/10\u2074' :
+            htr_range = '1'
+        elif self.SetHtrRange == 'OFF' :
+            htr_range = '0'
+        self.driver.set_heater_range(htr_range)
 
 
 

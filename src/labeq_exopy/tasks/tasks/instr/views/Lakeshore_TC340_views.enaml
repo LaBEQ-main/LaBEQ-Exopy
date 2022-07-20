@@ -30,14 +30,18 @@ enamldef LakeshoreTC340MeasureView(InstrView): view:
     constraints = [vbox(grid([instr_label],[instr_selection]),MeasTemp)]
 
     GroupBox: MeasTemp:
-        constraints = [factory(auto_grid_layout)]
+        constraints = [grid([DualTemp],[In1],[In1Obj])]
         title = 'Measure Temperature'
         tool_tip='Returns the Kelvin temperature measurement of the selected input'
-        Label:
-            text = 'Input'
-        ObjectCombo:
+        CheckBox: DualTemp:
+                text = 'Dual Temperature Measurement'
+                checked := task.DualTemp
+        Label: In1:
+            text = 'Input1'
+        ObjectCombo: In1Obj:
             items << list(task.get_member('MeasInput').items)
             selected := task.MeasInput
+        
         
         
 enamldef LakeshoreTC340ConfigureView(InstrView): view:

@@ -32,17 +32,20 @@ class LakeshoreTC340(VisaInstrument):
             max current, max heater range """
 
         self.write('CLIMIT ' + str(limits))
+        print('setting the loop limits')
 
     def set_heater_range(self,range):
         "Sets Heater Range to 'off' or one of the output values"
         
         self.write('RANGE ' + str(range))
+        print('setting heater range')
 
     def configure_control(self, parameters):
         """CSET configures the control loop parameters of loop 1 or 2:
             control channel, setpoint units, on/off, on/off on startup"""
             
         self.write('CSET ' + str(parameters))
+        print('setting the control settings.')
     
     def measure_temperature(self,input):
         """ Returns the temperature reading the selected input in kelvin """
@@ -57,21 +60,21 @@ class LakeshoreTC340(VisaInstrument):
             K = self.query('KRDG? ' + str(input))
             return K
         elif(float(bit_weighting) == 1):
-            raise InstrIOError('TC340: Invalid Reading')
+            return 'Invalid Reading'
         elif(2 <= float(bit_weighting) < 16):
-            raise InstrIOError('TC340: Old Reading')
+            return 'Old Reading'
         elif( 16 <= float(bit_weighting) < 32):
-            raise InstrIOError('TC340: T-UNDER')
+            return 'T-UNDER'
         elif( 32 <= float(bit_weighting) < 64):
-            raise InstrIOError('TC340: T-OVER')
+            return 'T-OVER'
         elif( 64 <= float(bit_weighting) < 128):
-            raise InstrIOError('TC340: S-ZERO')
+            return 'S-ZERO'
         elif( 128 <= float(bit_weighting)):
-            raise InstrIOError('TC340: S-OVER')
+            return 'S-OVER'
         else:
             raise InstrIOError('TC340: Measurement Failed')
     
-    def set_PID(self,Auto, pid):
+    def set_PID(self,Auto, pid, loop):
         """ Sets the PID values of the selected loop or sets to AUTO PID"""
         #note: 
         #This was made to chose between full auto or full manual PID.
@@ -79,12 +82,12 @@ class LakeshoreTC340(VisaInstrument):
         #(see Lakeshore 340 temperature controller manual)
 
         if(Auto == True):
-            self.write('CMODE 4')
-            print('it set auto')
+            self.write('CMODE ' + str(loop) + ',4')
+            print('PID set auto')
         elif (pid != 0):
-            self.write('CMODE 1')
+            self.write('CMODE ' + str(loop) + ',1')
             self.write('PID ' + str(pid))
-            print('it set manual')
+            print('PID set manual')
         else:
             raise InstrIOError('Auto PID Failed!')
             
@@ -93,11 +96,13 @@ class LakeshoreTC340(VisaInstrument):
         """Sets the manual output percentage """
         
         self.write('MOUT ' + str(val))
+        print('setting Mout value')
     
     def set_setpoint(self, loop, val):
         """sets the heater setpoint """
 
         self.write('SETP ' + str(loop) + ',' + str(val))
+        print('setting heater setpoint')
     
     def input_settings(self, settings):
         """The INTYPE command controlls all of the input settings for A or B: 
@@ -109,6 +114,7 @@ class LakeshoreTC340(VisaInstrument):
         #The task file for this driver only prompts the user for the first two inputs
 
         self.write('INTYPE ' + str(settings))
+        print('setting input settings; diode type, units')
 
     def set_input_curve(self, input, curve):
         """sets the diode curve """
@@ -117,11 +123,13 @@ class LakeshoreTC340(VisaInstrument):
         #Correction for this is included in the corresponding task file
 
         self.write('INCRV ' + str(input) + ',' + str(curve))
+        print('setting diode curve')
     
     def TurnLoopOff(self,loop):
         "Turns a loop off"
 
         self.write('CSET ' + str(loop)+',,,0,0')
+        print('turned a loop off')
         
 
     def set_heater_resistance(self,loop,val):
@@ -134,3 +142,11 @@ class LakeshoreTC340(VisaInstrument):
         #(See Lakeshore TC340 Manual)
 
         self.write('CDISP ' + str(loop) +',' + '1' + ',' + str(val) + ',2/r/n')
+        print('setting heater resistance')
+    
+    def busy_status(self):
+        "returns a 0 if not performing a task and 1 if busy"
+
+        status = self.query('BUSY?')
+        print('queried busy status')
+        return int(status)
