@@ -33,7 +33,7 @@ class Keithley6500(VisaInstrument):
     #MEAS:FUNC is a coupling of the sens:func and data?
 
         self.query('MEAS:VOLT:DC?')
-        value = self.query('MEAS:VOLT:DC?')
+        value = self.query('read?')
 
         # print ("DC VOLT " + value)
         value = value.split(",")[0]
@@ -53,7 +53,7 @@ class Keithley6500(VisaInstrument):
                 
 
         self.query('MEAS:VOLT:AC?')
-        value = self.query('MEAS:VOLT:AC?')
+        value = self.query('read?')
 
         # print ("AC VOLT " + value)
 
@@ -71,7 +71,7 @@ class Keithley6500(VisaInstrument):
 
         
         self.query('MEAS:RES?')
-        value = self.query('MEAS:RES?')
+        value = self.query('read?')
 
         # print ("RES " + value)
 
@@ -86,7 +86,7 @@ class Keithley6500(VisaInstrument):
     @secure_communication()
     def read_four_resistance(self):
         self.query('MEAS:FRES?')
-        value = self.query('MEAS:FRES?')
+        value = self.query('read?')
 
         # print ("FRES " + value)
 
@@ -103,7 +103,7 @@ class Keithley6500(VisaInstrument):
     def read_current_dc(self):
         
         self.query('MEAS:CURR:DC?')
-        value = self.query('MEAS:CURR:DC?')
+        value = self.query('read?')
 
         # print ("DC CURR " + value)
 
@@ -119,7 +119,7 @@ class Keithley6500(VisaInstrument):
     def read_current_ac(self):
         
         self.query('MEAS:CURR:AC?')
-        value = self.query('MEAS:CURR:AC?')
+        value = self.query('read?')
 
         # print ("AC CURR " + value)
 
