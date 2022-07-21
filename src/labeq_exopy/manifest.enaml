@@ -49,6 +49,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'GWINSTEKGDS1054B'
             group = 'GWINSTEKGDS1054B'
+        GroupTaskFilter:    
+            id = 'Lakeshore'
+            group = 'Lakeshore'
 
     Extension:
         id = 'startup'
@@ -140,6 +143,15 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'NF_LI5650_driver:LI5650'
                         model = 'LI5650'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}}
+                Drivers:
+                    manufacturer = 'LakeShore Cryotronics'
+                    Driver:
+                        driver = 'Lakeshore_TC340:LakeshoreTC340'
+                        model ='340'
+                        kind = 'Temperature Controller'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':{'resource_class': 'INSTR'}
+                                        }
                 Drivers:
                     manufacturer = 'LaBEQ'
                     Driver:
@@ -350,16 +362,14 @@ enamldef LaBEQManifest(PluginManifest):
                         model = 'SR830'
                         kind = 'Lock-in'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaRS232':
-                                           {'resource_class': 'INSTR'}
+                                       'VisaRS232':{'resource_class': 'INSTR'}
                                        }
                     Driver:
                         driver = 'lock_in_sr810:LockInSR810'
                         model = 'SR810'
                         kind = 'Lock-in'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaRS232':
-                                           {'resource_class': 'INSTR'}
+                                       'VisaRS232':{'resource_class': 'INSTR'}
                                        }
 
                 Drivers:
@@ -394,7 +404,6 @@ enamldef LaBEQManifest(PluginManifest):
                         model = 'APUASYN20'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
                                        }
-
             Drivers:
                 path = 'dll'
                 starter = 'labeq_exopy.starter.dll'
@@ -627,6 +636,7 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments = ['labeq_exopy.Legacy.LockInSR7265',
                                     'labeq_exopy.Legacy.LockInSR830',
                                     'labeq_exopy.Legacy.LockInSR810']
+                        #metadata = {'loopable': True}
                     Task:
                         task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
                         view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
@@ -930,5 +940,16 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.yokoGS200_views:SetRangeViewYoko'
                         instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                         metadata = {'loopable': True}
-                       
+                Tasks:
+                    group = "Lakeshore"
+                    Task:
+                        task = 'Lakeshore_TC340_tasks:LakeshoreTC340MeasureTask'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340MeasureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC340_tasks:LakeshoreTC340ConfigureTask'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340ConfigureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
+                        metadata = {'loopable': True}
                 
