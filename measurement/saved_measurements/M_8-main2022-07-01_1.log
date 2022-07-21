@@ -1,5 +1,0 @@
-2022-07-01 16:38:43,680 | INFO | Check successful
-2022-07-01 16:38:43,755 | INFO | value : -1.844595E-06
-2022-07-01 16:38:45,755 | INFO | Iterating connection 0/2 for instrument Keithley6500
-2022-07-01 16:38:45,894 | INFO | <labeq_exopy.instruments.drivers.visa.KeithleyDMM6500DigitMultimeter_driver.Keithley6500 object at 0x000002078A0BFF40>
-2022-07-01 16:38:49,908 | INFO | Process shuting down

@@ -18,22 +18,22 @@ from multiprocessing import current_process
 
 ######################################################################################################### Jake Additions
 
-def ramp (name, duration, initVal, goal) : 
-    rm = pyvisa.ResourceManager()
-    inst = rm.open_resource(name)
+# def ramp (name, duration, initVal, goal) : 
+#     rm = pyvisa.ResourceManager()
+#     inst = rm.open_resource(name)
     
-    start = time.time()
-    dif = goal - initVal
-    percent = 0
+#     start = time.time()
+#     dif = goal - initVal
+#     percent = 0
 
-    while percent < 1 :
-        percent = (time.time() - start) /duration
-        if (percent >= 0.99) :
-            inst.write ('Sour:lev ' + str(goal))
-            break
+#     while percent < 1 :
+#         percent = (time.time() - start) /duration
+#         if (percent >= 0.99) :
+#             inst.write ('Sour:lev ' + str(goal))
+#             break
 
-        inst.write ('Sour:lev ' + str(initVal + (dif * percent)))
-        sleep(.05)
+#         inst.write ('Sour:lev ' + str(initVal + (dif * percent)))
+#         sleep(.05)
 
 def measure(thing):
     value = thing.query(":SOURce:LEV?")
@@ -110,6 +110,9 @@ class YokogawaGS200(VisaInstrument):
         self.write('sour:RANG '+ str(range_val))
         return "success"
     
+
+ 
+
     @secure_communication()
     def set_ramp(self, rampVal, funcVal, useBetter, goalVal):
         self.write('SOUR:FUNC '+funcVal)
@@ -122,13 +125,23 @@ class YokogawaGS200(VisaInstrument):
                 print (self.connection_str)
                 thisProcess = current_process()
                 thisProcess.daemon = False
-                initVal = self.query('sour:lev?')
+                initVal = float(self.query('sour:lev?'))
+                start = time.time()
+                dif = float(goalVal) - initVal
+                percent = 0
 
-                process = Process(target=ramp, args=(self.connection_str, float(rampVal), float(initVal), float(goalVal)), daemon=False)
-                process.start()
+                while percent < 1 :
+                    percent = (time.time() - start) /float(rampVal)
+                    if (percent >= 0.99) :
+                        self.write ('Sour:lev ' + str(goalVal))
+                        break
+
+                    self.write ('Sour:lev ' + str(initVal + (dif * percent)))
+                    sleep(.05)
+                
         else:
-            self.write('prog:slop '+str(rampVal))
-            self.write('sour:lev '+ str(goalVal))
+            self.write('prog:slop '+rampVal)
+            self.write('sour:lev '+ goalVal)
 
         return "success"
     

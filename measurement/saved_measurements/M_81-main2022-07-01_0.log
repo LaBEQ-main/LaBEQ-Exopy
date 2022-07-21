@@ -1,5 +1,0 @@
-2022-07-01 15:55:16,290 | INFO | Check successful
-2022-07-01 15:55:16,313 | CRITICAL | C:\Users\tojak\anaconda3\envs\labeq\lib\site-packages\pyvisa\resources\messagebased.py:642: UserWarning: write message already ends with termination characters
-  self.write(message)
-2022-07-01 15:55:16,359 | INFO | value : 1.636422E-11
-2022-07-01 15:55:18,378 | INFO | Process shuting down
