@@ -371,6 +371,13 @@ enamldef LaBEQManifest(PluginManifest):
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232':{'resource_class': 'INSTR'}
                                        }
+                    Driver:
+                        driver = 'lock_in_sr530:LockInSR530'
+                        model = 'SR530'
+                        kind = 'Lock-in'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                                       'VisaRS232':{'resource_class': 'INSTR'}
+                                       }
 
                 Drivers:
                     manufacturer = 'Rohde and Schwarz'
@@ -635,16 +642,20 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.lock_in_meas_view:LockInMeasView'
                         instruments = ['labeq_exopy.Legacy.LockInSR7265',
                                     'labeq_exopy.Legacy.LockInSR830',
-                                    'labeq_exopy.Legacy.LockInSR810']
-                        #metadata = {'loopable': True}
+                                    'labeq_exopy.Legacy.LockInSR810'
+                                    'labeq_exopy.Legacy.LockInSR530']
                     Task:
                         task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
                         view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
-                        instruments = ['labeq_exopy.Legacy.LockInSR810']
+                        instruments = ['labeq_exopy.Legacy.LockInSR810',
+                                        'labeq_exopy.Legacy.LockInSR830',
+                                        'labeq_exopy.Legacy.LockInSR530']
                     Task:
                         task = 'lock_in_SetInputAndRef_task:LockInSetInputAndRefTask'
                         view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
-                        instruments = ['labeq_exopy.Legacy.LockInSR810']
+                        instruments = ['labeq_exopy.Legacy.LockInSR810',
+                                        'labeq_exopy.Legacy.LockInSR830',
+                                        'labeq_exopy.Legacy.LockInSR530']
                 Task:
                     task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'
                     view = 'views.set_voltage_compliance_views:SetVoltageComplianceView'
