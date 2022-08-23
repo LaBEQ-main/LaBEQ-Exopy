@@ -148,7 +148,7 @@ enamldef LaBEQManifest(PluginManifest):
                     Driver:
                         driver = 'Lakeshore_TC340:LakeshoreTC340'
                         model ='340'
-                        kind = 'Temperature Controller'
+                        kind = 'Other'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232':{'resource_class': 'INSTR'}
                                         }
