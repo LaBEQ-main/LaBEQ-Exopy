@@ -226,12 +226,20 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
 class LakeshoreTC340HeaterSetpointandRangeTask(InstrumentTask):
     #The heater settings are changed frequently. Making a seperate task file for these functions
     #allows for easy configuration. 
-    
+    Loop = Enum('1', '2').tag(pref=True)
     SetPoint = Float(300).tag(pref=True)
     SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
     
 
     def perform(self):
+        #Check to make sure only one loop is turned on.
+        #If both are on, the unselected loop will be turned off
+        if self.Loop == 1:
+            Loop = 2
+            self.driver.TurnLoopOff(Loop)
+        else:
+            Loop = 1
+            self.driver.TurnLoopOff(Loop)
         #Set Setpoint
         self.driver.set_setpoint(self.Loop,self.SetPoint)
         
