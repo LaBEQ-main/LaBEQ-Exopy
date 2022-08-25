@@ -638,12 +638,12 @@ enamldef LaBEQManifest(PluginManifest):
                                     'labeq_exopy.Legacy.LockInSR810']
                         #metadata = {'loopable': True}
                     Task:
-                        task = 'lock_in_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
-                        view = 'views.lock_in_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
+                        task = 'sr810_SetGainAndTimeConst_task:LockInSetGainAndTimeConstTask'
+                        view = 'views.sr810_SetGainAndTimeConst_view:LockInSetGainAndTimeConstView'
                         instruments = ['labeq_exopy.Legacy.LockInSR810']
                     Task:
-                        task = 'lock_in_SetInputAndRef_task:LockInSetInputAndRefTask'
-                        view = 'views.lock_in_SetInputAndRef_view:LockInSetInputAndRefView'
+                        task = 'sr810_SetInputAndRef_task:LockInSetInputAndRefTask'
+                        view = 'views.sr810_SetInputAndRef_view:LockInSetInputAndRefView'
                         instruments = ['labeq_exopy.Legacy.LockInSR810']
                 Task:
                     task = 'set_voltage_compliance_tasks:SetVoltageComplianceTask'

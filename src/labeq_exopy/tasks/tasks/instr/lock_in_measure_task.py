@@ -28,7 +28,7 @@ class LockInMeasureTask(InstrumentTask):
     #: Time to wait before performing the measurement.
     waiting_time = Float().tag(pref=True)
 
-    database_entries = set_default({'x': 1.0})
+    database_entries = set_default({'x': 1.0,'y':1.0, 'amplitude':1.0, 'theta':1.0,'frequency':1.0,'phase':1.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
