@@ -58,7 +58,7 @@ class LakeshoreTC340(VisaInstrument):
         
         if(float(bit_weighting) == 0):
             K = self.query('KRDG? ' + str(input))
-            return K
+            return float(K)
         elif(float(bit_weighting) == 1):
             return 'Invalid Reading'
         elif(2 <= float(bit_weighting) < 16):

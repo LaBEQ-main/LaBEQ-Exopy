@@ -148,7 +148,7 @@ enamldef LaBEQManifest(PluginManifest):
                     Driver:
                         driver = 'Lakeshore_TC340:LakeshoreTC340'
                         model ='340'
-                        kind = 'Temperature Controller'
+                        kind = 'Other'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232':{'resource_class': 'INSTR'}
                                         }
@@ -952,6 +952,11 @@ enamldef LaBEQManifest(PluginManifest):
                     Task:
                         task = 'Lakeshore_TC340_tasks:LakeshoreTC340ConfigureTask'
                         view = 'views.Lakeshore_TC340_views:LakeshoreTC340ConfigureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC340_tasks:LakeshoreTC340HeaterSetpointandRangeTask'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointandRangeView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
                         metadata = {'loopable': True}
                 

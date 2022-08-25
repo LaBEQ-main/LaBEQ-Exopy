@@ -107,13 +107,6 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
         ObjectCombo:
             items << list(task.get_member('MaxHtrRange').items)
             selected := task.MaxHtrRange
-        
-
-    GroupBox: HeaterRange:
-        title = 'Heater Range'
-        ObjectCombo:
-            items << list(task.get_member('SetHtrRange').items)
-            selected := task.SetHtrRange
     
     GroupBox: ConfigCntrlLoop:
         constraints = [factory(auto_grid_layout)]
@@ -182,15 +175,6 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
                             60)
             enabled << (not task.AutoPID)
     
-    GroupBox: SetPoint:
-        title = 'Setpoint'
-        tool_tip='Units set by the "Units" setting under "Configure Control Loop": 325'
-        FloatField:
-            hug_width = 'ignore'
-            value := task.SetPoint
-            tool_tip = fill('Units set by the "Units" setting under "Configure Control Loop": 325',
-                            60)
-    
     GroupBox: ConfigInput:
         constraints = [factory(auto_grid_layout)]
         title = 'Configure Input Settings'
@@ -213,4 +197,24 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
         ObjectCombo:
             items << list(task.get_member('Curve').items)
             selected := task.Curve
+
+enamldef LakeshoreTC340HeaterSetpointandRangeView(InstrView): view:
+    """View for the LakeshoreTC340HeaterSetpointandRange Task
+
+    """
+    constraints = [vbox(grid([instr_label],[instr_selection]), SetPoint, HeaterRange)]
+
+    GroupBox: SetPoint:
+        title = 'Setpoint'
+        tool_tip='Units set by the "Units" setting under "Configure Control Loop": 325'
+        FloatField:
+            hug_width = 'ignore'
+            value := task.SetPoint
+            tool_tip = fill('Units set by the "Units" setting under "Configure Control Loop": 325',
+                            60)
     
+    GroupBox: HeaterRange:
+        title = 'Heater Range'
+        ObjectCombo:
+            items << list(task.get_member('SetHtrRange').items)
+            selected := task.SetHtrRange

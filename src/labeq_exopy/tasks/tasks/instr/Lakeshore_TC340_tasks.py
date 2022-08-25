@@ -77,7 +77,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
     HtrRes = Float(25).tag(pref=True)
     MaxCurr = Enum('0.25A', '0.5A', '1A','2A').tag(pref=True)
     MaxHtrRange = Enum('Full', '1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
-    SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
+    #SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
     CntrlChannel = Enum('A','B').tag(pref=True)
     SetpUnits = Enum('K', 'C', 'Sensor').tag(pref=True)
     AutoPID = Bool(False).tag(pref=True)
@@ -85,7 +85,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
     I = Float(20).tag(pref=True)
     D = Float(13).tag(pref=True)
     Mout = Float().tag(pref=True)
-    SetPoint = Float(300).tag(pref=True)
+    #SetPoint = Float(300).tag(pref=True)
     ConfigInput = Enum('A','B').tag(pref=True)
     Diode = Enum('Silicon', 'Platinum 100 (250\u03A9)', 'Platinum 100 (500\u03A9)','Platinum 1000').tag(pref=True)
     Curve = Enum('No Curve','DT-470','DT-500-D','DT-500-E1','DT-670','PT-100','PT-1000').tag(pref=True)
@@ -203,9 +203,38 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
         #Set Heater Resistance
         self.driver.set_heater_resistance(self.Loop,self.HtrRes)
         
+        """
         #Set Setpoint
         self.driver.set_setpoint(self.Loop,self.SetPoint)
 
+        #Set Heater Range
+        if self.SetHtrRange == 'Full' :
+            htr_range = '5'
+        elif self.SetHtrRange == '1/10' :
+            htr_range = '4'
+        elif self.SetHtrRange == '1/10\u00b2' :
+            htr_range = '3'
+        elif self.SetHtrRange == '1/10\u00b3' :
+            htr_range = '2'
+        elif self.SetHtrRange == '1/10\u2074' :
+            htr_range = '1'
+        elif self.SetHtrRange == 'OFF' :
+            htr_range = '0'
+        self.driver.set_heater_range(htr_range)
+        """
+
+class LakeshoreTC340HeaterSetpointandRangeTask(InstrumentTask):
+    #The heater settings are changed frequently. Making a seperate task file for these functions
+    #allows for easy configuration. 
+    
+    SetPoint = Float(300).tag(pref=True)
+    SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
+    
+
+    def perform(self):
+        #Set Setpoint
+        self.driver.set_setpoint(self.Loop,self.SetPoint)
+        
         #Set Heater Range
         if self.SetHtrRange == 'Full' :
             htr_range = '5'
