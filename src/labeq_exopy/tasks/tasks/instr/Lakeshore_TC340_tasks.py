@@ -75,7 +75,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
     PosSlopeMax = Float().tag(pref=True)
     NegSlopeMax = Float().tag(pref=True)
     HtrRes = Float(25).tag(pref=True)
-    MaxCurr = Enum('0.25A', '0.5A', '1A','2A').tag(pref=True)
+    MaxCurr = Enum('1A','0.25A', '0.5A','2A').tag(pref=True)
     MaxHtrRange = Enum('Full', '1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
     #SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
     CntrlChannel = Enum('A','B').tag(pref=True)
@@ -103,6 +103,15 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
         
         """
         #sleep(self.waiting_time)
+
+        #Check to make sure only one loop is turned on.
+        #If both are on, the unselected loop will be turned off
+        if self.Loop == '1':
+            loop = 2
+            self.driver.TurnLoopOff(loop)
+        elif self.Loop == '2':
+            loop = 1
+            self.driver.TurnLoopOff(loop)
 
         #selection of dioden type:
         if self.Diode == 'Silicon':
@@ -151,17 +160,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             self.driver.configure_control(parameters)
         elif self.SetpUnits == 'Sensor':
             parameters = self.Loop + ',' + self.CntrlChannel + ',' + '3,1,1'
-            self.driver.configure_control(parameters)
-        
-        #Check to make sure only one loop is turned on.
-        #If both are on, the unselected loop will be turned off
-        if self.Loop == 1:
-            Loop = 2
-            self.driver.TurnLoopOff(Loop)
-        else:
-            Loop = 1
-            self.driver.TurnLoopOff(Loop)
-        
+            self.driver.configure_control(parameters)    
 
         #PID Settings: Switches between Auto and Manual
         if self.AutoPID:
@@ -182,6 +181,9 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             self.driver.set_mout(mout_input)
 
         #Configure loop limits
+        max_htr_range ='0'
+        max_curr = '1'
+        
         if self.MaxHtrRange == 'Full' :
             max_htr_range = '5'
         elif self.MaxHtrRange == '1/10' :
@@ -194,8 +196,20 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             max_htr_range = '1'
         elif self.MaxHtrRange == 'OFF' :
             max_htr_range = '0'
-        limits_arr = [self.Loop, self.SetPointLimit, self.PosSlopeMax, self.NegSlopeMax, self.MaxCurr, max_htr_range]
+        
+        if self.MaxCurr == '0.25A' :
+            max_curr = '1'
+        elif self.MaxCurr == '0.5A' :
+            max_curr = '2'
+        elif self.MaxCurr == '1.0A' :
+            max_curr = '3'
+        elif self.MaxCurr == '2.0A' :
+            max_curr = '4'
+        
+        
+        limits_arr = [self.Loop, self.SetPointLimit, self.PosSlopeMax, self.NegSlopeMax, max_curr, max_htr_range]
         limits = ','.join(str(i) for i in limits_arr)
+        print(limits)
         self.driver.set_loop_limits(limits)
         
         
@@ -223,7 +237,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
         self.driver.set_heater_range(htr_range)
         """
 
-class LakeshoreTC340HeaterSetpointandRangeTask(InstrumentTask):
+class LakeshoreTC340HeaterSetpointAndRangeTask(InstrumentTask):
     #The heater settings are changed frequently. Making a seperate task file for these functions
     #allows for easy configuration. 
     Loop = Enum('1', '2').tag(pref=True)
@@ -232,14 +246,28 @@ class LakeshoreTC340HeaterSetpointandRangeTask(InstrumentTask):
     
 
     def perform(self):
+        
         #Check to make sure only one loop is turned on.
         #If both are on, the unselected loop will be turned off
-        if self.Loop == 1:
-            Loop = 2
-            self.driver.TurnLoopOff(Loop)
-        else:
-            Loop = 1
-            self.driver.TurnLoopOff(Loop)
+        if self.Loop == '1':
+            loop = 2
+            self.driver.TurnLoopOff(loop)
+        elif self.Loop == '2':
+            loop = 1
+            self.driver.TurnLoopOff(loop)
+        
+        #Ensure selected control loop is on
+        self.driver.configure_control(str(self.Loop)+',,,1')
+        
+        #Initialize control loop settings if not previously set
+        #The heater range function will not work unless the control loop is configured first
+        #New configurations can be sent using the configure task
+        #The default control loop is set to 'A' if not previously set
+        config = self.driver.TestLoopConfiguration(self.Loop)
+        if config == 0:
+            parameters = self.Loop + ',' + 'A,1,1,1'
+            self.driver.configure_control(parameters)
+        
         #Set Setpoint
         self.driver.set_setpoint(self.Loop,self.SetPoint)
         
