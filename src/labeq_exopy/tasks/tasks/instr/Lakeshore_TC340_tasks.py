@@ -180,10 +180,7 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             mout_input = str(self.Loop) + ',' + str(self.Mout)
             self.driver.set_mout(mout_input)
 
-        #Configure loop limits
-        max_htr_range ='0'
-        max_curr = '1'
-        
+        #Configure loop limits 
         if self.MaxHtrRange == 'Full' :
             max_htr_range = '5'
         elif self.MaxHtrRange == '1/10' :
@@ -201,9 +198,9 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             max_curr = '1'
         elif self.MaxCurr == '0.5A' :
             max_curr = '2'
-        elif self.MaxCurr == '1.0A' :
+        elif self.MaxCurr == '1A' :
             max_curr = '3'
-        elif self.MaxCurr == '2.0A' :
+        elif self.MaxCurr == '2A' :
             max_curr = '4'
         
         
