@@ -134,9 +134,9 @@ class LockInSetGainAndTimeConstTask(InstrumentTask):
                 SenseMult=10
             elif self.SenseMult_3 == True:
                 SenseMult=100
-            selected_sense=SenseNum*SenseMult*SenseUnit
-        
+
             if SenseUnit != 1:
+                selected_sense=SenseNum*SenseMult*SenseUnit
                 for i in range (0,25):
                     if SenseList[i] == selected_sense:
                         self.driver.set_sense(i)
