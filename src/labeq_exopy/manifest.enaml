@@ -38,6 +38,9 @@ enamldef LaBEQManifest(PluginManifest):
             id = 'MercuryiTC'
             group = 'MercuryiTC'
         GroupTaskFilter:
+            id = 'HelioxVT'
+            group = 'HelioxVT'
+        GroupTaskFilter:
             id = 'Lock-in Amplifier'
             group = 'Lock-in Amplifier'
         GroupTaskFilter:    
@@ -273,6 +276,13 @@ enamldef LaBEQManifest(PluginManifest):
                     Driver:
                         driver = 'Oxford_MercuryiTC_driver:MercuryiTC'
                         model = 'MercuryiTC'
+                        connections =   {'VisaTCPIP': 
+                                            {'port': 7020,
+                                            'resource_class': 'SOCKET'}
+                                        }
+                    Driver:
+                        driver = 'Oxford_HelioxVT_driver:HelioxVT'
+                        model = 'HelioxVT'
                         connections =   {'VisaTCPIP': 
                                             {'port': 7020,
                                             'resource_class': 'SOCKET'}
@@ -627,6 +637,43 @@ enamldef LaBEQManifest(PluginManifest):
                         task = 'MercuryiTC_tasks:ReadVTIValvePercentageTask'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.MercuryiTC']
+                        metadata = {'loopable': True}
+                Tasks:
+                    group = 'HelioxVT'
+                    Task:
+                        task = 'HelioxVT_tasks:ReadVTITemperatureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:SetVTITemperatureTask'
+                        view = 'views.HelioxVT_views:SetTemperatureView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadHe3PotTemperatureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:SetHe3PotTemperatureTask'
+                        view = 'views.HelioxVT_views:SetTemperatureView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadVTIPressureTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:SetVTIPressureTask'
+                        view = 'views.HelioxVT_views:SetVTIPressureView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadVTIValvePercentageTask'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                 Tasks:
                     group = "Lock-in Amplifier"
