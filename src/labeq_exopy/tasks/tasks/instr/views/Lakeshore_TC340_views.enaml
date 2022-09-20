@@ -48,7 +48,7 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
     """View for the LakeshoreTC340ConfigureTask
 
     """
-    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, LoopLims, ConfigInput, PID, ConfigCntrlLoop, SetPoint, HeaterRange)]
+    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, LoopLims, ConfigInput, PID, ConfigCntrlLoop)]
 
     GroupBox: Loop:
         title = 'Loop'
@@ -198,15 +198,22 @@ enamldef LakeshoreTC340ConfigureView(InstrView): view:
             items << list(task.get_member('Curve').items)
             selected := task.Curve
 
-enamldef LakeshoreTC340HeaterSetpointandRangeView(InstrView): view:
+enamldef LakeshoreTC340HeaterSetpointAndRangeView(InstrView): view:
     """View for the LakeshoreTC340HeaterSetpointandRange Task
 
     """
-    constraints = [vbox(grid([instr_label],[instr_selection]), SetPoint, HeaterRange)]
+    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, SetPoint, HeaterRange)]
 
+    GroupBox: Loop:
+        title = 'Loop'
+        tool_tip='Select Control Loop'
+        ObjectCombo:
+            items << list(task.get_member('Loop').items)
+            selected := task.Loop
+            
     GroupBox: SetPoint:
         title = 'Setpoint'
-        tool_tip='Units set by the "Units" setting under "Configure Control Loop": 325'
+        tool_tip='Units set by the "Units" setting under "Configure Control Loop" in Configure task. Unit default: K'
         FloatField:
             hug_width = 'ignore'
             value := task.SetPoint
@@ -215,6 +222,7 @@ enamldef LakeshoreTC340HeaterSetpointandRangeView(InstrView): view:
     
     GroupBox: HeaterRange:
         title = 'Heater Range'
+        tool_tip = 'Control Channel defaults to A if not set using "Configure Control Loop" in Configure task.'
         ObjectCombo:
             items << list(task.get_member('SetHtrRange').items)
             selected := task.SetHtrRange

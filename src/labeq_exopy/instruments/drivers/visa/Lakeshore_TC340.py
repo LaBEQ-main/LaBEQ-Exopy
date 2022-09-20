@@ -150,3 +150,19 @@ class LakeshoreTC340(VisaInstrument):
         status = self.query('BUSY?')
         print('queried busy status')
         return int(status)
+
+    def TestLoopConfiguration(self,loop):
+        #Tests for control configuration initalization
+        #If control is not yet configured default settings are selected for the inputted loop
+        #Defaults: control loop = A, Units = K, loop = on, powerup enable = on
+        #Initalization status is checked through the "powerup enable" setting
+        #If the control loop is properly initialized for remote communication, "powerup enable" is set to "on"
+        #The "powerup enable" check only works because of how the "configure_control" function input operates
+        #In the configure task, "powerup enable" is always turned on if control configurations are inputed
+        
+        config = self.query('CSET? ' + str(loop))
+        print('queried loop configuration')
+        
+        config = config.split(",")[3]
+        
+        return int(config)
