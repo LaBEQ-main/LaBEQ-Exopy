@@ -140,7 +140,7 @@ class ReadVTIValvePercentageTask_HelioxVT(InstrumentTask):
 
 class ReadHe3PotTemperatureTask_HelioxVT(InstrumentTask):
     """
-        Read probe temperature.
+        Read He3Pot temperature.
 
         Wait for any parallel operation before execution and then wait the
     specified time before execution
@@ -165,7 +165,7 @@ class ReadHe3PotTemperatureTask_HelioxVT(InstrumentTask):
 
 class SetHe3PotTemperatureTask_HelioxVT(InstrumentTask):
     """
-        Sets the probe temp set point. 
+        Sets the He3Pot temp set point. 
 
         Wait for any parallel operation before execution and then wait the
     specified time before execution
@@ -190,3 +190,99 @@ class SetHe3PotTemperatureTask_HelioxVT(InstrumentTask):
 
         self.driver.set_he3pot_temp(value)
         self.write_in_database('he3pot_temp_setpoint', value)
+
+class Read1KPlateTemperatureTask_HelioxVT(InstrumentTask):
+    """
+        Read 1KPlate temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'1Kplate_temp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_1Kplate_temp()
+        self.write_in_database('1Kplate_temp', value)
+
+class ReadHe3PotRuOx_HelioxVT(InstrumentTask):
+    """
+        Read He3PotRuOx temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'he3potRuOx_temp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_he3potRuOx_temp()
+        self.write_in_database('he3potRuOx_temp', value)
+
+class ReadHe3PotCernox_HelioxVT(InstrumentTask):
+    """
+        Read He3PotCernox temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'he3potCernox_temp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_he3potCernox_temp()
+        self.write_in_database('he3potCernox_temp', value)
+
+class ReadHe3SorbTemp_HelioxVT(InstrumentTask):
+    """
+        Read He3SorbTemp temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'he3sorb_temp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and read the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.driver.read_he3sorb_temp()
+        self.write_in_database('he3sorb_temp', value)

@@ -656,6 +656,26 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
+                        task = 'HelioxVT_tasks:Read1KPlateTemperatureTask_HelioxVT'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadHe3PotRuOx_HelioxVT'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadHe3PotCernox_HelioxVT'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'HelioxVT_tasks:ReadHe3SorbTemp_HelioxVT'
+                        view = 'views.simple_task_view:SimpleTaskView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
                         task = 'HelioxVT_tasks:SetHe3PotTemperatureTask_HelioxVT'
                         view = 'views.HelioxVT_views:SetTemperatureView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']

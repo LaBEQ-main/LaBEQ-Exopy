@@ -90,9 +90,9 @@ class HelioxVT(VisaInstrument):
         else:
             raise InstrIOError('HelioxVT: VTI needle valve percentage reading failed')
 
-    def read_He3pot_temp(self):
+    def read_he3pot_temp(self):
         """
-            read probe temp
+            read He3 pot temp
         """
 
         resp = self.query('READ:DEV:HelioxX:HEL:SIG:TEMP')
@@ -104,9 +104,9 @@ class HelioxVT(VisaInstrument):
         else:
             raise InstrIOError('HelioxVT: He3 pot temp reading failed')
 
-    def set_He3pot_temp(self, setpoint):
+    def set_he3pot_temp(self, setpoint):
         """
-            set probe temp
+            set He3 pot temp
         """
 
         resp = self.query(f'SET:DEV:HelioxX:HEL:TSET:'+ str(setpoint))
@@ -114,6 +114,59 @@ class HelioxVT(VisaInstrument):
 
         if value != "VALID":
             raise InstrIOError('HelioxVT: He3 pot set temperature failed')
+    
+    def read_1Kplate_temp(self):
+        """
+            read He3 pot temp
+        """
 
+        resp = self.query('READ:DEV:DB5.T1:TEMP:SIG:TEMP?')
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('K','')
 
-   
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('HelioxVT: 1K plate temp reading failed')
+    
+    def read_he3potRuOx_temp(self):
+        """
+            read He3 pot RuOx sensor temp
+        """
+
+        resp = self.query('READ:DEV:DB8.T1:TEMP:SIG:TEMP?')
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('K','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('HelioxVT: He3 pot RuOx sensor temp reading failed')
+
+    def read_he3potCernox_temp(self):
+        """
+            read He3 pot Cernox sensor temp
+        """
+
+        resp = self.query('READ:DEV:DB7.T1:TEMP:SIG:TEMP?')
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('K','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('HelioxVT: He3 pot Cernox sensor temp reading failed')
+
+    def read_he3sorb_temp(self):
+        """
+            read he3sorb temp
+        """
+
+        resp = self.query('READ:DEV:MB1.T1:TEMP:SIG:TEMP?')
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('K','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('HelioxVT: He3 sorb temp reading failed')
