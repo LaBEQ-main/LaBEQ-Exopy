@@ -22,7 +22,7 @@ class HelioxVT(VisaInstrument):
         """Open the connection to the instr using the `connection_str`.
 
         """
-        super(MercuryiTC, self).open_connection(**para)
+        super(HelioxVT, self).open_connection(**para)
         self.write_termination = '\n'
         self.read_termination = '\n'
 
@@ -31,50 +31,50 @@ class HelioxVT(VisaInstrument):
             read vti temp
         """
 
-        resp = self.query('READ:DEV:MB1.T1:TEMP:SIG:TEMP?')
+        resp = self.query('READ:DEV:DB6.T1:TEMP:SIG:TEMP?')
         value = f'{resp}'.split(':')[-1]
         value = value.replace('K','')
 
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiTC: VTI temp reading failed')
+            raise InstrIOError('HelioxVT: VTI temp reading failed')
     
     def set_VTI_temp(self, setpoint):
         """
             set vti temp
         """
 
-        resp = self.query(f'SET:DEV:MB1.T1:TEMP:LOOP:TSET:'+ str(setpoint))
+        resp = self.query(f'SET:DEV:DB6.T1:TEMP:LOOP:TSET:'+ str(setpoint))
         value = f'{resp}'.split(':')[-1]
 
         if value != "VALID":
-            raise InstrIOError('MercuryiTC: VTI temp set failed')
+            raise InstrIOError('HelioxVT: VTI temp set failed')
 
     def read_VTI_pres(self):
         """
             read vti pressure
         """
 
-        resp = self.query('READ:DEV:DB5.P1:PRES:SIG:PRES?')
+        resp = self.query('READ:DEV:DB3.P1:PRES:SIG:PRES?')
         value = f'{resp}'.split(':')[-1]
         value = value.replace('mB','')
 
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiTC: VTI pressure reading failed')
+            raise InstrIOError('HelioxVT: VTI pressure reading failed')
 
     def set_VTI_pres(self, setpoint):
         """
             set vti pres
         """
 
-        resp = self.query(f'SET:DEV:DB5.P1:TEMP:LOOP:TSET:'+ str(setpoint))
+        resp = self.query(f'SET:DEV:DB3.P1:TEMP:LOOP:TSET:'+ str(setpoint))
         value = f'{resp}'.split(':')[-1]
 
         if value != "VALID":
-            raise InstrIOError('MercuryiTC: VTI pressure set failed')
+            raise InstrIOError('HelioxVT: VTI pressure set failed')
     
     def read_VTI_valv_perc(self):
         """
@@ -88,32 +88,32 @@ class HelioxVT(VisaInstrument):
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiTC: VTI needle valve percentage reading failed')
+            raise InstrIOError('HelioxVT: VTI needle valve percentage reading failed')
 
-    def read_probe_temp(self):
+    def read_He3pot_temp(self):
         """
-            read vti temp
+            read probe temp
         """
 
-        resp = self.query('READ:DEV:DB8.T1:TEMP:SIG:TEMP?')
+        resp = self.query('READ:DEV:HelioxX:HEL:SIG:TEMP')
         value = f'{resp}'.split(':')[-1]
         value = value.replace('K','')
 
         if value:
             return float(value)
         else:
-            raise InstrIOError('MercuryiTC: Probe temp reading failed')
+            raise InstrIOError('HelioxVT: He3 pot temp reading failed')
 
-    def set_probe_temp(self, setpoint):
+    def set_He3pot_temp(self, setpoint):
         """
             set probe temp
         """
 
-        resp = self.query(f'SET:DEV:DB8.T1:TEMP:LOOP:TSET:'+ str(setpoint))
+        resp = self.query(f'SET:DEV:HelioxX:HEL:TSET:'+ str(setpoint))
         value = f'{resp}'.split(':')[-1]
 
         if value != "VALID":
-            raise InstrIOError('MercuryiTC: Probe set temperature failed')
+            raise InstrIOError('HelioxVT: He3 pot set temperature failed')
 
 
    
