@@ -33,29 +33,29 @@ class LockInSetGainAndTimeConstTask(InstrumentTask):
     #: Values to be selected by the user: Boolean values used with checkbox UI
     AutoGain=Bool(False).tag(pref=True)
 
-    SenseNum_1=Bool(False).tag(pref=True)
+    SenseNum_1=Bool(True).tag(pref=True)
     SenseNum_2=Bool(False).tag(pref=True)
     SenseNum_3=Bool(False).tag(pref=True)
    
-    SenseMult_1=Bool(False).tag(pref=True)
+    SenseMult_1=Bool(True).tag(pref=True)
     SenseMult_2=Bool(False).tag(pref=True)
     SenseMult_3=Bool(False).tag(pref=True)
 
     SenseUnit_1=Bool(False).tag(pref=True)
-    SenseUnit_2=Bool(False).tag(pref=True)
+    SenseUnit_2=Bool(True).tag(pref=True)
     SenseUnit_3=Bool(False).tag(pref=True)
     SenseUnit_4=Bool(False).tag(pref=True)
     
-    TCNum_1=Bool(False).tag(pref=True)
+    TCNum_1=Bool(True).tag(pref=True)
     TCNum_2=Bool(False).tag(pref=True)
     
     TCMult_1=Bool(False).tag(pref=True)
-    TCMult_2=Bool(False).tag(pref=True)
+    TCMult_2=Bool(True).tag(pref=True)
     TCMult_3=Bool(False).tag(pref=True)
     
     TCUnit_1=Bool(False).tag(pref=True)
     TCUnit_2=Bool(False).tag(pref=True)
-    TCUnit_3=Bool(False).tag(pref=True)
+    TCUnit_3=Bool(True).tag(pref=True)
     TCUnit_4=Bool(False).tag(pref=True)
 
 
@@ -134,9 +134,9 @@ class LockInSetGainAndTimeConstTask(InstrumentTask):
                 SenseMult=10
             elif self.SenseMult_3 == True:
                 SenseMult=100
-            selected_sense=SenseNum*SenseMult*SenseUnit
-        
+
             if SenseUnit != 1:
+                selected_sense=SenseNum*SenseMult*SenseUnit
                 for i in range (0,25):
                     if SenseList[i] == selected_sense:
                         self.driver.set_sense(i)
