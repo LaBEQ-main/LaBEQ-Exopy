@@ -11,7 +11,7 @@ from time import sleep
 from atom.api import Float, Str, Enum, set_default
 from exopy.tasks.api import InstrumentTask, InterfaceableTaskMixin, TaskInterface
 
-class ReadVTITemperatureTask(InstrumentTask):
+class ReadVTITemperatureTask_HelioxVT(InstrumentTask):
     """
         Read the VTI temperature. 
 
@@ -34,7 +34,7 @@ class ReadVTITemperatureTask(InstrumentTask):
         value = self.driver.read_VTI_temp()
         self.write_in_database('vti_temp', value)
 
-class SetVTITemperatureTask(InstrumentTask):
+class SetVTITemperatureTask_HelioxVT(InstrumentTask):
     """
         Sets the target VTI temp set point. 
 
@@ -62,7 +62,7 @@ class SetVTITemperatureTask(InstrumentTask):
         self.driver.set_VTI_temp(value)
         self.write_in_database('vti_temp_setpoint', value)
 
-class ReadVTIPressureTask(InstrumentTask):
+class ReadVTIPressureTask_HelioxVT(InstrumentTask):
     """
         Read the VTI pressure. 
 
@@ -86,7 +86,7 @@ class ReadVTIPressureTask(InstrumentTask):
         value = self.driver.read_VTI_pres()
         self.write_in_database('vti_pres', value)
 
-class SetVTIPressureTask(InstrumentTask):
+class SetVTIPressureTask_HelioxVT(InstrumentTask):
     """
         Set the VTI pressure. 
 
@@ -114,7 +114,7 @@ class SetVTIPressureTask(InstrumentTask):
         self.driver.set_VTI_pres(value)
         self.write_in_database('vti_pres_setpoint', value)
 
-class ReadVTIValvePercentageTask(InstrumentTask):
+class ReadVTIValvePercentageTask_HelioxVT(InstrumentTask):
     """
         Read the VTI valve percentage. 
 
@@ -138,7 +138,7 @@ class ReadVTIValvePercentageTask(InstrumentTask):
         value = self.driver.read_VTI_valv_perc()
         self.write_in_database('vti_valve_perc', value)
 
-class ReadProbeTemperatureTask(InstrumentTask):
+class ReadHe3PotTemperatureTask_HelioxVT(InstrumentTask):
     """
         Read probe temperature.
 
@@ -149,7 +149,7 @@ class ReadProbeTemperatureTask(InstrumentTask):
     # Time to wait before the ramp.
     wait_time = Float().tag(pref=True)
 
-    database_entries = set_default({'probe_temp': 0.0})
+    database_entries = set_default({'he3pot_temp': 0.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
@@ -160,10 +160,10 @@ class ReadProbeTemperatureTask(InstrumentTask):
         sleep(self.wait_time)
 
         
-        value = self.driver.read_probe_temp()
-        self.write_in_database('probe_temp', value)
+        value = self.driver.read_he3pot_temp()
+        self.write_in_database('he3pot_temp', value)
 
-class SetProbeTemperatureTask(InstrumentTask):
+class SetHe3PotTemperatureTask_HelioxVT(InstrumentTask):
     """
         Sets the probe temp set point. 
 
@@ -175,7 +175,7 @@ class SetProbeTemperatureTask(InstrumentTask):
     wait_time = Float().tag(pref=True)
     temp_setpoint = Str().tag(pref=True)
 
-    database_entries = set_default({'probe_temp_setpoint': 0.0})
+    database_entries = set_default({'he3pot_temp_setpoint': 0.0})
 
     wait = set_default({'activated': True, 'wait': ['instr']})
 
@@ -188,5 +188,5 @@ class SetProbeTemperatureTask(InstrumentTask):
         #returns float if given a float, returns database entry value type if given a database entry name
         value = self.format_and_eval_string(self.temp_setpoint)
 
-        self.driver.set_probe_temp(value)
-        self.write_in_database('probe_temp_setpoint', value)
+        self.driver.set_he3pot_temp(value)
+        self.write_in_database('he3pot_temp_setpoint', value)

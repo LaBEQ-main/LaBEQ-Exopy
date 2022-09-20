@@ -641,37 +641,37 @@ enamldef LaBEQManifest(PluginManifest):
                 Tasks:
                     group = 'HelioxVT'
                     Task:
-                        task = 'HelioxVT_tasks:ReadVTITemperatureTask'
+                        task = 'HelioxVT_tasks:ReadVTITemperatureTask_HelioxVT'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:SetVTITemperatureTask'
+                        task = 'HelioxVT_tasks:SetVTITemperatureTask_HelioxVT'
                         view = 'views.HelioxVT_views:SetTemperatureView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:ReadHe3PotTemperatureTask'
+                        task = 'HelioxVT_tasks:ReadHe3PotTemperatureTask_HelioxVT'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:SetHe3PotTemperatureTask'
+                        task = 'HelioxVT_tasks:SetHe3PotTemperatureTask_HelioxVT'
                         view = 'views.HelioxVT_views:SetTemperatureView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:ReadVTIPressureTask'
+                        task = 'HelioxVT_tasks:ReadVTIPressureTask_HelioxVT'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:SetVTIPressureTask'
+                        task = 'HelioxVT_tasks:SetVTIPressureTask_HelioxVT'
                         view = 'views.HelioxVT_views:SetVTIPressureView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'HelioxVT_tasks:ReadVTIValvePercentageTask'
+                        task = 'HelioxVT_tasks:ReadVTIValvePercentageTask_HelioxVT'
                         view = 'views.simple_task_view:SimpleTaskView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}

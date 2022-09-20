@@ -1,0 +1,72 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the Oxford Instruments MercuryiTC.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import GroupBox, Label, Field, ObjectCombo, Container
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+enamldef ReadVTITemperatureView(InstrView): view:
+    """View for the ReadVTITemperatureTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before reading temp sensor.", 60)
+
+enamldef SetTemperatureView(InstrView): view:
+    """View for the SetVTITemperatureTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before execution.", 60)
+    Label:
+        text = 'Temperature Set Point (K)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.temp_setpoint
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Temperature set point in K", 60)
+
+enamldef SetVTIPressureView(InstrView): view:
+    """View for the SetVTIPressureTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before execution.", 60)
+    Label:
+        text = 'Pressure Set Point (mB)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.pres_setpoint
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Pressure set point in mB", 60)
+
