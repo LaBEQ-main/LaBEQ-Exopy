@@ -676,6 +676,11 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']
                         metadata = {'loopable': True}
                     Task:
+                        task = 'HelioxVT_tasks:SetHe3SorbTemp_HelioxVT'
+                        view = 'views.simple_task_view:SetTemperatureView'
+                        instruments =   ['labeq_exopy.Legacy.HelioxVT']
+                        metadata = {'loopable': True}
+                    Task:
                         task = 'HelioxVT_tasks:SetHe3PotTemperatureTask_HelioxVT'
                         view = 'views.HelioxVT_views:SetTemperatureView'
                         instruments =   ['labeq_exopy.Legacy.HelioxVT']

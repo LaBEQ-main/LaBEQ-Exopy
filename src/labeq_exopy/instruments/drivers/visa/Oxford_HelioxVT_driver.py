@@ -170,3 +170,18 @@ class HelioxVT(VisaInstrument):
             return float(value)
         else:
             raise InstrIOError('HelioxVT: He3 sorb temp reading failed')
+
+    def set_he3sorb_temp(self, setpoint):
+        """
+            set he3sorb temp
+        """
+
+        resp = self.query('SET:DEV:MB1.T1:TEMP:LOOP:TSET:' + str(setpoint))
+        value = f'{resp}'.split(':')[-1]
+        value = value.replace('K','')
+
+        if value:
+            return float(value)
+        else:
+            raise InstrIOError('HelioxVT: He3 sorb temp reading failed')
+

@@ -286,3 +286,29 @@ class ReadHe3SorbTemp_HelioxVT(InstrumentTask):
 
         value = self.driver.read_he3sorb_temp()
         self.write_in_database('he3sorb_temp', value)
+
+class SetHe3SorbTemp_HelioxVT(InstrumentTask):
+    """
+        Set He3SorbTemp temperature.
+
+        Wait for any parallel operation before execution and then wait the
+    specified time before execution
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+    temp_setpoint = Str().tag(pref=True)
+
+    database_entries = set_default({'he3sorb_temp_setpoint': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        """Wait and set the temperature.
+
+        """
+        sleep(self.wait_time)
+
+        value = self.format_and_eval_string(self.temp_setpoint)
+        self.driver.set_he3sorb_temp(value)
+        self.write_in_database('he3sorb_temp_setpoint', value)
