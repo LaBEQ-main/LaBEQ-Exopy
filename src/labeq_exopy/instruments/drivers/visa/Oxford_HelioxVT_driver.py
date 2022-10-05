@@ -10,6 +10,7 @@
 """Drivers for Oxford HelioxVT temperature controller using VISA library.
 
 """
+from ast import Str
 from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
 
@@ -176,12 +177,11 @@ class HelioxVT(VisaInstrument):
             set he3sorb temp
         """
 
-        resp = self.query('SET:DEV:MB1.T1:TEMP:LOOP:TSET:' + str(setpoint))
-        value = f'{resp}'.split(':')[-1]
-        value = value.replace('K','')
-
-        if value:
-            return float(value)
+        resp = self.query('SET:DEV:MB1.T1:TEMP:LOOP:TSET: '+str(setpoint))
+        resp = f'{resp}'.split(':')[-1]
+        
+        if resp == "VALID":
+            return
         else:
-            raise InstrIOError('HelioxVT: He3 sorb temp reading failed')
+            raise InstrIOError(f'HelioxVT: He3 sorb temp reading failed with response: '+resp)
 

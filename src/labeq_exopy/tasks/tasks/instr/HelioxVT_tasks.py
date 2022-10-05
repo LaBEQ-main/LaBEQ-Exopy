@@ -308,7 +308,9 @@ class SetHe3SorbTemp_HelioxVT(InstrumentTask):
 
         """
         sleep(self.wait_time)
+        # self.write_in_database('he3sorb_temp', self.temp_setpoint)
 
         value = self.format_and_eval_string(self.temp_setpoint)
         self.driver.set_he3sorb_temp(value)
+
         self.write_in_database('he3sorb_temp_setpoint', value)
