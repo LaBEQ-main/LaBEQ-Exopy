@@ -52,7 +52,10 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'Lakeshore'
             group = 'Lakeshore'
-
+        GroupTaskFilter:    
+            id = 'MultiInstr'
+            group = 'multi_instr'
+        
     Extension:
         id = 'startup'
         point = 'exopy.app.startup'
@@ -457,6 +460,15 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'save_tasks:SaveArrayTask'
                     view = 'views.save_views:SaveArrayView'
+                    
+            Tasks:
+                path = 'multi_instr'
+                group = 'multi_instr'
+                Task:
+                    task = 'Test_tasks:TestTask'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    metadata = {'loopable': True}
+
 
             Tasks:
                 path = 'instr'
