@@ -466,7 +466,7 @@ enamldef LaBEQManifest(PluginManifest):
                 group = 'multi_instr'
                 Task:
                     task = 'Test_tasks:TestTask'
-                    view = 'views.simple_task_view:SimpleTaskView'
+                    view = 'views.BTScan_view:BTScanView'
                     metadata = {'loopable': True}
                 Task:
                     task = 'BTScan_task:BTScanTask'

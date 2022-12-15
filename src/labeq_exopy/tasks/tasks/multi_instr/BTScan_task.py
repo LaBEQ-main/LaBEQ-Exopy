@@ -27,7 +27,8 @@ class BTScanTask(SimpleTask):
     file            = Str().tag(pref=True)
     field_max       = Float().tag(pref=True)
     field_min       = Float().tag(pref=True)
-    field_rate      = Float().tag(pref=True)
+    field_rate_max  = Float().tag(pref=True)
+    field_rate_safe = Float().tag(pref=True)
     temp_max        = Float().tag(pref=True)
     temp_min        = Float().tag(pref=True)
     temp_step       = Float().tag(pref=True)
@@ -39,18 +40,20 @@ class BTScanTask(SimpleTask):
         
         # create device objects
         timer   = Timer({"resource_name" : "Timer"})
-        itc     = MercuryiTC({"resource_name" : "MercuryITC"})
-        ips     = MercuryiPS({"resource_name" : "MercuryIPS"})
-        nf      = LI5650({"resource_name" : "NF LI5650"})
-        pg1     = LockInSR830({"resource_name" : "PG1"})
-        srs1    = LockInSR830({"resource_name" : "SRS1"})
+        # itc     = MercuryiTC({"resource_name" : "MercuryITC"})
+        # ips     = MercuryiPS({"resource_name" : "MercuryIPS"})
+        # nf      = LI5650({"resource_name" : "NF LI5650"})
+        # pg1     = LockInSR830({"resource_name" : "PG1"})
+        # srs1    = LockInSR830({"resource_name" : "SRS1"})
 
         # calculate number of temp steps
         Tnum = np.absolute(self.Tmax - self.Tmin)/self.Tstep
 
         # get start time in linux format and save to db
-        time = timer.initiate_timer()
-        self.write_in_database('start_time', time)
+        starttime = timer.initiate_timer()
+        self.write_in_database('start_time', starttime)
+
+        # set up save file with headers
 
         # check that the probe temp is not currently higher than tmin
         # check that field is not currently higher than the field_min
@@ -58,15 +61,26 @@ class BTScanTask(SimpleTask):
 
 
         # for i in range(Tnum):
-            # set probe temp through itc
+            # set probe temp through itc to temp_min + i*temp_step
+            # wait for probe temp to reach steady-state and monitor in while loop
             # set target field as either field_max or field_min based on evenness of i
-            # if (num % 2) == 0 set target field as field_max
-            # else set target field as field_min
+            # if (num % 2) == 0 set target field as field_min
+            # else set target field as field_max
             # monitor for steady-state using pandas.rolling to compute moving average
             # start magnet sweep to min after reaching steady-state temp
-            # while current field is less than target field, measure amplitude, phase, probe temp, vti temp, vti pressure, vti valve
-                # make requisite measurements and then save to the designated file
-                # a
+            # get the current field
+            # while absolute value of target field - current field > 0.01, 
+                # measure current field, amplitude, phase, probe temp, vti temp, vti pressure, vti valve and time since start, time since epoch
+                # save to the designated file
+                # if absolute value of current field is less than 0.3 (safe zone) && current field rate == field_rate_max
+                    # set current_field_rate to field_rate_safe
+                # if absolute value of current field is greater than 0.3 (safe zone) && current field rate == field_rate_min
+                    #set current_field_rate to field_rate_max
+
+        # after all temp steps have been completed, return the magnet back to final field with defualt 0.
+        # set target_field to 0
+        # while abs(target_field - current_field) > 0.01
+            
         
         
         
