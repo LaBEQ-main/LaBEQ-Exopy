@@ -25,7 +25,7 @@ enamldef BTScanView(BaseTaskView): view:
 
     """
     constraints =   [
-                        hbox(DataSettings,FieldSettings), 
+                        hbox(DataSettings, FieldSettings, TempSettings), 
                         DataSettings.top == contents_top
                     ]
     attr dir : str = ""
@@ -59,7 +59,7 @@ enamldef BTScanView(BaseTaskView): view:
             text << task.file
     
     GroupBox: FieldSettings:
-        title = 'Field Settings' 
+        title = 'Magnet Settings' 
         tool_tip = ('')
         constraints = [vbox(
                             hbox(lbl3, fld3), 
@@ -84,3 +84,30 @@ enamldef BTScanView(BaseTaskView): view:
         FloatField: fld5:
             read_only = False
             value << task.field_rate_max
+
+    GroupBox: TempSettings:
+        title = 'Probe Settings'
+        tool_tip = ('')
+        constraints = [vbox(
+                            hbox(lbl6, fld6), 
+                            hbox(lbl7, fld7),
+                            hbox(lbl8, fld8)
+                            ),
+                    ]
+        Label: lbl6:
+            text = 'Temp Max (K):'
+        FloatField: fld6:
+            read_only = False
+            value << task.temp_max
+        
+        Label: lbl7:
+            text = 'Temp Min (K):'
+        FloatField: fld7:
+            read_only = False
+            value << task.temp_min
+
+        Label: lbl8:
+            text = 'Temp Step (K):'
+        FloatField: fld8:
+            read_only = False
+            value << task.temp_step
