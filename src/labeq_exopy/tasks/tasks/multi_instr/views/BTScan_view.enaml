@@ -11,120 +11,76 @@ from textwrap import fill
 
 from enaml.core.api import Conditional, Include
 from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox,
-                               Container)
+                               Container, PushButton, FileDialogEx)
 from enaml.layout.api import grid, vbox, hbox, factory, align
 
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 
-enamldef BTScanView(InstrView): view:
+from exopy.tasks.api import (BaseTaskView, EVALUATER_TOOLTIP, FORMATTER_TOOLTIP)
+from enaml.stdlib.fields import FloatField
+
+enamldef BTScanView(BaseTaskView): view:
     """View for the LockInMeasTask
 
     """
-    constraints = [vbox(grid([instr_label],[instr_selection]),hbox(Sense,TimeConst),SyncFltr,FltrSlope,DynRes,LineFltr),TimeConst.width == Sense.width]
+    constraints =   [
+                        hbox(DataSettings,FieldSettings), 
+                        DataSettings.top == contents_top
+                    ]
+    attr dir : str = ""
 
-    GroupBox: Sense:
-        title = 'Sensitivity settings' 
-        tool_tip = ('The sensitivity can be set between 2 nV and 1 V')
-        constraints = [hbox(asense,vbox(one,two,three),vbox(x1,x10,x100),vbox(v,mv,microv,nanov))]
-        CheckBox: asense:
-            text = 'Auto Sensitivity'
-            checked := task.AutoGain   
-        CheckBox: one:
-            text='1'
-            checked := task.SenseNum_1
-            enabled << (not task.AutoGain)
-        CheckBox: two:
-            text='2'
-            checked := task.SenseNum_2
-            enabled << (not task.AutoGain)
-        CheckBox: three:
-            text='5'
-            checked := task.SenseNum_3
-            enabled << (not task.AutoGain)
-        CheckBox: x1:
-            text='x1'
-            checked := task.SenseMult_1
-            enabled << (not task.AutoGain)
-        CheckBox: x10:
-            text='x10'
-            checked := task.SenseMult_2
-            enabled << (not task.AutoGain)
-        CheckBox: x100:
-            text='x100'
-            checked := task.SenseMult_3
-            enabled << (not task.AutoGain)
-        CheckBox: v:
-            text='V'
-            checked := task.SenseUnit_1
-            enabled << (not task.AutoGain)
-        CheckBox: mv:
-            text='mV'
-            checked := task.SenseUnit_2
-            enabled << (not task.AutoGain)
-        CheckBox: microv:
-            text='\u03BC V'
-            checked := task.SenseUnit_3
-            enabled << (not task.AutoGain)
-        CheckBox: nanov:
-            text='nV'
-            checked := task.SenseUnit_4
-            enabled << (not task.AutoGain)
-
-    GroupBox: TimeConst:
-        title = 'Time Constant Settings'
-        tool_tip = ('The time constant can be set between 10 \u03BCs and 30 ks')
-        constraints = [hbox(vbox(TCone,TCthree),vbox(TCx1,TCx10,TCx100),vbox(ks,s,ms,micros))]
-        CheckBox: TCone:
-            text='1'
-            checked := task.TCNum_1
-        CheckBox: TCthree:
-            text='3'
-            checked := task.TCNum_2
-        CheckBox: TCx1:
-            text='x1'
-            checked := task.TCMult_1
-        CheckBox: TCx10:
-            text='x10'
-            checked := task.TCMult_2
-        CheckBox: TCx100:
-            text='x100'
-            checked := task.TCMult_3
-        CheckBox: ks:
-            text='ks'
-            checked := task.TCUnit_1
-        CheckBox: s:
-            text='s'
-            checked := task.TCUnit_2
-        CheckBox: ms:
-            text='ms'
-            checked := task.TCUnit_3
-        CheckBox: micros:
-            text='\u03BCs'
-            checked := task.TCUnit_4
-
-    GroupBox: DynRes:
-        title = 'Dynamic Reserve settings' #has auto
-        ObjectCombo: sel:
-            items << list(task.get_member('DynRes').items)
-            selected := task.DynRes
+    GroupBox: DataSettings:
+        title = 'Data Storage Settings' 
+        tool_tip = ('')
+        constraints =   [
+                            vbox(
+                                hbox(lbl1, fld1, pb1),
+                                hbox(lbl2, fld2)
+                                ),
+                        ]
+        
+        Label: lbl1:
+            text = 'Dir:'
+        Field: fld1:
+            read_only = True
+            text << view.dir
+        PushButton: pb1:
+            text = 'Browse'
+            clicked ::
+                path = FileDialogEx.get_existing_directory()
+                view.dir = path
+                task.directory
+        
+        Label: lbl2:
+            text = 'File:'
+        Field: fld2:
+            read_only = False
+            text << task.file
     
-    GroupBox: FltrSlope:
-        title = 'Filter Slope Settings'
-        tool_tip='These settings have a wait time of 5T,7T,9T,10T respectively (T=time constant)'
-        ObjectCombo:
-            items << list(task.get_member('FltrSlope').items)
-            selected := task.FltrSlope
+    GroupBox: FieldSettings:
+        title = 'Field Settings' 
+        tool_tip = ('')
+        constraints = [vbox(
+                            hbox(lbl3, fld3), 
+                            hbox(lbl4, fld4),
+                            hbox(lbl5, fld5)
+                            ),
+                    ]
+        Label: lbl3:
+            text = 'Field Max (T):'
+        FloatField: fld3:
+            read_only = False
+            value << task.field_max
+        
+        Label: lbl4:
+            text = 'Field Min (T):'
+        FloatField: fld4:
+            read_only = False
+            value << task.field_min
 
-    GroupBox: LineFltr:
-        title = 'Line Filter Settings'
-        ObjectCombo:
-            items << list(task.get_member('LineFltr').items)
-            selected := task.LineFltr
-    
-    GroupBox: SyncFltr:
-        title = 'Sync filter settings'
-        ObjectCombo:
-            items << list(task.get_member('SyncFltr').items)
-            selected := task.SyncFltr
-
+        Label: lbl5:
+            text = 'Field Rate (T/min):'
+        FloatField: fld5:
+            read_only = False
+            value << task.field_rate_max
