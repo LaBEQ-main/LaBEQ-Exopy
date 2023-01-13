@@ -44,19 +44,19 @@ enamldef BTScanView(BaseTaskView): view:
             text = 'Dir:'
         Field: fld1:
             read_only = True
-            text << view.dir
+            text := view.dir
         PushButton: pb1:
             text = 'Browse'
             clicked ::
                 path = FileDialogEx.get_existing_directory()
                 view.dir = path
-                task.directory
+                task.directory = path
         
         Label: lbl2:
             text = 'File:'
         Field: fld2:
             read_only = False
-            text << task.file
+            text := task.file
     
     GroupBox: FieldSettings:
         title = 'Magnet Settings' 
@@ -71,19 +71,19 @@ enamldef BTScanView(BaseTaskView): view:
             text = 'Field Max (T):'
         FloatField: fld3:
             read_only = False
-            value << task.field_max
+            value := task.field_max
         
         Label: lbl4:
             text = 'Field Min (T):'
         FloatField: fld4:
             read_only = False
-            value << task.field_min
+            value := task.field_min
 
         Label: lbl5:
             text = 'Field Rate (T/min):'
         FloatField: fld5:
             read_only = False
-            value << task.field_rate_max
+            value := task.field_rate_max
 
     GroupBox: TempSettings:
         title = 'Probe Settings'
@@ -98,16 +98,16 @@ enamldef BTScanView(BaseTaskView): view:
             text = 'Temp Max (K):'
         FloatField: fld6:
             read_only = False
-            value << task.temp_max
+            value := task.temp_max
         
         Label: lbl7:
             text = 'Temp Min (K):'
         FloatField: fld7:
             read_only = False
-            value << task.temp_min
+            value := task.temp_min
 
         Label: lbl8:
             text = 'Temp Step (K):'
         FloatField: fld8:
             read_only = False
-            value << task.temp_step
+            value := task.temp_step
