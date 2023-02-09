@@ -33,5 +33,10 @@ class Timer(VisaInstrument):
         t = round(t, 3)
         return t
 
+    def get_time_stamp(self):
+        #return time stamp
+        tstamp = time.time()
+        return tstamp
+
     
 
