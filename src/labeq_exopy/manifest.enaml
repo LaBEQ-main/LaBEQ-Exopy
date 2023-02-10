@@ -471,6 +471,11 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_task_view:SimpleTaskView'
                     instruments = ['labeq_exopy.Legacy.Timer']
                     metadata = {'loopable': True}
+                Task:
+                    task = 'Timer_tasks:GetTimeStamp'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments = ['labeq_exopy.Legacy.Timer']
+                    metadata = {'loopable': True}
                 Tasks:
                     group = 'NF LI5650'
                     Task:
