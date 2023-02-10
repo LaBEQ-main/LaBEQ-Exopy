@@ -13,6 +13,7 @@
 from ..driver_tools import (InstrIOError, secure_communication, instrument_property)
 from ..visa_tools import VisaInstrument
 import time
+import datetime
 
 class Timer(VisaInstrument):
 
@@ -35,7 +36,7 @@ class Timer(VisaInstrument):
 
     def get_time_stamp(self):
         #return time stamp
-        tstamp = time.time()
+        tstamp = datetime.datetime.now()
         return tstamp
 
     
