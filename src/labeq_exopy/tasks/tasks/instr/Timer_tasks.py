@@ -46,3 +46,21 @@ class GetElapsedTime(InstrumentTask):
         sleep(self.wait_time)
         elapsed_time = self.driver.get_elapsed_time()
         self.write_in_database('elapsed_time', elapsed_time)
+
+class GetTimeStamp(InstrumentTask):
+    """
+        Get time stamp.
+
+    """
+    # Time to wait before the ramp.
+    wait_time = Float().tag(pref=True)
+
+    database_entries = set_default({'time_stamp': 0.0})
+
+    wait = set_default({'activated': True, 'wait': ['instr']})
+
+    def perform(self):
+        
+        sleep(self.wait_time)
+        time_stamp = self.driver.get_time_stamp()
+        self.write_in_database('time_stamp', time_stamp)
