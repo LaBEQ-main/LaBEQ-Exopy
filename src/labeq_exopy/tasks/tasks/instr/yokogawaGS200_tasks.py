@@ -39,13 +39,17 @@ class SetRangeTaskYoko(InstrumentTask):
 
     """
 
+    wait_time = Float().tag(pref=True)
     func_v = Enum('Voltage', 'Current', 'Both').tag(pref=True)
     set_range_val = Str().tag(pref=True)
 
+    wait = set_default({'activated': True, 'wait': ['instr']})
         
     database_entries = set_default({'set_range_val': 1.0})
 
     def perform(self):
+        sleep(self.wait_time)
+
         funcVal = ''
         if self.func_v == 'Voltage':
             funcVal = 'VOLT'

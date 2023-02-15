@@ -73,7 +73,7 @@ enamldef SetRangeViewYoko(InstrView): view:
             selected := task.set_range_val
 
 enamldef SetComplianceViewYoko(InstrView): view:
-    """View for SetRangeViewYoko
+    """View for SetComplianceViewYoko
 
     """
     constraints = [factory(auto_grid_layout)]
