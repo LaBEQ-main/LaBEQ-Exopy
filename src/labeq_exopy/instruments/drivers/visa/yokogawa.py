@@ -65,6 +65,16 @@ def setSource(thing, point) :
 
 class YokogawaGS200(VisaInstrument):
     
+    @property
+    def output(self):
+        return self._output
+
+    @output.setter
+    def output(self, value):
+        self._output = value
+        self.write('output ' + value)
+
+
     @secure_communication()
     def source_voltage_dc(self, value) :
         self.write('sour:func volt')

@@ -190,8 +190,9 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'yokogawa:YokogawaGS200'
                         model = 'GS200'
                         kind = 'DC source'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaUSB': {'resource_class': 'INSTR',
+                        connections = { 'VisaGPIB': {'resource_class': 'INSTR'},
+                                        'VisaTCPIP': {'resource_class': 'INSTR'},
+                                        'VisaUSB': {'resource_class': 'INSTR',
                                                    'manufacturer_id': '0xB21',
                                                    'model_code': '0x39'},
                                        }
