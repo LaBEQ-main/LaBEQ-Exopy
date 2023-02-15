@@ -71,4 +71,25 @@ enamldef SetRangeViewYoko(InstrView): view:
         ObjectCombo:
             items << list(['1E-3', '10E-3', '100E-3', '200E-3', 'MAX'])
             selected := task.set_range_val
+
+enamldef SetComplianceViewYoko(InstrView): view:
+    """View for SetRangeViewYoko
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'func_v'
+    ObjectCombo: ocfunc:
+        items << list(task.get_member('func_v').items)
+        selected := task.func_v
+    
+    Label:
+        text = 'set limit value'
+    QtLineCompleter:
+        hug_width = 'ignore'
+        text := task.set_limit_val
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = fill("Limit value in volts or amps. Value must be in range.", 60)
+    
     
