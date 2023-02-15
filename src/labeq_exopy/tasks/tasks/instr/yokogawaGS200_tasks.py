@@ -40,7 +40,9 @@ class SetRangeTaskYoko(InstrumentTask):
     """
 
     func_v = Enum('Voltage', 'Current', 'Both').tag(pref=True)
-    set_range_val = Enum('1E-3', '10E-3', '100E-3', '200E-3', 'MAX').tag(pref=True)
+    set_range_val = Str().tag(pref=True)
+
+        
     database_entries = set_default({'set_range_val': 1.0})
 
     def perform(self):
