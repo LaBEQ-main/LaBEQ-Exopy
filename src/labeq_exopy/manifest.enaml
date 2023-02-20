@@ -43,6 +43,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'NF LI5650'
             group = 'NF LI5650'
+        GroupTaskFilter:
+            id = 'NF ZM2376'
+            group = 'NF ZM2376'
         GroupTaskFilter:    
             id = 'YokogawaGS200'
             group = 'YokogawaGS200'
@@ -482,6 +485,13 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_task_view:SimpleTaskView'
                     instruments = ['labeq_exopy.Legacy.Timer']
                     metadata = {'loopable': True}
+                Tasks:
+                    group = 'NF ZM2376'
+                    Task:
+                        task = 'NF_ZM2376_tasks:SetFrequencyTask'
+                        view = 'views.NF_ZM2376_views:SetFrequencyView'
+                        instruments =   ['labeq_exopy.Legacy.ZM2376']
+                        metadata = {'loopable': True}
                 Tasks:
                     group = 'NF LI5650'
                     Task:
