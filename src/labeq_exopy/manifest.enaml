@@ -143,6 +143,12 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'NF_LI5650_driver:LI5650'
                         model = 'LI5650'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}}
+                    
+                    Driver:
+                        driver = 'NF_ZM2376_driver:ZM2376'
+                        model = 'ZM2376'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'}}
+
                 Drivers:
                     manufacturer = 'LakeShore Cryotronics'
                     Driver:
