@@ -23,3 +23,26 @@ class ZM2376(VisaInstrument):
         super(ZM2376, self).open_connection(**para)
         self.write_termination = '\n'
         self.read_termination = '\n'
+    
+    def set_frequency(self, val):
+        """ set the source frequency 
+        
+        """
+        self.write('SOUR:FREQ ' + str(val))
+
+    def set_voltage(self, val)
+        """ set the source voltage level
+
+        """
+        self.write('SOUR:VOLT:LEV ' + str(val))
+
+    def fetch_measurements(self, val)
+        """ fetch the latest measurements
+
+        """
+        resp = self.query('FETC?').split(",")
+
+        pri = resp[1]
+        sec = resp[2]
+
+        return pri, sec
