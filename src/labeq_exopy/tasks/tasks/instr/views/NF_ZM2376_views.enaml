@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Frank Duffy, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the NF LI5650 lock in amplifier.
+
+"""
+from textwrap import fill
+
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
+from enaml.stdlib.fields import FloatField
+from enaml.layout.api import factory
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
+
+enamldef SetFrequencyView(InstrView): view:
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Frequency (Hz)'
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.tc
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("range 1mHz to 5.5MHz.", 60)
