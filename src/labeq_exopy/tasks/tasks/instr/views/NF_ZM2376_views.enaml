@@ -33,6 +33,27 @@ enamldef SetFrequencyView(InstrView): view:
         text = 'Frequency (Hz)'
     QtLineCompleter:
             hug_width = 'ignore'
-            text := task.tc
+            text := task.freq
             entries_updater << task.list_accessible_database_entries
             tool_tip = fill("range 1mHz to 5.5MHz.", 60)
+
+enamldef MeasureView(InstrView): view:
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'Wait (s)'
+    FloatField:
+        value := task.wait_time
+        tool_tip = fill("Time to wait before task execution.", 60)
+    Label:
+        text = 'Pri'
+    ObjectCombo:
+        items << list(task.get_member('pri').items)
+        selected := task.pri
+        tool_tip = fill("Available parameters", 60)
+    Label:
+        text = 'Sec'
+    ObjectCombo:
+        items << list(task.get_member('sec').items)
+        selected := task.sec
+        tool_tip = fill("Available parameters", 60)

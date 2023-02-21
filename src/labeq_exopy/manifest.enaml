@@ -488,10 +488,16 @@ enamldef LaBEQManifest(PluginManifest):
                 Tasks:
                     group = 'NF ZM2376'
                     Task:
-                        task = 'NF_ZM2376_tasks:SetFrequencyTask'
+                        task = 'NF_ZM2376_tasks:ZM2376_SetFrequencyTask'
                         view = 'views.NF_ZM2376_views:SetFrequencyView'
                         instruments =   ['labeq_exopy.Legacy.ZM2376']
                         metadata = {'loopable': True}
+                    Task:
+                        task = 'NF_ZM2376_tasks:ZM2376_MeasureTask'
+                        view = 'views.NF_ZM2376_views:MeasureView'
+                        instruments =   ['labeq_exopy.Legacy.ZM2376']
+                        metadata = {'loopable': True}
+                        
                 Tasks:
                     group = 'NF LI5650'
                     Task:
