@@ -214,11 +214,11 @@ enamldef LakeshoreTC340HeaterSetpointAndRangeView(InstrView): view:
     GroupBox: SetPoint:
         title = 'Setpoint'
         tool_tip='Units set by the "Units" setting under "Configure Control Loop" in Configure task. Unit default: K'
-        FloatField:
+        QtLineCompleter:
             hug_width = 'ignore'
-            value := task.SetPoint
-            tool_tip = fill('Units set by the "Units" setting under "Configure Control Loop": 325',
-                            60)
+            text := task.SetPoint
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Target field in Teslas per minute (T/min)", 60)
     
     GroupBox: HeaterRange:
         title = 'Heater Range'
