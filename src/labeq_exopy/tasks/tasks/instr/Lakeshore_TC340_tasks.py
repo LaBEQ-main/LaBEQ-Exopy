@@ -238,7 +238,7 @@ class LakeshoreTC340HeaterSetpointAndRangeTask(InstrumentTask):
     #The heater settings are changed frequently. Making a seperate task file for these functions
     #allows for easy configuration. 
     Loop = Enum('1', '2').tag(pref=True)
-    SetPoint = Float(300).tag(pref=True)
+    SetPoint = Str("300").tag(pref=True)
     SetHtrRange = Enum('Full','1/10','1/10\u00b2', '1/10\u00b3','1/10\u2074', 'OFF').tag(pref=True)
     
 
@@ -265,8 +265,11 @@ class LakeshoreTC340HeaterSetpointAndRangeTask(InstrumentTask):
             parameters = self.Loop + ',' + 'A,1,1,1'
             self.driver.configure_control(parameters)
         
+        #Evaluate the setpoint
+        SetPoint = self.format_and_eval_string(self.SetPoint)
+        
         #Set Setpoint
-        self.driver.set_setpoint(self.Loop,self.SetPoint)
+        self.driver.set_setpoint(self.Loop, SetPoint)
         
         #Set Heater Range
         if self.SetHtrRange == 'Full' :
