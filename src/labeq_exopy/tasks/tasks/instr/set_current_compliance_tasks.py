@@ -11,7 +11,7 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str
 
 from exopy.tasks.api import InstrumentTask
 

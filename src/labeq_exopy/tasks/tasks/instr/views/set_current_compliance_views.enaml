@@ -18,6 +18,7 @@ from enaml.layout.api import factory
 
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
+from exopy.utils.widgets.qt_completers import QtLineCompleter
 
 
 enamldef SetCurrentComplianceView(InstrView): view:
