@@ -28,6 +28,8 @@ enamldef SetCurrentComplianceView(InstrView): view:
 
     Label:
         text = 'Compliance (A)'
-    FloatField:
-        value := task.comp_c
-        tool_tip = fill("Current compliance value", 60)
+    QtLineCompleter:
+            hug_width = 'ignore'
+            text := task.comp_c
+            entries_updater << task.list_accessible_database_entries
+            tool_tip = fill("Current compliance in Amps", 60)

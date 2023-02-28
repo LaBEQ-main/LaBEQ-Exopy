@@ -213,7 +213,7 @@ enamldef LakeshoreTC340HeaterSetpointAndRangeView(InstrView): view:
             
     GroupBox: SetPoint:
         title = 'Setpoint'
-        tool_tip='Units set by the "Units" setting under "Configure Control Loop" in Configure task. Unit default: K'
+        tool_tip='TEST Units set by the "Units" setting under "Configure Control Loop" in Configure task. Unit default: K'
         QtLineCompleter:
             hug_width = 'ignore'
             text := task.SetPoint
