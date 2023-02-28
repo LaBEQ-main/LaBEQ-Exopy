@@ -199,8 +199,9 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'yokogawa:YokogawaGS200'
                         model = 'GS200'
                         kind = 'DC source'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaUSB': {'resource_class': 'INSTR',
+                        connections = { 'VisaGPIB': {'resource_class': 'INSTR'},
+                                        'VisaTCPIP': {'resource_class': 'INSTR'},
+                                        'VisaUSB': {'resource_class': 'INSTR',
                                                    'manufacturer_id': '0xB21',
                                                    'model_code': '0x39'},
                                        }
@@ -966,7 +967,7 @@ enamldef LaBEQManifest(PluginManifest):
                         
                     Task:
                         task = 'yokogawaGS200_tasks:SetComplianceTaskYoko'
-                        view = 'views.yokoGS200_views:SetRangeViewYoko'
+                        view = 'views.yokoGS200_views:SetComplianceViewYoko'
                         instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                         metadata = {'loopable': True}
                 Tasks:

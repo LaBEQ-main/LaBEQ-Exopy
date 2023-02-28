@@ -65,6 +65,16 @@ def setSource(thing, point) :
 
 class YokogawaGS200(VisaInstrument):
     
+    @property
+    def output(self):
+        return self._output
+
+    @output.setter
+    def output(self, value):
+        self._output = value
+        self.write('output ' + value)
+
+
     @secure_communication()
     def source_voltage_dc(self, value) :
         self.write('sour:func volt')
@@ -102,12 +112,23 @@ class YokogawaGS200(VisaInstrument):
     @secure_communication()
     def set_range_yoko(self, range_val, funcVal):
         self.write('SOUR:FUNC '+funcVal)
+        self._func = funcVal
 
         if range_val == 'MAX' or not range_val :
             self.write("sour:rang max")
             return "success"
 
         self.write('sour:RANG '+ str(range_val))
+        return "success"
+    
+    @secure_communication()
+    def set_compliance_yoko(self, range_val, funcVal):
+
+        if funcVal.upper() == 'VOLTAGE':
+            self.write('SOUR:PROT:VOLT ' + str(range_val))
+        elif funcVal.upper() == 'CURRENT':
+            self.write('SOUR:PROT:CURR ' + str(range_val))
+
         return "success"
     
     @secure_communication()
