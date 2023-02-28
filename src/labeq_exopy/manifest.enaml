@@ -914,7 +914,8 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'dc_tasks:SetDCOutputTask'
                     view = 'views.dc_views:SetDcOutputView'
-                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
+                    instruments = [ 'labeq_exopy.Legacy.YokogawaGS200',
+                                    'labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'spdev_tasks:DemodSPTask'
                     view = 'views.spdev_views:DemodSpView'
