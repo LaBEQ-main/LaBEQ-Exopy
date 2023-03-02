@@ -474,6 +474,15 @@ class Keithley2400(VisaInstrument):
 
     protocoles = {'GPIB': 'INSTR'}
 
+    @property
+    def output(self):
+        return self._output
+
+    @output.setter
+    def output(self, value):
+        self._output = value
+        self.write('output ' + value)
+
     def open_connection(self, **para):
         """Open the connection to the instr using the `connection_str`.
 

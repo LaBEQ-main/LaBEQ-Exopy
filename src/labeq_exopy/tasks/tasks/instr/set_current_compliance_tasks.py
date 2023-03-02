@@ -11,7 +11,7 @@
 """
 from time import sleep
 
-from atom.api import Float, set_default
+from atom.api import Float, set_default, Str
 
 from exopy.tasks.api import InstrumentTask
 
@@ -23,7 +23,7 @@ class SetCurrentComplianceTask(InstrumentTask):
     specified time before perfoming the measure.
 
     """
-    comp_c = Float().tag(pref=True)
+    comp_c = Str().tag(pref=True)
 
     database_entries = set_default({'comp_c': 1.0})
 
@@ -32,5 +32,8 @@ class SetCurrentComplianceTask(InstrumentTask):
 
         """
 
-        value = self.driver.set_current_comp(self.comp_c)
+        #Evaluate the setpoint
+        setpoint = self.format_and_eval_string(self.comp_c)
+
+        value = self.driver.set_current_comp(setpoint)
         self.write_in_database('comp_c', value)

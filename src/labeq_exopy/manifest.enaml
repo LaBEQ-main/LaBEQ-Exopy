@@ -46,6 +46,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'NF LI5650'
             group = 'NF LI5650'
+        GroupTaskFilter:
+            id = 'NF ZM2376'
+            group = 'NF ZM2376'
         GroupTaskFilter:    
             id = 'YokogawaGS200'
             group = 'YokogawaGS200'
@@ -146,6 +149,12 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'NF_LI5650_driver:LI5650'
                         model = 'LI5650'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}}
+                    
+                    Driver:
+                        driver = 'NF_ZM2376_driver:ZM2376'
+                        model = 'ZM2376'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'}}
+
                 Drivers:
                     manufacturer = 'LakeShore Cryotronics'
                     Driver:
@@ -193,8 +202,9 @@ enamldef LaBEQManifest(PluginManifest):
                         driver = 'yokogawa:YokogawaGS200'
                         model = 'GS200'
                         kind = 'DC source'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
-                                       'VisaUSB': {'resource_class': 'INSTR',
+                        connections = { 'VisaGPIB': {'resource_class': 'INSTR'},
+                                        'VisaTCPIP': {'resource_class': 'INSTR'},
+                                        'VisaUSB': {'resource_class': 'INSTR',
                                                    'manufacturer_id': '0xB21',
                                                    'model_code': '0x39'},
                                        }
@@ -481,6 +491,24 @@ enamldef LaBEQManifest(PluginManifest):
                     view = 'views.simple_task_view:SimpleTaskView'
                     instruments = ['labeq_exopy.Legacy.Timer']
                     metadata = {'loopable': True}
+                Task:
+                    task = 'Timer_tasks:GetTimeStamp'
+                    view = 'views.simple_task_view:SimpleTaskView'
+                    instruments = ['labeq_exopy.Legacy.Timer']
+                    metadata = {'loopable': True}
+                Tasks:
+                    group = 'NF ZM2376'
+                    Task:
+                        task = 'NF_ZM2376_tasks:ZM2376_SetFrequencyTask'
+                        view = 'views.NF_ZM2376_views:SetFrequencyView'
+                        instruments =   ['labeq_exopy.Legacy.ZM2376']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'NF_ZM2376_tasks:ZM2376_MeasureTask'
+                        view = 'views.NF_ZM2376_views:MeasureView'
+                        instruments =   ['labeq_exopy.Legacy.ZM2376']
+                        metadata = {'loopable': True}
+                        
                 Tasks:
                     group = 'NF LI5650'
                     Task:
@@ -958,7 +986,8 @@ enamldef LaBEQManifest(PluginManifest):
                 Task:
                     task = 'dc_tasks:SetDCOutputTask'
                     view = 'views.dc_views:SetDcOutputView'
-                    instruments = ['labeq_exopy.Legacy.YokogawaGS200']
+                    instruments = [ 'labeq_exopy.Legacy.YokogawaGS200',
+                                    'labeq_exopy.Legacy.Keithley2400']
                 Task:
                     task = 'spdev_tasks:DemodSPTask'
                     view = 'views.spdev_views:DemodSpView'
@@ -1011,7 +1040,7 @@ enamldef LaBEQManifest(PluginManifest):
                         
                     Task:
                         task = 'yokogawaGS200_tasks:SetComplianceTaskYoko'
-                        view = 'views.yokoGS200_views:SetRangeViewYoko'
+                        view = 'views.yokoGS200_views:SetComplianceViewYoko'
                         instruments = ['labeq_exopy.Legacy.YokogawaGS200']
                         metadata = {'loopable': True}
                 Tasks:
@@ -1027,8 +1056,8 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
                         metadata = {'loopable': True}
                     Task:
-                        task = 'Lakeshore_TC340_tasks:LakeshoreTC340HeaterSetpointandRangeTask'
-                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointandRangeView'
+                        task = 'Lakeshore_TC340_tasks:LakeshoreTC340HeaterSetpointAndRangeTask'
+                        view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointAndRangeView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
                         metadata = {'loopable': True}
                 

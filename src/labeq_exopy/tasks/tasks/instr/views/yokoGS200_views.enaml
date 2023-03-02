@@ -5,6 +5,7 @@
 
 from textwrap import fill
 
+from enaml.core.api import Conditional
 from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo)
 from enaml.stdlib.fields import FloatField
 from enaml.layout.api import factory
@@ -54,13 +55,41 @@ enamldef SetRangeViewYoko(InstrView): view:
 
     Label:
         text = 'func_v'
-    ObjectCombo:
+    ObjectCombo: ocfunc:
         items << list(task.get_member('func_v').items)
         selected := task.func_v
     
     Label:
-        text = 'set_range_val'
-    ObjectCombo:
-        items << list(task.get_member('set_range_val').items)
-        selected := task.set_range_val
+        text = 'set_range_val (volts or amps)'
+    Conditional:
+        condition << (ocfunc.selected == 'Voltage')
+        ObjectCombo:
+            items << list(['10E-3', '100E-3', '1', '10', '30'])
+            selected := task.set_range_val
+    Conditional:
+        condition << (ocfunc.selected == 'Current')
+        ObjectCombo:
+            items << list(['1E-3', '10E-3', '100E-3', '200E-3', 'MAX'])
+            selected := task.set_range_val
+
+enamldef SetComplianceViewYoko(InstrView): view:
+    """View for SetComplianceViewYoko
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label:
+        text = 'func_v'
+    ObjectCombo: ocfunc:
+        items << list(task.get_member('func_v').items)
+        selected := task.func_v
+    
+    Label:
+        text = 'set limit value'
+    QtLineCompleter:
+        hug_width = 'ignore'
+        text := task.set_limit_val
+        entries_updater << task.list_accessible_database_entries
+        tool_tip = fill("Limit value in volts or amps. Value must be in range.", 60)
+    
     
