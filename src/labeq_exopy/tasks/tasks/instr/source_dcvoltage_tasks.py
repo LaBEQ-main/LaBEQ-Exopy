@@ -39,6 +39,6 @@ class SourceDCVoltageTask(InstrumentTask):
 
         #returns float if given a float, returns database entry value type if given a database entry name
         value = self.format_and_eval_string(self.source_v)
-
-        value = self.driver.source_voltage_dc(value)
+        self.driver.source_voltage_dc(value)
+        
         self.write_in_database('source_voltage_dc', value)
