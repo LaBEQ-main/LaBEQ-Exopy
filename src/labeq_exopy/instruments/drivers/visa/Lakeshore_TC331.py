@@ -25,7 +25,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"RANGE {range}")
         print(f"setting heater range to {range}")
 
-    def set_control_parameters(
+    def set_loop_control_parameters(
         self, loop, input, units, powerup_enable, heater_output_display
     ):
         """Configures a control loop's parameters:
@@ -57,7 +57,7 @@ class LakeshoreTC331(VisaInstrument):
         else:
             raise InstrIOError("TC331: failed to get input temperature")
 
-    def set_PID(self, loop, auto, p, i, d):
+    def set_loop_PID(self, loop, auto, p, i, d):
         """Sets a loop's PID values or sets auto PID"""
 
         if auto:
@@ -68,7 +68,7 @@ class LakeshoreTC331(VisaInstrument):
             self.write(f"PID {loop},{p},{i},{d}")
             print("PID set manual")
 
-    def set_mout(self, loop, val):
+    def set_loop_mout(self, loop, val):
         """Sets the loop manual heater output"""
 
         self.write(f"MOUT {loop},{val}")
@@ -92,12 +92,3 @@ class LakeshoreTC331(VisaInstrument):
 
         self.write(f"INCRV {input},{curve}")
         print("setting input diode curve")
-
-    def get_control_parameters(self, loop):
-        """Gets a control loop's configuration parameters"""
-
-        config = self.query(f"CSET? {loop}")
-        print("queried loop {A}'s configuration")
-
-        config = [int(param) for param in config.split(",")]
-        return config

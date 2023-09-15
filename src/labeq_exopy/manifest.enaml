@@ -997,4 +997,21 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointAndRangeView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
                         metadata = {'loopable': True}
+                Tasks:
+                    group = "Lakeshore"
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331MeasureTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331MeasureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331ConfigureTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331ConfigureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331HeaterSetpointAndRangeTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331HeaterSetpointAndRangeView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
+                        metadata = {'loopable': True}
                 

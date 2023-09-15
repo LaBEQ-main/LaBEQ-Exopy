@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Authors - Kathryn Evancho, LaBEQ / Sardashti Research Group, Clemson University
+# Authors - Matthew Everette, LaBEQ / Sardashti Research Group, Clemson University
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
 
-"""Views for the Lakeshore 340 temperature controller.
-
-"""
+"""Views for the Lakeshore 331 temperature controller."""
 from textwrap import fill
 from exopy.utils.widgets.qt_completers import QtLineCompleter
 from enaml.layout.api import factory
@@ -144,10 +142,8 @@ enamldef LakeshoreTC331ConfigureView(InstrView): view:
             selected := task.Curve
 
 enamldef LakeshoreTC331HeaterSetpointAndRangeView(InstrView): view:
-    """View for the LakeshoreTC331HeaterSetpointandRange Task
-
-    """
-    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, SetPoint, HeaterRange)]
+    """View for the LakeshoreTC331HeaterSetpointandRange Task"""
+    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, Setpoint, HeaterRange)]
 
     GroupBox: Loop:
         title = 'Loop'
@@ -156,12 +152,12 @@ enamldef LakeshoreTC331HeaterSetpointAndRangeView(InstrView): view:
             items << list(task.get_member('Loop').items)
             selected := task.Loop
             
-    GroupBox: SetPoint:
+    GroupBox: Setpoint:
         title = 'Setpoint'
         tool_tip='TEST Units set by the "Units" setting under "Configure Control Loop" in Configure task. Unit default: K'
         QtLineCompleter:
             hug_width = 'ignore'
-            text := task.SetPoint
+            text := task.Setpoint
             entries_updater << task.list_accessible_database_entries
             tool_tip = fill("Target temperature in Kelvin (K)", 60)
     

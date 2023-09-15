@@ -54,7 +54,7 @@ class LakeshoreTC331MeasureTask(InstrumentTask):
         self.database_entries = entries
 
 
-class LakeshoreTC340ConfigureTask(InstrumentTask):
+class LakeshoreTC331ConfigureTask(InstrumentTask):
     Loop = Enum("1", "2").tag(pref=True)
     CntrlChannel = Enum("A", "B").tag(pref=True)
     SetpUnits = Enum("K", "C", "Sensor").tag(pref=True)
@@ -78,7 +78,20 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
     ).tag(pref=True)
     InputCompensation = Enum("On", "Off").tag(pref=True)
     Curve = Enum(
-        "No Curve", "DT-470", "DT-500-D", "DT-500-E1", "DT-670", "PT-100", "PT-1000"
+        "No Curve",
+        "DT-470",
+        "DT-670",
+        "DT-500-D",
+        "DT-500-E1",
+        "PT-100",
+        "PT-1000",
+        "RX-102A-AA",
+        "RX-202A-AA",
+        "Type K",
+        "Type E",
+        "Type T",
+        "AuFe 0.03%",
+        "AuFe 0.07%",
     ).tag(pref=True)
 
     database_entries = set_default({"A": 1.0})
@@ -170,35 +183,35 @@ class LakeshoreTC340ConfigureTask(InstrumentTask):
             setp_units = 3
 
         # Set control parameters
-        self.driver.set_control_parameters(
+        self.driver.set_loop_control_parameters(
             self.Loop, self.CntrlChannel, setp_units, 1, 2
         )
 
         # Set auto/manual PID
-        self.driver.set_PID(self.Loop, self.AutoPID, self.P, self.I, self.D)
+        self.driver.set_loop_PID(self.Loop, self.AutoPID, self.P, self.I, self.D)
 
         # Set manual heater output
         if not self.AutoPID:
-            self.driver.set_mout(self.Loop, self.Mout)
+            self.driver.set_loop_mout(self.Loop, self.Mout)
 
 
-class LakeshoreTC340HeaterSetpointAndRangeTask(InstrumentTask):
+class LakeshoreTC331HeaterSetpointAndRangeTask(InstrumentTask):
     Loop = Enum("1", "2").tag(pref=True)
     Setpoint = Str("300").tag(pref=True)
     SetHtrRange = Enum("HIGH", "MEDIUM", "LOW", "OFF").tag(pref=True)
 
     def perform(self):
-        # Set the heater set point
+        # Set the heater setpoint
         setpoint = self.format_and_eval_string(self.Setpoint)
-        self.driver.set_setpoint(self.Loop, setpoint)
+        self.driver.set_loop_setpoint(self.Loop, setpoint)
 
         # Set the heater range
         if self.SetHtrRange == "HIGH":
-            htr_range = "3"
+            htr_range = 3
         elif self.SetHtrRange == "MEDIUM":
-            htr_range = "2"
+            htr_range = 2
         elif self.SetHtrRange == "LOW":
-            htr_range = "1"
+            htr_range = 1
         elif self.SetHtrRange == "OFF":
-            htr_range = "0"
+            htr_range = 0
         self.driver.set_heater_range(htr_range)
