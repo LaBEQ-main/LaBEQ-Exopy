@@ -160,7 +160,16 @@ enamldef LaBEQManifest(PluginManifest):
                         kind = 'Other'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232':{'resource_class': 'INSTR'}
-                                        }
+                                       }
+
+                Drivers:
+                    manufacturer = 'LakeShore Cryotronics'
+                    Driver:
+                        driver = 'Lakeshore_TC331:LakeshoreTC331'
+                        model='331'
+                        kind='Other'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'}}
+
                 Drivers:
                     manufacturer = 'LaBEQ'
                     Driver:
