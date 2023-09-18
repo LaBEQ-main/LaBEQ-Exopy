@@ -23,7 +23,11 @@ class LakeshoreTC331(VisaInstrument):
         """Sets the heater range"""
 
         self.write(f"RANGE {range}")
-        print(f"setting heater range to {range}")
+
+        if self.query("RANGE?") == str(range):
+            print(f"heater range set to {range}")
+        else:
+            raise InstrIOError("TC331: failed to set heater range")
 
     def set_loop_control_parameters(
         self, loop, input, units, powerup_enable, heater_output_display
