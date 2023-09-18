@@ -15,7 +15,7 @@ class LakeshoreTC331(VisaInstrument):
     """Driver for LakeShore 331 Temperature Controller, using the VISA library"""
 
     def open_connection(self, **para):
-        super().open_connection(**para)
+        super(LakeshoreTC331, self).open_connection(**para)
         self.write_termination = "\n"
         self.read_termination = "\n"
 
