@@ -162,8 +162,6 @@ enamldef LaBEQManifest(PluginManifest):
                                        'VisaRS232':{'resource_class': 'INSTR'}
                                        }
 
-                Drivers:
-                    manufacturer = 'LakeShore Cryotronics'
                     Driver:
                         driver = 'Lakeshore_TC331:LakeshoreTC331'
                         model='331'
@@ -997,8 +995,6 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointAndRangeView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
                         metadata = {'loopable': True}
-                Tasks:
-                    group = "Lakeshore"
                     Task:
                         task = 'Lakeshore_TC331_tasks:LakeshoreTC331MeasureTask'
                         view = 'views.Lakeshore_TC331_views:LakeshoreTC331MeasureView'
