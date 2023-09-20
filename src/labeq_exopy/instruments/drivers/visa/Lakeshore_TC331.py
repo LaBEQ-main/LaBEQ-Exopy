@@ -16,15 +16,15 @@ class LakeshoreTC331(VisaInstrument):
 
     def open_connection(self, **para):
         super(LakeshoreTC331, self).open_connection(**para)
-        self.write_termination = "\n"
-        self.read_termination = "\n"
+        self.write_termination = "\0"
+        self.read_termination = "\r\n"
 
     def set_heater_range(self, range):
         """Sets the heater range"""
 
         self.write(f"RANGE {range}")
 
-        if self.query("RANGE?") == str(range):
+        if self.query("RANGE?") == f"{range}":
             print(f"heater range set to {range}")
         else:
             raise InstrIOError("TC331: failed to set heater range")
@@ -39,7 +39,14 @@ class LakeshoreTC331(VisaInstrument):
         self.write(
             f"CSET {loop},{input},{units},{powerup_enable},{heater_output_display}"
         )
-        print("setting the control settings")
+
+        if (
+            self.query("CSET?")
+            == f"{input},{units},{powerup_enable},{heater_output_display}"
+        ):
+            print(f"set the control settings")
+        else:
+            raise InstrIOError("TC331: failed to set the control settings")
 
     def get_input_temperature(self, input):
         """Gets the temperature of an input in Kelvin"""
@@ -47,7 +54,7 @@ class LakeshoreTC331(VisaInstrument):
         status = int(self.query(f"RDGST? {input}"))
 
         if status == 0:
-            return int(self.query(f"KRDG? {input}"))
+            return float(self.query(f"KRDG? {input}"))
         elif status & (1 << 1) != 0:
             return "Invalid Reading"
         elif status & (1 << 4) != 0:
@@ -66,33 +73,66 @@ class LakeshoreTC331(VisaInstrument):
 
         if auto:
             self.write(f"CMODE {loop},4")
-            print("PID set auto")
+
+            if self.query(f"CMODE? {loop}") == "4":
+                print("PID set auto")
+            else:
+                raise InstrIOError("TC331: failed to set auto PID")
+
         else:
             self.write(f"CMODE {loop},1")
+
+            if self.query(f"CMODE? {loop}") == "1":
+                print("PID set manual")
+            else:
+                raise InstrIOError("TC331: failed to manual PID")
+
             self.write(f"PID {loop},{p},{i},{d}")
-            print("PID set manual")
+
+            if self.query(f"PID? {loop}") == f"{p},{i},{d}":
+                print("PID values set")
+            else:
+                raise InstrIOError("TC331: failed to set PID values")
 
     def set_loop_mout(self, loop, val):
         """Sets the loop manual heater output"""
 
         self.write(f"MOUT {loop},{val}")
-        print(f"setting manual heater output to {val} for loop {loop}")
+
+        if self.query(f"MOUT? {loop}") == f"{val}":
+            print(f"set manual heater output to {val} for loop {loop}")
+        else:
+            raise InstrIOError("TC331: failed to set manual heater output")
 
     def set_loop_setpoint(self, loop, val):
         """Sets the loop setpoint"""
 
         self.write(f"SETP {loop},{val}")
-        print(f"setting the setpoint to {val} for loop {loop}")
+
+        if self.query(f"SETP? {loop}") == f"{val}":
+            print(f"set the setpoint to {val} for loop {loop}")
+        else:
+            raise InstrIOError("TC331: failed to set setpoint")
 
     def set_input_settings(self, input, sensor_type, compensation):
         """Configures a loop's input settings:
         diode type, compensation"""
 
-        self.write(f"INTYPE {input}, {sensor_type},{compensation}")
+        self.write(f"INTYPE {input},{sensor_type},{compensation}")
         print("setting input settings")
+
+        if self.query(f"INCRV? {input}") == f"{sensor_type},{compensation}":
+            print(f"set input settings")
+        else:
+            raise InstrIOError("TC331: failed to set input settings")
 
     def set_input_curve(self, input, curve):
         """Sets an input diode curve"""
 
         self.write(f"INCRV {input},{curve}")
         print("setting input diode curve")
+
+        if self.query(f"INCRV? {input}") == f"{curve}":
+            print(f"set input diode curve")
+        else:
+            raise InstrIOError("TC331: failed to set input diode curve")
