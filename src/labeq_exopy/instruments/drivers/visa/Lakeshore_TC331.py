@@ -132,7 +132,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"INCRV {input},{curve}")
         print("setting input diode curve")
 
-        if self.query(f"INCRV? {input}") == f"{curve}":
+        if self.query(f"INCRV? {input}") == f"{curve:02}":
             print(f"set input diode curve")
         else:
             raise InstrIOError("TC331: failed to set input diode curve")
