@@ -97,6 +97,14 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
     database_entries = set_default({"A": 1.0})
 
     def perform(self):
+        # Convert SetpUnits to integer
+        if self.SetpUnits == "K":
+            setp_units = 1
+        elif self.SetpUnits == "C":
+            setp_units = 2
+        elif self.SetpUnits == "Sensor":
+            setp_units = 3
+
         # Set control parameters
         power_up_enable = 1  # loop enabled on power up
         heater_output_display = 2  # heater output displays in power (vs 1 for current)
@@ -182,14 +190,6 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
         else:
             print("ERROR: Invalid curve. No curve set")
             self.driver.set_input_curve(self.ConfigInput, 0)
-
-        # Convert SetpUnits to integer
-        if self.SetpUnits == "K":
-            setp_units = 1
-        elif self.SetpUnits == "C":
-            setp_units = 2
-        elif self.SetpUnits == "Sensor":
-            setp_units = 3
 
         # Set auto/manual PID
         self.driver.set_loop_PID(self.Loop, self.AutoPID, self.P, self.I, self.D)
