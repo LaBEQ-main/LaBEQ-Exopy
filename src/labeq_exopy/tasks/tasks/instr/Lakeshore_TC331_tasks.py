@@ -9,10 +9,6 @@
 
 """Tasks to control the Lakeshore TC331"""
 
-from cmath import sin
-from this import d
-from time import sleep
-
 from atom.api import Enum, Float, set_default, Bool, Str
 
 from exopy.tasks.api import InstrumentTask
