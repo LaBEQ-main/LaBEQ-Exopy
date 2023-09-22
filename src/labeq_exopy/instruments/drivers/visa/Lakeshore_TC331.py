@@ -25,7 +25,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"RANGE {range}")
 
         if self.query("RANGE?") == f"{range}":
-            print(f"heater range set to {range}")
+            print(f"set heater range")
         else:
             raise InstrIOError("TC331: failed to set heater range")
 
@@ -75,7 +75,7 @@ class LakeshoreTC331(VisaInstrument):
             self.write(f"CMODE {loop},4")
 
             if self.query(f"CMODE? {loop}") == "4":
-                print("PID set auto")
+                print("set PID auto")
             else:
                 raise InstrIOError("TC331: failed to set auto PID")
 
@@ -83,14 +83,14 @@ class LakeshoreTC331(VisaInstrument):
             self.write(f"CMODE {loop},1")
 
             if self.query(f"CMODE? {loop}") == "1":
-                print("PID set manual")
+                print("set PID manual")
             else:
                 raise InstrIOError("TC331: failed to manual PID")
 
             self.write(f"PID {loop},{p},{i},{d}")
 
             if [float(x) for x in self.query(f"PID? {loop}").split(",")] == [p, i, d]:
-                print("PID values set")
+                print("set PID values")
             else:
                 raise InstrIOError("TC331: failed to set PID values")
 
@@ -110,7 +110,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"SETP {loop},{val}")
 
         if float(self.query(f"SETP? {loop}")) == val:
-            print(f"set the setpoint to {val} for loop {loop}")
+            print(f"set the setpoint")
         else:
             raise InstrIOError("TC331: failed to set setpoint")
 
@@ -119,7 +119,6 @@ class LakeshoreTC331(VisaInstrument):
         diode type, compensation"""
 
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
-        print("setting input settings")
 
         if self.query(f"INTYPE? {input}") == f"{sensor_type},{compensation}":
             print(f"set input settings")
@@ -130,7 +129,6 @@ class LakeshoreTC331(VisaInstrument):
         """Sets an input diode curve"""
 
         self.write(f"INCRV {input},{curve}")
-        print("setting input diode curve")
 
         if self.query(f"INCRV? {input}") == f"{curve:02}":
             print(f"set input diode curve")
