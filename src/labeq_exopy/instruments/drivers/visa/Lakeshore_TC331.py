@@ -125,7 +125,7 @@ class LakeshoreTC331(VisaInstrument):
         diode type, compensation"""
 
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
-        # self.wait_to_complete()
+        # self.wait_to_complete() for some reason this breaks the INTYPE command
 
         if self.query(f"INTYPE? {input}") == f"{sensor_type},{compensation}":
             print(f"set input settings")
