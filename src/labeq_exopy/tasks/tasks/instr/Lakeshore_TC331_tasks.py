@@ -128,7 +128,7 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
             input_compensation = 0
 
         # Set input settings
-        self.driver.set_input_settings(self.ConfigInput, sensor, input_compensation)
+        self.driver.set_input_type(self.ConfigInput, sensor, input_compensation)
 
         # Convert Curve to integer
         if self.Curve == "No Curve":

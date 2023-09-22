@@ -114,8 +114,8 @@ class LakeshoreTC331(VisaInstrument):
         else:
             raise InstrIOError("TC331: failed to set setpoint")
 
-    def set_input_settings(self, input, sensor_type, compensation):
-        """Configures a loop's input settings:
+    def set_input_type(self, input, sensor_type, compensation):
+        """Configures a loop's input type:
         diode type, compensation"""
 
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
