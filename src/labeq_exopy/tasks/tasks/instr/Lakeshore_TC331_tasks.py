@@ -200,14 +200,13 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
 
 
 class LakeshoreTC331HeaterSetpointAndRangeTask(InstrumentTask):
-    Loop = Enum("1", "2").tag(pref=True)
     Setpoint = Str("300").tag(pref=True)
     SetHtrRange = Enum("HIGH", "MEDIUM", "LOW", "OFF").tag(pref=True)
 
     def perform(self):
         # Set the heater setpoint
         setpoint = self.format_and_eval_string(self.Setpoint)
-        self.driver.set_loop_setpoint(self.Loop, setpoint)
+        self.driver.set_setpoint(setpoint)
 
         # Set the heater range
         if self.SetHtrRange == "HIGH":

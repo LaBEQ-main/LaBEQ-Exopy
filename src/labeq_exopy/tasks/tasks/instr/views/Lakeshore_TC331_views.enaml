@@ -143,14 +143,7 @@ enamldef LakeshoreTC331ConfigureView(InstrView): view:
 
 enamldef LakeshoreTC331HeaterSetpointAndRangeView(InstrView): view:
     """View for the LakeshoreTC331HeaterSetpointandRange Task"""
-    constraints = [vbox(grid([instr_label],[instr_selection]), Loop, Setpoint, HeaterRange)]
-
-    GroupBox: Loop:
-        title = 'Loop'
-        tool_tip='Select Control Loop'
-        ObjectCombo:
-            items << list(task.get_member('Loop').items)
-            selected := task.Loop
+    constraints = [vbox(grid([instr_label],[instr_selection]), Setpoint, HeaterRange)]
             
     GroupBox: Setpoint:
         title = 'Setpoint'

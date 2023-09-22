@@ -104,12 +104,12 @@ class LakeshoreTC331(VisaInstrument):
         else:
             raise InstrIOError("TC331: failed to set manual heater output")
 
-    def set_loop_setpoint(self, loop, val):
-        """Sets the loop setpoint"""
+    def set_setpoint(self, val):
+        """Sets the setpoint"""
 
-        self.write(f"SETP {loop},{val}")
+        self.write(f"SETP {val}")
 
-        if float(self.query(f"SETP? {loop}")) == val:
+        if float(self.query(f"SETP?")) == val:
             print(f"set the setpoint")
         else:
             raise InstrIOError("TC331: failed to set setpoint")
