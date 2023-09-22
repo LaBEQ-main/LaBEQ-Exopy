@@ -89,7 +89,7 @@ class LakeshoreTC331(VisaInstrument):
 
             self.write(f"PID {loop},{p},{i},{d}")
 
-            if self.query(f"PID? {loop}") == f"{p:+07.1f},{i:+07.1f},{d:+07.2f}":
+            if [float(x) for x in self.query(f"PID? {loop}").split(",")] == [p, i, d]:
                 print("PID values set")
             else:
                 raise InstrIOError("TC331: failed to set PID values")
@@ -99,7 +99,7 @@ class LakeshoreTC331(VisaInstrument):
 
         self.write(f"MOUT {loop},{val}")
 
-        if self.query(f"MOUT? {loop}") == f"{val}":
+        if float(self.query(f"MOUT? {loop}")) == val:
             print(f"set manual heater output to {val} for loop {loop}")
         else:
             raise InstrIOError("TC331: failed to set manual heater output")
@@ -109,7 +109,7 @@ class LakeshoreTC331(VisaInstrument):
 
         self.write(f"SETP {loop},{val}")
 
-        if self.query(f"SETP? {loop}") == f"{val}":
+        if float(self.query(f"SETP? {loop}")) == val:
             print(f"set the setpoint to {val} for loop {loop}")
         else:
             raise InstrIOError("TC331: failed to set setpoint")
