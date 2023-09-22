@@ -121,7 +121,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
         print("setting input settings")
 
-        if self.query(f"INCRV? {input}") == f"{sensor_type},{compensation}":
+        if self.query(f"INTYPE? {input}") == f"{sensor_type},{compensation}":
             print(f"set input settings")
         else:
             raise InstrIOError("TC331: failed to set input settings")
