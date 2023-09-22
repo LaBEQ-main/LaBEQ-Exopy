@@ -89,7 +89,7 @@ class LakeshoreTC331(VisaInstrument):
 
             self.write(f"PID {loop},{p},{i},{d}")
 
-            if self.query(f"PID? {loop}") == f"{p},{i},{d}":
+            if self.query(f"PID? {loop}") == f"{p:+07.1f},{i:+07.1f},{d:+07.2f}":
                 print("PID values set")
             else:
                 raise InstrIOError("TC331: failed to set PID values")
