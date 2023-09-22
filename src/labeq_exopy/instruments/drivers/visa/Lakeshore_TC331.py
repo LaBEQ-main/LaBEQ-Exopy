@@ -100,7 +100,7 @@ class LakeshoreTC331(VisaInstrument):
         self.write(f"MOUT {loop},{val}")
 
         if float(self.query(f"MOUT? {loop}")) == val:
-            print(f"set manual heater output to {val} for loop {loop}")
+            print(f"set manual heater output")
         else:
             raise InstrIOError("TC331: failed to set manual heater output")
 
