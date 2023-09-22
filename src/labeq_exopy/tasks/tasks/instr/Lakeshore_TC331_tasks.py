@@ -97,7 +97,16 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
     database_entries = set_default({"A": 1.0})
 
     def perform(self):
-        """Wait and query the last value in the instrument buffer."""
+        # Set control parameters
+        power_up_enable = 1  # loop enabled on power up
+        heater_output_display = 2  # heater output displays in power (vs 1 for current)
+        self.driver.set_loop_control_parameters(
+            self.Loop,
+            self.CntrlChannel,
+            setp_units,
+            power_up_enable,
+            heater_output_display,
+        )
 
         # Convert Sensor to integer
         if self.Sensor == "Silicon Diode":
@@ -181,11 +190,6 @@ class LakeshoreTC331ConfigureTask(InstrumentTask):
             setp_units = 2
         elif self.SetpUnits == "Sensor":
             setp_units = 3
-
-        # Set control parameters
-        self.driver.set_loop_control_parameters(
-            self.Loop, self.CntrlChannel, setp_units, 1, 2
-        )
 
         # Set auto/manual PID
         self.driver.set_loop_PID(self.Loop, self.AutoPID, self.P, self.I, self.D)
