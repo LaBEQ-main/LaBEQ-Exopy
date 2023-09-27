@@ -124,6 +124,10 @@ class LakeshoreTC331(VisaInstrument):
         """Configures a loop's input type:
         diode type, compensation"""
 
+        # compensation is always 0 if the input type is a diode
+        if sensor_type in [0, 1]:
+            compensation = 0
+
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
         # self.wait_to_complete() for some reason this breaks the INTYPE command
 
