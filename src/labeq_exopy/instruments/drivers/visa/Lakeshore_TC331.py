@@ -16,7 +16,7 @@ class LakeshoreTC331(VisaInstrument):
 
     def open_connection(self, **para):
         super(LakeshoreTC331, self).open_connection(**para)
-        self.write_termination = "\0"
+        self.write_termination = "\r\n"
         self.read_termination = "\r\n"
 
     def set_heater_range(self, range):
