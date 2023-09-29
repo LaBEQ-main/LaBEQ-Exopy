@@ -39,7 +39,6 @@ class LakeshoreTC331(VisaInstrument):
         self.write(
             f"CSET {loop},{input},{units},{powerup_enable},{heater_output_display}"
         )
-        self.wait_to_complete()
 
         if (
             self.query("CSET?")
@@ -74,7 +73,6 @@ class LakeshoreTC331(VisaInstrument):
 
         if auto:
             self.write(f"CMODE {loop},4")
-            self.wait_to_complete()
 
             if self.query(f"CMODE? {loop}") == "4":
                 print("set PID auto")
@@ -83,7 +81,6 @@ class LakeshoreTC331(VisaInstrument):
 
         else:
             self.write(f"CMODE {loop},1")
-            self.wait_to_complete()
 
             if self.query(f"CMODE? {loop}") == "1":
                 print("set PID manual")
@@ -91,7 +88,6 @@ class LakeshoreTC331(VisaInstrument):
                 raise InstrIOError("TC331: failed to manual PID")
 
             self.write(f"PID {loop},{p},{i},{d}")
-            self.wait_to_complete()
 
             if [float(x) for x in self.query(f"PID? {loop}").split(",")] == [p, i, d]:
                 print("set PID values")
@@ -102,7 +98,6 @@ class LakeshoreTC331(VisaInstrument):
         """Sets the loop manual heater output"""
 
         self.write(f"MOUT {loop},{val}")
-        self.wait_to_complete()
 
         if float(self.query(f"MOUT? {loop}")) == val:
             print(f"set manual heater output")
@@ -113,7 +108,6 @@ class LakeshoreTC331(VisaInstrument):
         """Sets the setpoint"""
 
         self.write(f"SETP {val}")
-        self.wait_to_complete()
 
         if float(self.query(f"SETP?")) == val:
             print(f"set the setpoint")
@@ -129,7 +123,6 @@ class LakeshoreTC331(VisaInstrument):
             compensation = 0
 
         self.write(f"INTYPE {input},{sensor_type},{compensation}")
-        # self.wait_to_complete() for some reason this breaks the INTYPE command
 
         if self.query(f"INTYPE? {input}") == f"{sensor_type},{compensation}":
             print(f"set input settings")
@@ -140,12 +133,8 @@ class LakeshoreTC331(VisaInstrument):
         """Sets an input diode curve"""
 
         self.write(f"INCRV {input},{curve}")
-        self.wait_to_complete()
 
         if self.query(f"INCRV? {input}") == f"{curve:02}":
             print(f"set input diode curve")
         else:
             raise InstrIOError("TC331: failed to set input diode curve")
-
-    def wait_to_complete(self):
-        return self.query("*OPC?")
