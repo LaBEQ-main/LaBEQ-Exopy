@@ -56,16 +56,16 @@ class LakeshoreTC331(VisaInstrument):
 
         if status == 0:
             return float(self.query(f"KRDG? {input}"))
-        elif status & (1 << 1) != 0:
-            return "Invalid Reading"
-        elif status & (1 << 4) != 0:
-            return "T-UNDER"
-        elif status & (1 << 5) != 0:
-            return "T-OVER"
-        elif status & (1 << 6) != 0:
-            return "S-UNDER"
         elif status & (1 << 7) != 0:
             return "S-OVER"
+        elif status & (1 << 6) != 0:
+            return "S-UNDER"
+        elif status & (1 << 5) != 0:
+            return "T-OVER"
+        elif status & (1 << 4) != 0:
+            return "T-UNDER"
+        elif status & (1 << 1) != 0:
+            return "Invalid Reading"
         else:
             raise InstrIOError("TC331: failed to get input temperature")
 
