@@ -12,7 +12,7 @@
 import os
 
 import enaml
-from enaml.workbench.api import PluginManifest, Extension, 
+from enaml.workbench.api import PluginManifest, Extension 
 from exopy.app.api import AppStartup 
 from exopy.tasks.api import Tasks, Task, Interface
 from  exopy.tasks.filters import GroupTaskFilter
@@ -160,7 +160,14 @@ enamldef LaBEQManifest(PluginManifest):
                         kind = 'Other'
                         connections = {'VisaGPIB': {'resource_class': 'INSTR'},
                                        'VisaRS232':{'resource_class': 'INSTR'}
-                                        }
+                                       }
+
+                    Driver:
+                        driver = 'Lakeshore_TC331:LakeshoreTC331'
+                        model='331'
+                        kind='Other'
+                        connections = {'VisaGPIB': {'resource_class': 'INSTR'}}
+
                 Drivers:
                     manufacturer = 'LaBEQ'
                     Driver:
@@ -987,5 +994,20 @@ enamldef LaBEQManifest(PluginManifest):
                         task = 'Lakeshore_TC340_tasks:LakeshoreTC340HeaterSetpointAndRangeTask'
                         view = 'views.Lakeshore_TC340_views:LakeshoreTC340HeaterSetpointAndRangeView'
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC340']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331MeasureTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331MeasureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331ConfigureTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331ConfigureView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'Lakeshore_TC331_tasks:LakeshoreTC331HeaterSetpointAndRangeTask'
+                        view = 'views.Lakeshore_TC331_views:LakeshoreTC331HeaterSetpointAndRangeView'
+                        instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
                         metadata = {'loopable': True}
                 
