@@ -6,7 +6,8 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""Driver for Keysight EDUX1025G Oscilloscope"""
+
+"""Driver for Keysight EDUX1052G Oscilloscope"""
 
 from ..driver_tools import InstrIOError
 from ..visa_tools import VisaInstrument
