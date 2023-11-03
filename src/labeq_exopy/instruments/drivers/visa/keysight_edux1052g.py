@@ -13,9 +13,9 @@ from ..driver_tools import InstrIOError
 from ..visa_tools import VisaInstrument
 
 
-class Keysight_EDUX1025G(VisaInstrument):
+class Keysight_EDUX1052G(VisaInstrument):
     def open_connection(self, **para):
-        super(Keysight_EDUX1025G, self).open_connection(**para)
+        super(Keysight_EDUX1052G, self).open_connection(**para)
         self.write_termination = "\r\n"
         self.read_termination = "\r\n"
 
