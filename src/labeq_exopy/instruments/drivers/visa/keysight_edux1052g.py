@@ -61,10 +61,10 @@ class KeysightEDUX1052G(VisaInstrument):
                 raise InstrIOError(
                     "EDUX1025G: Must specify avg_count for acquisition_type 'average'"
                 )
-        elif acquisition_type == "high_resolution":
+        elif acquisition_type == "high resolution":
             self.write(":ACQuire:TYPE HRESolution")
             assert self.query(":ACQuire:TYPE?") == "HRESolution"
-        elif acquisition_type == "PEAK":
+        elif acquisition_type == "peak":
             self.write(":ACQuire:TYPE PEAK")
             assert self.query(":ACQuire:TYPE?") == "PEAK"
         else:
