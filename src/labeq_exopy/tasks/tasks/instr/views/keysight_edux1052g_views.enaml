@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Matthew Everette, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the Keysight EDUX1052G Oscilloscope"""
+
+from textwrap import fill
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from enaml.layout.api import factory
+
+from enaml.core.api import Conditional, Include
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox, Container)
+from enaml.layout.api import grid, vbox, hbox, factory, align
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from enaml.qt import QtCore
+from enaml.stdlib.fields import FloatField, IntField
+
+enamldef KeysightEDUX1052GConfigureView(InstrView): view:
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,trigger,acquisition)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+        CheckBox: useAutoScale:
+            text = "Use autoscale"
+            checked := task.UseAutoscale
+
+    GroupBox: trigger:
+        title = 'Trigger'
+        Label:
+            text = 'Trigger level (V)'
+        FloatField: triggerLevel:
+            value := task.TriggerLevel
+        Label:
+            text = 'Trigger slope'
+        ObjectCombo: triggerSlope:
+            items << list(task.get_member('TriggerSlope').items)
+            selected := task.TriggerSlope
+
+    GroupBox: acquisition:
+        title = 'Acquisition'
+        Label:
+            text = 'Acquisition type'
+        ObjectCombo: acquisitionType:
+            items << list(task.get_member('AcquisitionType').items)
+            selected := task.AcquisitionType
+        Conditional: avgCount:
+            condition << acquisitionType.selected == "average"
+            Label:
+                text = 'Average count'
+            IntField:
+                value := task.AvgCount
