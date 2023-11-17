@@ -1016,4 +1016,4 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetImageView'
                         instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
                         metadata = {'loopable': True}
-                
+
