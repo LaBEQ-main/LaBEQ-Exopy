@@ -75,17 +75,15 @@ class KeysightEDUX1052G(VisaInstrument):
     def capture(self, channel_num):
         self.write(f":DIGitize CHANnel{channel_num}")
 
-    def measure_amplitude(self, channel_num):
+    def set_measure_source(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
         assert self.query(":MEASure:SOURce?") == f"CHANnel{channel_num}"
 
+    def measure_amplitude(self, channel_num):
         self.write(":MEASure:VAMPlitude")
         return float(self.query(":MEASure:VAMPlitude?"))
 
     def measure_frequency(self, channel_num):
-        self.write(f":MEASure:SOURce CHANnel{channel_num}")
-        assert self.query(":MEASure:SOURce?") == f"CHANnel{channel_num}"
-
         self.write(":MEASure:FREQuency")
         return float(self.query(":MEASure:FREQuency?"))
 

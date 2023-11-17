@@ -35,19 +35,14 @@ class KeysightEDUX1052GConfigureTask(InstrumentTask):
         )
 
 
-class KeysightEDUX1052GCaptureTask(InstrumentTask):
-    ChannelNum = Enum("1", "2").tag(pref=True)
-
-    def perform(self):
-        self.driver.capture(self.ChannelNum)
-
-
 class KeysightEDUX1052GMeasureTask(InstrumentTask):
     ChannelNum = Enum("1", "2").tag(pref=True)
 
     database_entries = set_default({"amplitude": 0, "frequency": 0})
 
     def perform(self):
+        self.driver.capture(self.ChannelNum)
+
         amplitude = self.driver.measure_amplitude(self.ChannelNum)
         self.write_in_database("amplitude", amplitude)
 

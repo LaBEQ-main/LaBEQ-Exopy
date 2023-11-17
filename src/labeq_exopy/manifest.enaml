@@ -1006,4 +1006,14 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GConfigureView'
                         instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
                         metadata = {'loopable': True}
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GMeasureTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GMeasureView'
+                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetImageTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetImageView'
+                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        metadata = {'loopable': True}
                 

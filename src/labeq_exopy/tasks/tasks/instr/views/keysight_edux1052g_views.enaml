@@ -58,6 +58,35 @@ enamldef KeysightEDUX1052GConfigureView(InstrView): view:
         Conditional: avgCount:
             condition << acquisitionType.selected == "average"
             Label:
-                text = 'Average count'
+                text = 'Bucket size'
             IntField:
                 value := task.AvgCount
+
+enamldef KeysightEDUX1052GMeasureView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+
+
+enamldef KeysightEDUX1052GGetImageView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,file)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+    GroupBox: file:
+        Label:
+            text = 'Image file name (PNG)'
+        Field:
+            text := task.File
+    
