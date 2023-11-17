@@ -12,11 +12,7 @@
 import os
 
 import enaml
-<<<<<<< HEAD
 from enaml.workbench.api import PluginManifest, Extension
-=======
-from enaml.workbench.api import PluginManifest, Extension 
->>>>>>> origin/main
 from exopy.app.api import AppStartup 
 from exopy.tasks.api import Tasks, Task, Interface
 from  exopy.tasks.filters import GroupTaskFilter
