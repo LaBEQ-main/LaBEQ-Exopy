@@ -122,7 +122,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
     def get_screen_image(self):
         self.write(":HARDcopy:INKSaver OFF")
-        assert self.query(":HARDcopy:INKSaver?") == 0
+        assert self.query(":HARDcopy:INKSaver?") == "0"
 
         return self.query(":DISPlay:DATA? PNG, COLor")
 
