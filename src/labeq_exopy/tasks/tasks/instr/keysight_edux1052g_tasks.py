@@ -35,19 +35,72 @@ class KeysightEDUX1052GConfigureTask(InstrumentTask):
         )
 
 
-class KeysightEDUX1052GMeasureTask(InstrumentTask):
-    ChannelNum = Enum("1", "2").tag(pref=True)
-
-    database_entries = set_default({"amplitude": 0, "frequency": 0})
+class KeysightEDUX1052GCaptureTask(InstrumentTask):
+    CaptureChannel1 = Bool().tag(pref=True)
+    CaptureChannel2 = Bool().tag(pref=True)
 
     def perform(self):
-        self.driver.capture(self.ChannelNum)
+        channel_nums = []
+        if self.CaptureChannel1:
+            channel_nums.append(1)
+        if self.CaptureChannel2:
+            channel_nums.append(2)
 
-        amplitude = self.driver.measure_amplitude(self.ChannelNum)
-        self.write_in_database("amplitude", amplitude)
+        self.driver.capture(channel_nums)
 
-        frequency = self.driver.measure_frequency(self.ChannelNum)
-        self.write_in_database("frequency", frequency)
+
+class KeysightEDUX1052GMeasureTask(InstrumentTask):
+    ChannelNum = Enum("1", "2").tag(pref=True)
+    MeasureAmplitude = Bool().tag(pref=True)
+    MeasureFrequency = Bool().tag(pref=True)
+    MeasurePeriod = Bool().tag(pref=True)
+    MeasureAverage = Bool().tag(pref=True)
+    MeasureMax = Bool().tag(pref=True)
+    MeasureMin = Bool().tag(pref=True)
+    MeasureRMS = Bool().tag(pref=True)
+
+    database_entries = set_default(
+        {
+            "amplitude": None,
+            "frequency": None,
+            "period": None,
+            "average": None,
+            "max": None,
+            "min": None,
+            "rms": None,
+        }
+    )
+
+    def perform(self):
+        self.driver.set_measure_source(self.ChannelNum)
+
+        if self.MeasureAmplitude:
+            amplitude = self.driver.measure_amplitude()
+            self.write_in_database("amplitude", amplitude)
+
+        if self.MeasureFrequency:
+            frequency = self.driver.measure_frequency()
+            self.write_in_database("frequency", frequency)
+
+        if self.MeasurePeriod:
+            period = self.driver.measure_period()
+            self.write_in_database("period", period)
+
+        if self.MeasureAverage:
+            average = self.driver.measure_average()
+            self.write_in_database("average", average)
+
+        if self.MeasureMax:
+            max = self.driver.measure_max()
+            self.write_in_database("max", max)
+
+        if self.MeasureMin:
+            min = self.driver.measure_min()
+            self.write_in_database("min", min)
+
+        if self.MeasureRMS:
+            rms = self.driver.measure_rms()
+            self.write_in_database("rms", rms)
 
 
 class KeysightEDUX1052GGetImageTask(InstrumentTask):
@@ -57,4 +110,15 @@ class KeysightEDUX1052GGetImageTask(InstrumentTask):
     def perform(self):
         data = self.driver.get_screen_image(self.ChannelNum)
         with open(self.File, "wb") as f:
+            f.write(data)
+
+
+class KeysightEDUX1052GGetWaveformTask(InstrumentTask):
+    ChannelNum = Enum("1", "2").tag(pref=True)
+    File = Str().tag(pref=True)
+
+    def perform(self):
+        preamble, data = self.driver.get_waveform(self.ChannelNum)
+        with open(self.File, "w") as f:
+            f.write(preamble)
             f.write(data)

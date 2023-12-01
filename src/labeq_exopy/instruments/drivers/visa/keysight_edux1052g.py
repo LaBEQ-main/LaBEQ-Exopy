@@ -72,20 +72,42 @@ class KeysightEDUX1052G(VisaInstrument):
                 f"EDUX1025G: Invalid acquisition_type '{acquisition_type}'"
             )
 
-    def capture(self, channel_num):
-        self.write(f":DIGitize CHANnel{channel_num}")
+    def capture(self, channel_nums):
+        self.write(
+            f":DIGitize CHANnel{', '.join([f'CHANnel{num}' for num in channel_nums])}"
+        )
 
     def set_measure_source(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
         assert self.query(":MEASure:SOURce?") == f"CHANnel{channel_num}"
 
-    def measure_amplitude(self, channel_num):
+    def measure_amplitude(self):
         self.write(":MEASure:VAMPlitude")
         return float(self.query(":MEASure:VAMPlitude?"))
 
-    def measure_frequency(self, channel_num):
+    def measure_frequency(self):
         self.write(":MEASure:FREQuency")
         return float(self.query(":MEASure:FREQuency?"))
+
+    def measure_period(self):
+        self.write(":MEASure:PERiod")
+        return float(self.query(":MEASure:PERiod?"))
+
+    def measure_average(self):
+        self.write(":MEASure:VAVerage")
+        return float(self.query(":MEASure:VAVerage?"))
+
+    def measure_max(self):
+        self.write(":MEASure:VMAX")
+        return float(self.query(":MEASure:VMAX?"))
+
+    def measure_min(self):
+        self.write(":MEASure:VMIN")
+        return float(self.query(":MEASure:VMIN?"))
+
+    def measure_rms(self):
+        self.write(":MEASure:VRMS")
+        return float(self.query(":MEASure:VRMS?"))
 
     def get_screen_image(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
@@ -96,6 +118,18 @@ class KeysightEDUX1052G(VisaInstrument):
 
         return self.query(":DISPlay:DATA? PNG, COLor")
 
-    # TODO
     def get_waveform(self, channel_num):
-        pass
+        self.write(":WAVeform:POINts:MODE NORMal")
+        assert self.query(":WAVeform:POINts:MODE?") == f"NORMal"
+
+        self.write(f":WAVeform:SOURce CHANnel{channel_num}")
+        assert self.query(":WAVeform:SOURce?") == f"CHANnel{channel_num}"
+
+        self.write(":WAVeform:FORMat BYTE")
+        assert self.query(":WAVeform:FORMat?") == "BYTE"
+
+        preamble = self.query(":WAVeform:PREamble?")
+
+        data = self.query(":WAVEFORM:DATA?")
+
+        return preamble, data

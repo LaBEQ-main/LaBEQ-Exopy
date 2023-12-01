@@ -62,8 +62,20 @@ enamldef KeysightEDUX1052GConfigureView(InstrView): view:
             IntField:
                 value := task.AvgCount
 
+enamldef KeysightEDUX1052GCaptureView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channels)]
+
+    GroupBox: channels:
+        title = 'Select channels to capture'
+        CheckBox: captureChannel1:
+            text = "Channel 1"
+            checked := task.CaptureChannel1
+        CheckBox: captureChannel2:
+            text = "Channel 2"
+            checked := task.CaptureChannel2
+
 enamldef KeysightEDUX1052GMeasureView(InstrView):
-    constraints = [vbox(grid([instr_label],[instr_selection]),channel)]
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,measurements)]
 
     GroupBox: channel:
         title = 'Channel'
@@ -72,6 +84,30 @@ enamldef KeysightEDUX1052GMeasureView(InstrView):
         ObjectCombo: channelNum:
             items << list(task.get_member('ChannelNum').items)
             selected := task.ChannelNum
+
+    GroupBox: measurements:
+        title = 'Select measurements'
+        CheckBox: measureAmplitude:
+            text = "Amplitude"
+            checked := task.MeasureAmplitude
+        CheckBox: measureFrequency:
+            text = "Frequency"
+            checked := task.MeasureFrequency
+        CheckBox: measurePeriod:
+            text = "Period"
+            checked := task.MeasurePeriod
+        CheckBox: measureAverage:
+            text = "Average"
+            checked := task.MeasureAverage
+        CheckBox: measureMax:
+            text = "Max"
+            checked := task.MeasureMax
+        CheckBox: measureMin:
+            text = "Min"
+            checked := task.MeasureMin
+        CheckBox: measureRMS:
+            text = "RMS"
+            checked := task.MeasureRMS
 
 
 enamldef KeysightEDUX1052GGetImageView(InstrView):
@@ -87,6 +123,22 @@ enamldef KeysightEDUX1052GGetImageView(InstrView):
     GroupBox: file:
         Label:
             text = 'Image file name (PNG)'
+        Field:
+            text := task.File
+
+enamldef KeysightEDUX1052GGetWaveformView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,file)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+    GroupBox: file:
+        Label:
+            text = 'Data file name (CSV)'
         Field:
             text := task.File
     
