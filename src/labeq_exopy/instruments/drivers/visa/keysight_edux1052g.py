@@ -39,7 +39,7 @@ class KeysightEDUX1052G(VisaInstrument):
         assert self.query(":TRIGger:MODE?") == "EDGE"
 
         self.write(f":TRIGger:EDGE:SOURce CHANnel{channel_num}")
-        assert self.query(":TRIGger:EDGE:SOURce?") == f"CHANnel{channel_num}"
+        assert self.query(":TRIGger:EDGE:SOURce?") == f"CHAN{channel_num}"
 
         self.write(f":TRIGger:EDGE:LEVel {trigger_level}")
         assert float(self.query(":TRIGger:EDGE:LEVel?")) == trigger_level
@@ -49,11 +49,11 @@ class KeysightEDUX1052G(VisaInstrument):
 
         if acquisition_type == "normal":
             self.write(":ACQuire:TYPE NORMal")
-            assert self.query(":ACQuire:TYPE?") == "NORMal"
+            assert self.query(":ACQuire:TYPE?") == "NORM"
         elif acquisition_type == "average":
             if avg_count:
                 self.write(":ACQuire:TYPE AVERage")
-                assert self.query(":ACQuire:TYPE?") == "AVERage"
+                assert self.query(":ACQuire:TYPE?") == "AVER"
 
                 self.write(f":ACQuire:COUNt {avg_count}")
                 assert int(self.query(":ACQuire:COUNt?")) == avg_count
@@ -63,7 +63,7 @@ class KeysightEDUX1052G(VisaInstrument):
                 )
         elif acquisition_type == "high resolution":
             self.write(":ACQuire:TYPE HRESolution")
-            assert self.query(":ACQuire:TYPE?") == "HRESolution"
+            assert self.query(":ACQuire:TYPE?") == "HRES"
         elif acquisition_type == "peak":
             self.write(":ACQuire:TYPE PEAK")
             assert self.query(":ACQuire:TYPE?") == "PEAK"
@@ -79,7 +79,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
     def set_measure_source(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
-        assert self.query(":MEASure:SOURce?") == f"CHANnel{channel_num}"
+        assert self.query(":MEASure:SOURce?") == f"CHAN{channel_num}"
 
     def measure_amplitude(self):
         self.write(":MEASure:VAMPlitude")
@@ -111,7 +111,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
     def get_screen_image(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
-        assert self.query(":MEASure:SOURce?") == f"CHANnel{channel_num}"
+        assert self.query(":MEASure:SOURce?") == f"CHAN{channel_num}"
 
         self.write(":HARDcopy:INKSaver OFF")
         assert self.query(":HARDcopy:INKSaver?") == "OFF"
@@ -123,7 +123,7 @@ class KeysightEDUX1052G(VisaInstrument):
         assert self.query(":WAVeform:POINts:MODE?") == f"NORMal"
 
         self.write(f":WAVeform:SOURce CHANnel{channel_num}")
-        assert self.query(":WAVeform:SOURce?") == f"CHANnel{channel_num}"
+        assert self.query(":WAVeform:SOURce?") == f"CHAN{channel_num}"
 
         self.write(":WAVeform:FORMat BYTE")
         assert self.query(":WAVeform:FORMat?") == "BYTE"
