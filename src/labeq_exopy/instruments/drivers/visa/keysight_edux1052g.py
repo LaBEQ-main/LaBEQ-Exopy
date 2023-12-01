@@ -90,7 +90,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
     def set_measure_source(self, channel_num):
         self.write(f":MEASure:SOURce CHANnel{channel_num}")
-        assert self.query(":MEASure:SOURce?") == f"CHAN{channel_num}"
+        assert self.query(":MEASure:SOURce?")[:5] == f"CHAN{channel_num}"
 
     def measure_amplitude(self):
         self.write(":MEASure:VAMPlitude")
@@ -120,10 +120,7 @@ class KeysightEDUX1052G(VisaInstrument):
         self.write(":MEASure:VRMS")
         return float(self.query(":MEASure:VRMS?"))
 
-    def get_screen_image(self, channel_num):
-        self.write(f":MEASure:SOURce CHANnel{channel_num}")
-        assert self.query(":MEASure:SOURce?") == f"CHAN{channel_num}"
-
+    def get_screen_image(self):
         self.write(":HARDcopy:INKSaver OFF")
         assert self.query(":HARDcopy:INKSaver?") == "OFF"
 
