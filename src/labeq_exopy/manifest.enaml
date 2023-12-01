@@ -429,7 +429,7 @@ enamldef LaBEQManifest(PluginManifest):
                     Driver:
                         driver = 'keysight_edux1052g:KeysightEDUX1052G'
                         model ='EDUX1052G'
-                        connections = {'VisaGPIB': {'resource_class': 'INSTR'},
+                        connections = {'VisaUSB': {'resource_class': 'INSTR'},
                                        }
 
             Drivers:
