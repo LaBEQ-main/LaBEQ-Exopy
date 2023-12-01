@@ -44,6 +44,15 @@ class KeysightEDUX1052G(VisaInstrument):
         self.write(f":TRIGger:EDGE:LEVel {trigger_level}")
         assert float(self.query(":TRIGger:EDGE:LEVel?")) == trigger_level
 
+        if trigger_slope == "negative":
+            trigger_slope == "NEG"
+        elif trigger_slope == "positive":
+            trigger_slope == "POS"
+        elif trigger_slope == "either":
+            trigger_slope == "EITH"
+        elif trigger_slope == "alternate":
+            trigger_slope == "ALT"
+
         self.write(f":TRIGger:EDGE:SLOPe {trigger_slope}")
         assert self.query(":TRIGger:EDGE:SLOPe?") == trigger_slope
 
