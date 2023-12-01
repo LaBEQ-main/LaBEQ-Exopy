@@ -45,13 +45,15 @@ class KeysightEDUX1052G(VisaInstrument):
         assert float(self.query(":TRIGger:EDGE:LEVel?")) == trigger_level
 
         if trigger_slope == "negative":
-            trigger_slope == "NEG"
+            trigger_slope = "NEG"
         elif trigger_slope == "positive":
-            trigger_slope == "POS"
+            trigger_slope = "POS"
         elif trigger_slope == "either":
-            trigger_slope == "EITH"
+            trigger_slope = "EITH"
         elif trigger_slope == "alternate":
-            trigger_slope == "ALT"
+            trigger_slope = "ALT"
+        else:
+            raise InstrIOError("EDUX1025G: invalid value for 'trigger_slope'")
 
         self.write(f":TRIGger:EDGE:SLOPe {trigger_slope}")
         assert self.query(":TRIGger:EDGE:SLOPe?") == trigger_slope
