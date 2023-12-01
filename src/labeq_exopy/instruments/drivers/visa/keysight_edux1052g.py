@@ -21,7 +21,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
         # Clear status and load default setup
         self.write("*CLS")
-        self.write("*RST")
+        # self.write("*RST")
 
     def configure(
         self,
