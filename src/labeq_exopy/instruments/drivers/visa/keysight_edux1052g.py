@@ -17,7 +17,7 @@ class KeysightEDUX1052G(VisaInstrument):
     def open_connection(self, **para):
         super(KeysightEDUX1052G, self).open_connection(**para)
         self.write_termination = "\r\n"
-        self.read_termination = "\r\n"
+        self.read_termination = "\n"
 
         # Clear status and load default setup
         self.write("*CLS")
