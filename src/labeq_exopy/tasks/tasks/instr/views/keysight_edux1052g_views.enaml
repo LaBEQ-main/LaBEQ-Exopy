@@ -111,15 +111,8 @@ enamldef KeysightEDUX1052GMeasureView(InstrView):
 
 
 enamldef KeysightEDUX1052GGetImageView(InstrView):
-    constraints = [vbox(grid([instr_label],[instr_selection]),channel,file)]
+    constraints = [vbox(grid([instr_label],[instr_selection]),file)]
 
-    GroupBox: channel:
-        title = 'Channel'
-        Label:
-            text = 'Input channel number'
-        ObjectCombo: channelNum:
-            items << list(task.get_member('ChannelNum').items)
-            selected := task.ChannelNum
     GroupBox: file:
         Label:
             text = 'Image file name (PNG)'

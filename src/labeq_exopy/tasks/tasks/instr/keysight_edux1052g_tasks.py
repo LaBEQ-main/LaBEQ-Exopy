@@ -104,11 +104,10 @@ class KeysightEDUX1052GMeasureTask(InstrumentTask):
 
 
 class KeysightEDUX1052GGetImageTask(InstrumentTask):
-    ChannelNum = Enum("1", "2").tag(pref=True)
     File = Str().tag(pref=True)
 
     def perform(self):
-        data = self.driver.get_screen_image(self.ChannelNum)
+        data = self.driver.get_screen_image()
         with open(self.File, "wb") as f:
             f.write(data)
 
