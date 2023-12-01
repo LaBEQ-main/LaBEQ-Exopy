@@ -1027,25 +1027,25 @@ enamldef LaBEQManifest(PluginManifest):
                     Task:
                         task = 'keysight_edux1052g_tasks:KeysightEDUX1052GConfigureTask'
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GConfigureView'
-                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True}
                     Task:
                         task = 'keysight_edux1052g_tasks:KeysightEDUX1052GCaptureTask'
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GCaptureView'
-                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True}
                     Task:
                         task = 'keysight_edux1052g_tasks:KeysightEDUX1052GMeasureTask'
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GMeasureView'
-                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True}
                     Task:
                         task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetImageTask'
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetImageView'
-                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True}
                     Task:
                         task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetWaveformTask'
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetWaveformView'
-                        instruments = ['labeq_exopy.Legacy.keysight_edux1052g']
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True} 
