@@ -125,10 +125,20 @@ class KeysightEDUX1052GGetImageTask(InstrumentTask):
 
 class KeysightEDUX1052GGetWaveformTask(InstrumentTask):
     ChannelNum = Enum("1", "2").tag(pref=True)
-    File = Str().tag(pref=True)
+
+    #: Folder in which to save the data.
+    folder = Str("{default_path}").tag(pref=True)
+
+    #: Name of the file in which to write the data.
+    filename = Str().tag(pref=True)
 
     def perform(self):
+        full_folder_path = self.format_string(self.folder)
+        filename = self.format_string(self.filename)
+        full_path = os.path.join(full_folder_path, filename)
+
         preamble, data = self.driver.get_waveform(self.ChannelNum)
-        with open(self.File, "w") as f:
+
+        with open(full_path, "w") as f:
             f.write(preamble)
             f.write(data)
