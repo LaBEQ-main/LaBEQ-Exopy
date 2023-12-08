@@ -143,7 +143,7 @@ enamldef KeysightEDUX1052GGetImageView(InstrView):
 
         GroupBox: file:
 
-            title = 'File'
+            title = 'File (PNG)'
             constraints = [hbox(name),
                             align('v_center', name)]
 
@@ -190,7 +190,7 @@ enamldef KeysightEDUX1052GGetWaveformView(InstrView):
 
         GroupBox: file:
 
-            title = 'File'
+            title = 'File (CSV)'
             constraints = [hbox(name),
                             align('v_center', name)]
 
