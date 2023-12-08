@@ -124,7 +124,9 @@ class KeysightEDUX1052G(VisaInstrument):
         self.write(":HARDcopy:INKSaver OFF")
         assert self.query(":HARDcopy:INKSaver?") == "0"
 
-        return self.query(":DISPlay:DATA? PNG, COLor")
+        return bytes(
+            self.query_binary_values(":DISPlay:DATA? PNG, COLor", datatype="B")
+        )
 
     def get_waveform(self, channel_num):
         self.write(":WAVeform:POINts:MODE NORMal")
