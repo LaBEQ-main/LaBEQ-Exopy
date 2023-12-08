@@ -137,8 +137,11 @@ class KeysightEDUX1052GGetWaveformTask(InstrumentTask):
         filename = self.format_string(self.filename)
         full_path = os.path.join(full_folder_path, filename)
 
-        preamble, data = self.driver.get_waveform(self.ChannelNum)
+        dx, x0, dy, y0, y_ref, data = self.driver.get_waveform(self.ChannelNum)
 
         with open(full_path, "w") as f:
-            f.write(preamble)
-            f.write(data)
+            for i, val in enumerate(data):
+                t = x0 + i * dx
+                V = (val - y_ref) * dy + y0
+
+                f.write(f"{t:E}, {V:f}\n")

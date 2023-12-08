@@ -12,6 +12,8 @@
 from ..driver_tools import InstrIOError
 from ..visa_tools import VisaInstrument
 
+import struct
+
 
 class KeysightEDUX1052G(VisaInstrument):
     def open_connection(self, **para):
@@ -138,8 +140,13 @@ class KeysightEDUX1052G(VisaInstrument):
         self.write(":WAVeform:FORMat BYTE")
         assert self.query(":WAVeform:FORMat?") == "BYTE"
 
-        preamble = self.query(":WAVeform:PREamble?")
+        dx = float(self.query(":WAVeform:XINCrement?"))
+        x0 = float(self.query(":WAVeform:XORigin?"))
+        dy = float(self.query(":WAVeform:YINCrement?"))
+        y0 = float(self.query(":WAVeform:YORigin?"))
+        y_ref = float(self.query(":WAVeform:YREFerence?"))
 
-        data = self.query(":WAVEFORM:DATA?")
+        data = bytes(self.query_binary_values(":WAVEFORM:DATA?", datatype="s"))
+        data = struct.unpack(f"{len(data) // 8}d", data)
 
-        return preamble, data
+        return dx, x0, dy, y0, y_ref, data
