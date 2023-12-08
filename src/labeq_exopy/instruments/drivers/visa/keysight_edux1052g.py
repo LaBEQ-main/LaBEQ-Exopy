@@ -130,7 +130,7 @@ class KeysightEDUX1052G(VisaInstrument):
 
     def get_waveform(self, channel_num):
         self.write(":WAVeform:POINts:MODE NORMal")
-        assert self.query(":WAVeform:POINts:MODE?") == f"NORMal"
+        assert self.query(":WAVeform:POINts:MODE?") == f"NORM"
 
         self.write(f":WAVeform:SOURce CHANnel{channel_num}")
         assert self.query(":WAVeform:SOURce?") == f"CHAN{channel_num}"
