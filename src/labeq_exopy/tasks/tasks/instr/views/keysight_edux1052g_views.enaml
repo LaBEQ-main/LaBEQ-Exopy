@@ -14,13 +14,15 @@ from exopy.utils.widgets.qt_completers import QtLineCompleter
 from enaml.layout.api import factory
 
 from enaml.core.api import Conditional, Include
-from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox, Container)
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox, Container, FileDialog, PushButton)
 from enaml.layout.api import grid, vbox, hbox, factory, align
+from exopy.tasks.api import FORMATTER_TOOLTIP
 
 from labeq_exopy.utils.layouts import auto_grid_layout
 from ...base_instr_view import InstrView
 from enaml.qt import QtCore
 from enaml.stdlib.fields import FloatField, IntField
+
 
 enamldef KeysightEDUX1052GConfigureView(InstrView): view:
     constraints = [vbox(grid([instr_label],[instr_selection]),channel,trigger,acquisition)]
@@ -62,6 +64,7 @@ enamldef KeysightEDUX1052GConfigureView(InstrView): view:
             IntField:
                 value := task.AvgCount
 
+
 enamldef KeysightEDUX1052GCaptureView(InstrView):
     constraints = [vbox(grid([instr_label],[instr_selection]),channels)]
 
@@ -73,6 +76,7 @@ enamldef KeysightEDUX1052GCaptureView(InstrView):
         CheckBox: captureChannel2:
             text = "Channel 2"
             checked := task.CaptureChannel2
+
 
 enamldef KeysightEDUX1052GMeasureView(InstrView):
     constraints = [vbox(grid([instr_label],[instr_selection]),channel,measurements)]
@@ -111,13 +115,43 @@ enamldef KeysightEDUX1052GMeasureView(InstrView):
 
 
 enamldef KeysightEDUX1052GGetImageView(InstrView):
-    constraints = [vbox(grid([instr_label],[instr_selection]),file)]
+    constraints = [vbox(grid([instr_label],[instr_selection]),file_cont)]
 
-    GroupBox: file:
-        Label:
-            text = 'Image file name (PNG)'
-        Field:
-            text := task.File
+    Container: file_cont:
+
+        hug_height = 'strong'
+
+        GroupBox: folder:
+
+            title = 'Directory'
+            constraints = [hbox(path, explore),
+                            align('v_center', path, explore)]
+
+            QtLineCompleter: path:
+                text := task.folder
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: explore:
+                text = 'E'
+                hug_width = 'strong'
+                clicked ::
+                    path = FileDialog(mode = 'directory',
+                                      title = 'Select a default path',
+                                      ).exec_()
+                    if path:
+                        task.folder = path
+
+        GroupBox: file:
+
+            title = 'File'
+            constraints = [hbox(name),
+                            align('v_center', name)]
+
+            QtLineCompleter: name:
+                text := task.filename
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+
 
 enamldef KeysightEDUX1052GGetWaveformView(InstrView):
     constraints = [vbox(grid([instr_label],[instr_selection]),channel,file)]

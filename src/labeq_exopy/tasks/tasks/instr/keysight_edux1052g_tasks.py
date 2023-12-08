@@ -13,6 +13,8 @@ from atom.api import Enum, Float, set_default, Bool, Str, Int
 
 from exopy.tasks.api import InstrumentTask
 
+import os
+
 
 class KeysightEDUX1052GConfigureTask(InstrumentTask):
     ChannelNum = Enum("1", "2").tag(pref=True)
@@ -104,11 +106,20 @@ class KeysightEDUX1052GMeasureTask(InstrumentTask):
 
 
 class KeysightEDUX1052GGetImageTask(InstrumentTask):
-    File = Str().tag(pref=True)
+    #: Folder in which to save the data.
+    folder = Str("{default_path}").tag(pref=True)
+
+    #: Name of the file in which to write the data.
+    filename = Str().tag(pref=True)
 
     def perform(self):
+        full_folder_path = self.format_string(self.folder)
+        filename = self.format_string(self.filename)
+        full_path = os.path.join(full_folder_path, filename)
+
         data = self.driver.get_screen_image()
-        with open(self.File, "wb") as f:
+
+        with open(full_path, "wb") as f:
             f.write(data)
 
 
