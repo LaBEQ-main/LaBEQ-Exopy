@@ -130,23 +130,24 @@ class KeysightEDUX1052G(VisaInstrument):
             self.query_binary_values(":DISPlay:DATA? PNG, COLor", datatype="B")
         )
 
-    def get_waveform(self, channel_num):
-        self.write(":WAVeform:POINts:MODE NORMal")
-        assert self.query(":WAVeform:POINts:MODE?") == f"NORM"
+    # -------- WIP --------
+    # def get_waveform(self, channel_num):
+    #     self.write(":WAVeform:POINts:MODE NORMal")
+    #     assert self.query(":WAVeform:POINts:MODE?") == f"NORM"
 
-        self.write(f":WAVeform:SOURce CHANnel{channel_num}")
-        assert self.query(":WAVeform:SOURce?") == f"CHAN{channel_num}"
+    #     self.write(f":WAVeform:SOURce CHANnel{channel_num}")
+    #     assert self.query(":WAVeform:SOURce?") == f"CHAN{channel_num}"
 
-        self.write(":WAVeform:FORMat BYTE")
-        assert self.query(":WAVeform:FORMat?") == "BYTE"
+    #     self.write(":WAVeform:FORMat BYTE")
+    #     assert self.query(":WAVeform:FORMat?") == "BYTE"
 
-        dx = float(self.query(":WAVeform:XINCrement?"))
-        x0 = float(self.query(":WAVeform:XORigin?"))
-        dy = float(self.query(":WAVeform:YINCrement?"))
-        y0 = float(self.query(":WAVeform:YORigin?"))
-        y_ref = float(self.query(":WAVeform:YREFerence?"))
+    #     dx = float(self.query(":WAVeform:XINCrement?"))
+    #     x0 = float(self.query(":WAVeform:XORigin?"))
+    #     dy = float(self.query(":WAVeform:YINCrement?"))
+    #     y0 = float(self.query(":WAVeform:YORigin?"))
+    #     y_ref = float(self.query(":WAVeform:YREFerence?"))
 
-        data = bytes(self.query_binary_values(":WAVEFORM:DATA?", datatype="s"))
-        data = struct.unpack(f"{len(data) // 8}d", data)
+    #     data = bytes(self.query_binary_values(":WAVEFORM:DATA?", datatype="s"))
+    #     data = struct.unpack(f"{len(data) // 8}d", data)
 
-        return dx, x0, dy, y0, y_ref, data
+    #     return dx, x0, dy, y0, y_ref, data

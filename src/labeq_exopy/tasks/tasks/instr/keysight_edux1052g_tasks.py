@@ -123,25 +123,27 @@ class KeysightEDUX1052GGetImageTask(InstrumentTask):
             f.write(data)
 
 
-class KeysightEDUX1052GGetWaveformTask(InstrumentTask):
-    ChannelNum = Enum("1", "2").tag(pref=True)
+# -------- WIP --------
+#
+# class KeysightEDUX1052GGetWaveformTask(InstrumentTask):
+#     ChannelNum = Enum("1", "2").tag(pref=True)
 
-    #: Folder in which to save the data.
-    folder = Str("{default_path}").tag(pref=True)
+#     #: Folder in which to save the data.
+#     folder = Str("{default_path}").tag(pref=True)
 
-    #: Name of the file in which to write the data.
-    filename = Str().tag(pref=True)
+#     #: Name of the file in which to write the data.
+#     filename = Str().tag(pref=True)
 
-    def perform(self):
-        full_folder_path = self.format_string(self.folder)
-        filename = self.format_string(self.filename)
-        full_path = os.path.join(full_folder_path, filename)
+#     def perform(self):
+#         full_folder_path = self.format_string(self.folder)
+#         filename = self.format_string(self.filename)
+#         full_path = os.path.join(full_folder_path, filename)
 
-        dx, x0, dy, y0, y_ref, data = self.driver.get_waveform(self.ChannelNum)
+#         dx, x0, dy, y0, y_ref, data = self.driver.get_waveform(self.ChannelNum)
 
-        with open(full_path, "w") as f:
-            for i, val in enumerate(data):
-                t = x0 + i * dx
-                V = (val - y_ref) * dy + y0
+#         with open(full_path, "w") as f:
+#             for i, val in enumerate(data):
+#                 t = x0 + i * dx
+#                 V = (val - y_ref) * dy + y0
 
-                f.write(f"{t:E}, {V:f}\n")
+#                 f.write(f"{t:E}, {V:f}\n")
