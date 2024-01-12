@@ -1044,8 +1044,9 @@ enamldef LaBEQManifest(PluginManifest):
                         view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetImageView'
                         instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
                         metadata = {'loopable': True}
-                    Task:
-                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetWaveformTask'
-                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetWaveformView'
-                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
-                        metadata = {'loopable': True} 
+                    # -------- WIP ---------
+                    # Task:
+                    #     task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetWaveformTask'
+                    #     view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetWaveformView'
+                    #     instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                    #     metadata = {'loopable': True} 
