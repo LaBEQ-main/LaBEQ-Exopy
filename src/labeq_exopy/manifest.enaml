@@ -12,7 +12,7 @@
 import os
 
 import enaml
-from enaml.workbench.api import PluginManifest, Extension 
+from enaml.workbench.api import PluginManifest, Extension
 from exopy.app.api import AppStartup 
 from exopy.tasks.api import Tasks, Task, Interface
 from  exopy.tasks.filters import GroupTaskFilter
@@ -55,6 +55,9 @@ enamldef LaBEQManifest(PluginManifest):
         GroupTaskFilter:    
             id = 'Lakeshore'
             group = 'Lakeshore'
+        GroupTaskFilter:
+            id = 'KeysightEDUX1052G'
+            group = 'KeysightEDUX1052G'
 
     Extension:
         id = 'startup'
@@ -421,6 +424,14 @@ enamldef LaBEQManifest(PluginManifest):
                         model = 'APUASYN20'
                         connections = {'VisaTCPIP': {'resource_class': 'INSTR'}
                                        }
+                Drivers:
+                    manufacturer = 'Keysight'
+                    Driver:
+                        driver = 'keysight_edux1052g:KeysightEDUX1052G'
+                        model ='EDUX1052G'
+                        connections = {'VisaUSB': {'resource_class': 'INSTR'},
+                                       }
+
             Drivers:
                 path = 'dll'
                 starter = 'labeq_exopy.starter.dll'
@@ -1011,3 +1022,31 @@ enamldef LaBEQManifest(PluginManifest):
                         instruments = ['labeq_exopy.Legacy.LakeshoreTC331']
                         metadata = {'loopable': True}
                 
+                Tasks:
+                    group = "KeysightEDUX1052G"
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GConfigureTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GConfigureView'
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GCaptureTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GCaptureView'
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GMeasureTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GMeasureView'
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                        metadata = {'loopable': True}
+                    Task:
+                        task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetImageTask'
+                        view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetImageView'
+                        instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                        metadata = {'loopable': True}
+                    # -------- WIP ---------
+                    # Task:
+                    #     task = 'keysight_edux1052g_tasks:KeysightEDUX1052GGetWaveformTask'
+                    #     view = 'views.keysight_edux1052g_views:KeysightEDUX1052GGetWaveformView'
+                    #     instruments = ['labeq_exopy.Legacy.KeysightEDUX1052G']
+                    #     metadata = {'loopable': True} 

@@ -1,0 +1,204 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Authors - Matthew Everette, LaBEQ / Sardashti Research Group, Clemson University
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+
+"""Views for the Keysight EDUX1052G Oscilloscope"""
+
+from textwrap import fill
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+from enaml.layout.api import factory
+
+from enaml.core.api import Conditional, Include
+from enaml.widgets.api import (GroupBox, Label, Field, ObjectCombo, CheckBox, Container, FileDialog, PushButton)
+from enaml.layout.api import grid, vbox, hbox, factory, align
+from exopy.tasks.api import FORMATTER_TOOLTIP
+
+from labeq_exopy.utils.layouts import auto_grid_layout
+from ...base_instr_view import InstrView
+from enaml.qt import QtCore
+from enaml.stdlib.fields import FloatField, IntField
+
+
+enamldef KeysightEDUX1052GConfigureView(InstrView): view:
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,trigger,acquisition)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+        CheckBox: useAutoScale:
+            text = "Use autoscale"
+            checked := task.UseAutoscale
+
+    GroupBox: trigger:
+        title = 'Trigger'
+        Label:
+            text = 'Trigger level (V)'
+        FloatField: triggerLevel:
+            value := task.TriggerLevel
+        Label:
+            text = 'Trigger slope'
+        ObjectCombo: triggerSlope:
+            items << list(task.get_member('TriggerSlope').items)
+            selected := task.TriggerSlope
+
+    GroupBox: acquisition:
+        title = 'Acquisition'
+        Label:
+            text = 'Acquisition type'
+        ObjectCombo: acquisitionType:
+            items << list(task.get_member('AcquisitionType').items)
+            selected := task.AcquisitionType
+        Conditional: avgCount:
+            condition << acquisitionType.selected == "average"
+            Label:
+                text = 'Bucket size'
+            IntField:
+                value := task.AvgCount
+
+
+enamldef KeysightEDUX1052GCaptureView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channels)]
+
+    GroupBox: channels:
+        title = 'Select channels to capture'
+        CheckBox: captureChannel1:
+            text = "Channel 1"
+            checked := task.CaptureChannel1
+        CheckBox: captureChannel2:
+            text = "Channel 2"
+            checked := task.CaptureChannel2
+
+
+enamldef KeysightEDUX1052GMeasureView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),channel,measurements)]
+
+    GroupBox: channel:
+        title = 'Channel'
+        Label:
+            text = 'Input channel number'
+        ObjectCombo: channelNum:
+            items << list(task.get_member('ChannelNum').items)
+            selected := task.ChannelNum
+
+    GroupBox: measurements:
+        title = 'Select measurements'
+        CheckBox: measureAmplitude:
+            text = "Amplitude"
+            checked := task.MeasureAmplitude
+        CheckBox: measureFrequency:
+            text = "Frequency"
+            checked := task.MeasureFrequency
+        CheckBox: measurePeriod:
+            text = "Period"
+            checked := task.MeasurePeriod
+        CheckBox: measureAverage:
+            text = "Average"
+            checked := task.MeasureAverage
+        CheckBox: measureMax:
+            text = "Max"
+            checked := task.MeasureMax
+        CheckBox: measureMin:
+            text = "Min"
+            checked := task.MeasureMin
+        CheckBox: measureRMS:
+            text = "RMS"
+            checked := task.MeasureRMS
+
+
+enamldef KeysightEDUX1052GGetImageView(InstrView):
+    constraints = [vbox(grid([instr_label],[instr_selection]),file_cont)]
+
+    Container: file_cont:
+
+        hug_height = 'strong'
+
+        GroupBox: folder:
+
+            title = 'Directory'
+            constraints = [hbox(path, explore),
+                            align('v_center', path, explore)]
+
+            QtLineCompleter: path:
+                text := task.folder
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+            PushButton: explore:
+                text = 'E'
+                hug_width = 'strong'
+                clicked ::
+                    path = FileDialog(mode = 'directory',
+                                      title = 'Select a default path',
+                                      ).exec_()
+                    if path:
+                        task.folder = path
+
+        GroupBox: file:
+
+            title = 'File (PNG)'
+            constraints = [hbox(name),
+                            align('v_center', name)]
+
+            QtLineCompleter: name:
+                text := task.filename
+                entries_updater << task.list_accessible_database_entries
+                tool_tip = FORMATTER_TOOLTIP
+
+
+# -------- WIP ---------
+#
+# enamldef KeysightEDUX1052GGetWaveformView(InstrView):
+#     constraints = [vbox(grid([instr_label],[instr_selection]),channel,file_cont)]
+
+#     GroupBox: channel:
+#         title = 'Channel'
+#         Label:
+#             text = 'Input channel number'
+#         ObjectCombo: channelNum:
+#             items << list(task.get_member('ChannelNum').items)
+#             selected := task.ChannelNum
+
+#     Container: file_cont:
+
+#         hug_height = 'strong'
+
+#         GroupBox: folder:
+
+#             title = 'Directory'
+#             constraints = [hbox(path, explore),
+#                             align('v_center', path, explore)]
+
+#             QtLineCompleter: path:
+#                 text := task.folder
+#                 entries_updater << task.list_accessible_database_entries
+#                 tool_tip = FORMATTER_TOOLTIP
+#             PushButton: explore:
+#                 text = 'E'
+#                 hug_width = 'strong'
+#                 clicked ::
+#                     path = FileDialog(mode = 'directory',
+#                                       title = 'Select a default path',
+#                                       ).exec_()
+#                     if path:
+#                         task.folder = path
+
+#         GroupBox: file:
+
+#             title = 'File (CSV)'
+#             constraints = [hbox(name),
+#                             align('v_center', name)]
+
+#             QtLineCompleter: name:
+#                 text := task.filename
+#                 entries_updater << task.list_accessible_database_entries
+#                 tool_tip = FORMATTER_TOOLTIP
+
+    
